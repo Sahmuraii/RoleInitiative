@@ -1,40 +1,196 @@
-body {
-    font-family: Arial, sans-serif;
-    margin: 20px;
-  }
-  
-  label {
-    font-weight: bold;
-  }
-  
-  .form-group {
-    margin-bottom: 15px;
-  }
-  
-  .dropdown-container, .list-container {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-  }
-  
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-  }
-  
-  th, td {
-    border: 1px solid #ddd;
-    padding: 8px;
-  }
-  
-  th {
-    background-color: #f2f2f2;
-    text-align: left;
-  }
-  
-  textarea {
-    width: 100%;
-    resize: none;
-    box-sizing: border-box;
-  }
+.main-content {
+  max-width: 1200px;
+  margin: auto;
+  padding: 20px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px; 
+}
+
+.section-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); 
+  gap: 15px; 
+}
+
+.section {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 15px;
+  background-color: #f9f9f9;
+}
+
+.section h2 {
+  margin-top: 0;
+  font-size: 1.2em;
+  color: #333;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 8px; 
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px; 
+  margin-bottom: 10px; 
+}
+
+.row.full-width {
+  grid-template-columns: 1fr;
+}
+
+label {
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 6px; 
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px; 
+}
+
+textarea {
+  resize: vertical;
+  min-height: 80px; 
+}
+
+.components-container {
+  display: flex;
+  gap: 8px;
+}
+
+.components-container label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px; 
+  height: 50px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #fff;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.components-container label:hover {
+  background-color: #f0f0f0;
+}
+
+.components-container input[type="checkbox"] {
+  display: none; 
+}
+
+.components-container input[type="checkbox"]:checked + label {
+  background-color: #4CAF50; 
+  color: white;
+}
+
+.conditional-container {
+  margin-top: 8px; 
+}
+
+.conditions-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px; 
+}
+
+.condition-entry {
+  display: flex;
+  align-items: center;
+  gap: 8px; 
+}
+
+button[type="submit"] {
+  padding: 8px 16px; 
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px; 
+}
+
+button[type="submit"]:hover {
+  background-color: #45a049;
+}
+
+.save-or-attack-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px; 
+}
+
+.save-or-attack-options {
+  display: flex;
+  gap: 10px; 
+  align-items: center;
+}
+
+.save-or-attack-options label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.save-or-attack-options input[type="radio"] {
+  margin: 0;
+}
+
+.save-mechanics, .attack-mechanics {
+  display: flex;
+  flex-direction: column;
+  gap: 10px; 
+  margin-top: 8px; 
+}
+
+.save-mechanics .row, .attack-mechanics .row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.save-mechanics .row.full-width, .attack-mechanics .row.full-width {
+  grid-template-columns: 1fr;
+}
+
+.checkbox-container {
+  display: flex;
+  justify-content: flex-start; 
+  width: 100%; 
+  margin-bottom: 10px;
+}
+
+.checkbox-container label {
+  display: flex;
+  align-items: center; 
+  gap: 8px; 
+  margin: 0;
+}
+
+.material-description-container {
+  margin-top: 10px;
+}
+
+.material-description-container input {
+  width: 100%;
+  padding: 8px; 
+  font-size: 14px;
+}
+
+.reaction-condition-container {
+  margin-top: 10px;
+}
+
+.reaction-condition-container input {
+  width: 100%;
+  padding: 8px; 
+  font-size: 14px;
+}

@@ -1,184 +1,206 @@
 <div class="main-content">
   <h1>Create a New Spell</h1>
   <form [formGroup]="spellForm" (ngSubmit)="onSubmit()">
-    <!-- Spell Name -->
-    <label for="name">Spell Name:</label>
-    <input type="text" id="name" formControlName="name" required><br>
-
-    <!-- Spell School -->
-    <label for="school">Spell School:</label>
-    <select id="school" formControlName="school" required>
-      <option *ngFor="let school of spellSchools" [value]="school">{{ school }}</option>
-    </select><br>
-
-    <!-- Spell Level -->
-    <label for="level">Spell Level:</label>
-    <select id="level" formControlName="level" required>
-      <option *ngFor="let level of spellLevels" [value]="level">{{ level }}</option>
-    </select><br>
-
-    <!-- Casting Time -->
-    <label for="castingTime">Casting Time:</label>
-    <select id="castingTime" formControlName="castingTime" required>
-      <option *ngFor="let time of spellCastingTimes" [value]="time">{{ time }}</option>
-    </select><br>
-
-    <!-- Reaction Description -->
-    <div *ngIf="spellForm.get('castingTime')?.value === 'Reaction'">
-      <label for="reactionDescription">Reaction Condition:</label>
-      <textarea id="reactionDescription" formControlName="reactionDescription"></textarea><br>
-    </div>
-
-    <!-- Range/Area -->
-    <label for="spellRangeType">Range/Area:</label>
-    <select id="spellRangeType" formControlName="spellRangeType" required>
-      <option *ngFor="let range of spellRange" [value]="range">{{ range }}</option>
-    </select><br>
-
-    <!-- Area Length and Area Type (Conditional) -->
-    <div *ngIf="requiresAreaDetails">
-      <label for="areaLength">Area Length (optional):</label>
-      <input type="text" id="areaLength" formControlName="areaLength" placeholder="e.g., 30 feet"><br>
-
-      <label for="areaType">Area Type (optional):</label>
-      <select id="areaType" formControlName="areaType">
-        <option *ngFor="let type of areaTypes" [value]="type">{{ type }}</option>
-      </select><br>
-    </div>
-
-    <!-- Components -->
-    <label>Components:</label><br>
-    <div formArrayName="components">
-      <div *ngFor="let component of spellComponents; let i = index">
-        <label>
-          <input type="checkbox" [formControlName]="i"> {{ component }}
-        </label>
-      </div>
-    </div>
-
-    <!-- Material Description (Conditional) -->
-    <div *ngIf="isMaterialSelected">
-      <label for="materialsDescription">Material Description:</label>
-      <input type="text" id="materialsDescription" formControlName="materialsDescription" placeholder="e.g., a tiny ball of bat guano and sulfur">
-    </div><br>
-
-    <!-- Save or Attack -->
-    <label>
-      <input type="radio" formControlName="isSaveOrAttack" value="save"> Save
-      <input type="radio" formControlName="isSaveOrAttack" value="attack"> Attack
-    </label><br>
-
-    <!-- Save Section (Conditional) -->
-    <div *ngIf="spellForm.get('isSaveOrAttack')?.value === 'save'">
-      <label for="saveStat">Save Stat:</label>
-      <select id="saveStat" formControlName="saveStat" required>
-        <option *ngFor="let stat of saveStats" [value]="stat">{{ stat }}</option>
-      </select><br>
-
-      <label>
-        <input type="checkbox" formControlName="hasDamage"> Does it deal damage?
-      </label><br>
-
-      <!-- Damage Section (Conditional) -->
-      <div *ngIf="spellForm.get('hasDamage')?.value">
-        <label for="damage">Damage:</label>
-        <input type="text" id="damage" formControlName="damage" placeholder="e.g., 8d6"><br>
-
-        <label for="damageType">Damage Type:</label>
-        <select id="damageType" formControlName="damageType">
-          <option *ngFor="let type of damageTypes" [value]="type">{{ type }}</option>
-        </select><br>
-      </div>
-
-      <!-- Effect Section (Conditional) -->
-      <div *ngIf="!spellForm.get('hasDamage')?.value">
-        <label for="effect">Effect:</label>
-        <textarea id="effect" formControlName="effect" placeholder="e.g., Target is blinded"></textarea><br>
-      </div>
-    </div>
-
-    <!-- Attack Section (Conditional) -->
-    <div *ngIf="spellForm.get('isSaveOrAttack')?.value === 'attack'">
-      <label for="attackType">Attack Type:</label>
-      <select id="attackType" formControlName="attackType" required>
-        <option *ngFor="let type of attackTypes" [value]="type">{{ type }}</option>
-      </select><br>
-
-      <label for="damage">Damage:</label>
-      <input type="text" id="damage" formControlName="damage" placeholder="e.g., 8d6"><br>
-
-      <label for="damageType">Damage Type:</label>
-      <select id="damageType" formControlName="damageType">
-        <option *ngFor="let type of damageTypes" [value]="type">{{ type }}</option>
-      </select><br>
-    </div>
-
-    <!-- Inflicts Conditions -->
-    <label>
-      <input type="checkbox" formControlName="inflictsConditions"> Inflicts Conditions
-    </label><br>
-
-    <!-- Conditions (Conditional) -->
-    <div *ngIf="spellForm.get('inflictsConditions')?.value">
-      <label>Conditions:</label><br>
-      <div formArrayName="conditions">
-        <div *ngFor="let condition of conditionsArray.controls; let i = index">
-          <select [formControlName]="i">
-            <option *ngFor="let condition of conditions" [value]="condition">{{ condition }}</option>
-          </select>
-          <button type="button" (click)="removeCondition(i)">Remove</button>
+    
+    <!-- Spell Basics and Casting Time -->
+    <div class="section-container">
+      <!-- Spell Basics -->
+      <div class="section">
+        <h2>Spell Basics</h2>
+        <div class="row">
+          <div>
+            <label for="name">Spell Name:</label>
+            <input type="text" id="name" formControlName="name">
+          </div>
+          <div>
+            <label for="level">Spell Level:</label>
+            <select id="level" formControlName="level">
+              <option *ngFor="let level of spellLevels" [value]="level">{{ level }}</option>
+            </select>
+          </div>
+          <div>
+            <label for="school">Spell School:</label>
+            <select id="school" formControlName="school">
+              <option *ngFor="let school of spellSchools" [value]="school">{{ school }}</option>
+            </select>
+          </div>
         </div>
       </div>
-      <button type="button" (click)="addCondition()">Add Condition</button><br>
-    </div>
 
-    <!-- Duration -->
-    <label for="durationType">Duration Type:</label>
-    <select id="durationType" formControlName="durationType" required>
-      <option *ngFor="let duration of DurationType" [value]="duration">{{ duration }}</option>
-    </select><br>
-
-    <label for="duration">Duration:</label>
-    <input type="text" id="duration" formControlName="duration"><br>
-
-    <label for="durationTime">Duration Time:</label>
-    <input type="text" id="durationTime" formControlName="durationTime"><br>
-
-    <!-- Description -->
-    <label for="description">Description:</label>
-    <textarea id="description" formControlName="description" required></textarea><br>
-
-    <!-- Ritual Spell -->
-    <label for="ritualSpell">Ritual Spell:</label>
-    <select id="ritualSpell" formControlName="ritualSpell" required>
-      <option *ngFor="let ritual of spellRituals" [value]="ritual">{{ ritual }}</option>
-    </select><br>
-
-    <!-- Higher Level Description -->
-    <label for="higherLevelDescription">Higher Level (if applicable):</label>
-    <textarea id="higherLevelDescription" formControlName="higherLevelDescription"></textarea><br>
-
-    <!-- Classes -->
-    <label>Classes:</label><br>
-    <div formArrayName="classes">
-      <div *ngFor="let class of classes.controls; let i = index">
-        <input [formControlName]="i">
-        <button type="button" (click)="removeClass(i)">Remove</button>
+      <!-- Casting Time -->
+      <div class="section">
+        <h2>Casting Time</h2>
+        <div class="row">
+          <div>
+            <label for="castingTime">Casting Time:</label>
+            <select id="castingTime" formControlName="castingTime">
+              <option *ngFor="let time of spellCastingTimes" [value]="time">{{ time }}</option>
+            </select>
+          </div>
+        </div>
+        <!-- Reaction Condition (Conditional) -->
+        <div class="reaction-condition-container" *ngIf="spellForm.get('castingTime')?.value === 'Reaction'">
+          <label for="reactionDescription">Reaction Condition:</label>
+          <input type="text" id="reactionDescription" formControlName="reactionDescription">
+        </div>
       </div>
     </div>
-    <button type="button" (click)="addClass()">Add Class</button><br>
 
-    <!-- Subclasses -->
-    <label>Subclasses (if applicable):</label><br>
-    <div formArrayName="subclasses">
-      <div *ngFor="let subclass of subclasses.controls; let i = index">
-        <input [formControlName]="i">
-        <button type="button" (click)="removeSubclass(i)">Remove</button>
+    <!-- Components and Spell Range & Duration -->
+    <div class="section-container">
+      <!-- Components -->
+      <div class="section">
+        <h2>Components</h2>
+        <div class="row">
+          <div>
+            <label>Components:</label>
+            <div class="components-container" formArrayName="components">
+              <div *ngFor="let component of spellComponents; let i = index">
+                <input type="checkbox" [formControlName]="i" id="component-{{i}}">
+                <label for="component-{{i}}">{{ component }}</label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Material Description (Conditional) -->
+        <div class="material-description-container" *ngIf="isMaterialSelected">
+          <label for="materialsDescription">Material Description:</label>
+          <input type="text" id="materialsDescription" formControlName="materialsDescription">
+        </div>
+      </div>
+
+      <!-- Spell Range & Duration -->
+      <div class="section">
+        <h2>Spell Range & Duration</h2>
+        <div class="row">
+          <div>
+            <label for="spellRangeType">Spell Range:</label>
+            <select id="spellRangeType" formControlName="spellRangeType">
+              <option *ngFor="let range of spellRange" [value]="range">{{ range }}</option>
+            </select>
+          </div>
+          <div>
+            <label for="areaLength">Area Length:</label>
+            <input type="text" id="areaLength" formControlName="areaLength" placeholder="e.g., 30 feet">
+          </div>
+          <div>
+            <label for="areaType">Area Type:</label>
+            <select id="areaType" formControlName="areaType">
+              <option *ngFor="let type of areaTypes" [value]="type">{{ type }}</option>
+            </select>
+          </div>
+          <div>
+            <label for="durationType">Duration Type:</label>
+            <select id="durationType" formControlName="durationType">
+              <option *ngFor="let duration of DurationType" [value]="duration">{{ duration }}</option>
+            </select>
+          </div>
+        </div>
       </div>
     </div>
-    <button type="button" (click)="addSubclass()">Add Subclass</button><br>
 
-    <!-- Submit Button -->
-    <button type="submit">Create Spell</button>
+    <!-- Save or Attack Section -->
+    <div class="section">
+      <h2>Save or Attack</h2>
+      <div class="save-or-attack-section">
+        <!-- Save or Attack Options -->
+        <div class="save-or-attack-options">
+          <label>
+            <input type="radio" formControlName="isSaveOrAttack" value="save"> Save
+          </label>
+          <label>
+            <input type="radio" formControlName="isSaveOrAttack" value="attack"> Attack
+          </label>
+        </div>
+
+        <!-- Save Mechanics (Conditional) -->
+        <div class="save-mechanics" *ngIf="spellForm.get('isSaveOrAttack')?.value === 'save'">
+          <div class="row">
+            <div>
+              <label for="saveStat">Save Stat:</label>
+              <select id="saveStat" formControlName="saveStat">
+                <option *ngFor="let stat of saveStats" [value]="stat">{{ stat }}</option>
+              </select>
+            </div>
+          </div>
+          <div class="checkbox-container">
+            <label>
+              <input type="checkbox" formControlName="hasDamage"> Deals Damage?
+            </label>
+          </div>
+
+          <!-- Damage Details (Conditional) -->
+          <div class="row" *ngIf="spellForm.get('hasDamage')?.value">
+            <div>
+              <label for="damage">Damage:</label>
+              <input type="text" id="damage" formControlName="damage" placeholder="e.g., 8d6">
+            </div>
+            <div>
+              <label for="damageType">Damage Type:</label>
+              <select id="damageType" formControlName="damageType">
+                <option *ngFor="let type of damageTypes" [value]="type">{{ type }}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Attack Mechanics (Conditional) -->
+        <div class="attack-mechanics" *ngIf="spellForm.get('isSaveOrAttack')?.value === 'attack'">
+          <div class="row">
+            <div>
+              <label for="attackType">Attack Type:</label>
+              <select id="attackType" formControlName="attackType">
+                <option value="melee">Melee</option>
+                <option value="ranged">Ranged</option>
+              </select>
+            </div>
+            <div>
+              <label for="damage">Damage:</label>
+              <input type="text" id="damage" formControlName="damage" placeholder="e.g., 8d6">
+            </div>
+            <div>
+              <label for="damageType">Damage Type:</label>
+              <select id="damageType" formControlName="damageType">
+                <option *ngFor="let type of damageTypes" [value]="type">{{ type }}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Conditions Section -->
+    <div class="section">
+      <h2>Conditions</h2>
+      <div class="checkbox-container">
+        <label>
+          <input type="checkbox" formControlName="inflictsConditions"> Inflicts Conditions
+        </label>
+      </div>
+      <div class="conditions-container" *ngIf="spellForm.get('inflictsConditions')?.value">
+        <label>Conditions:</label>
+        <div formArrayName="conditions">
+          <div *ngFor="let condition of conditionsArray.controls; let i = index" class="condition-entry">
+            <select [formControlName]="i">
+              <option *ngFor="let condition of conditions" [value]="condition">{{ condition }}</option>
+            </select>
+            <button type="button" (click)="removeCondition(i)">Remove</button>
+          </div>
+        </div>
+        <button type="button" (click)="addCondition()">Add Condition</button>
+      </div>
+    </div>
+
+    <!-- Description and Submit Button -->
+    <div class="section">
+      <h2>Description</h2>
+      <div class="row full-width">
+        <textarea id="description" formControlName="description"></textarea>
+      </div>
+    </div>
+
+    <div class="row full-width">
+      <button type="submit">Create Spell</button>
+    </div>
   </form>
 </div>
