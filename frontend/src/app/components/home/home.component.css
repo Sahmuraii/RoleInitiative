@@ -416,3 +416,8 @@ h1 {
 .bookmark-icon:hover {
   color: #ff9800;
 }
+
+.custom-tooltip {
+  white-space: pre-line !important;
+  max-width: 200px; /* Prevents tooltips from stretching too wide */
+}

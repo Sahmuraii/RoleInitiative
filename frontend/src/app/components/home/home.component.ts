@@ -8,12 +8,13 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule, RouterModule],
+  imports: [CommonModule, RouterLink, FormsModule, RouterModule, MatTooltipModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
@@ -99,6 +100,12 @@ export class HomeComponent implements OnInit {
   bookmarkCharacter(character: any) {
     console.log('Bookmarked:', character);
     // TODO: Implement Actual Function
+  }
+
+  getClassBreakdown(character: any): string {
+    return character.classes
+      .map((cls: string, i: number) => `Level ${character.levels[i]} ${cls}\n`) // Level 2 Barbarian (for example)
+      .join('\n');
   }
 
   logout() {
