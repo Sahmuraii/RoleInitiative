@@ -4,6 +4,7 @@
         <p>Welcome to the character creator! Here you can design your own Dungeons and Dragons character.</p>
         <p>Follow the steps below to build your character:</p>
         <p>Value: {{ characterForm.value | json }}</p>
+        <p>{{getProfOptions()}}</p>
         <br>
     </div>
     <div class="tabs">
@@ -21,7 +22,7 @@
         {% endif %} -->
     </div>
     <div class="everything-not-tabs">
-        <form [formGroup]="characterForm">
+        <form [formGroup]="characterForm" (ngSubmit)="onSubmit()">
 
             <!-- Basic Info -->
             <div id="basicInfo" [hidden]="hiddenArray[0]">
@@ -133,7 +134,7 @@
             <!-- Attributes -->
             <div id="attributes" [hidden]="hiddenArray[4]">
                 <h2>Set Your Attributes</h2>
-                <p>Choose a method to determine your stats:</p>
+                <p>Choose a method to determine your stats</p>
                 <label for="stat_method">Stat Allocation Method:</label>
                 <select id="stat_method" name="stat_method" formControlName="statRuleset" (change)="showAttributeRuleset(this.statRuleset)">
                     <option value="roll">Roll</option>
@@ -145,14 +146,16 @@
                 <!-- Roll -->
                 <div id="roll" [hidden]="attrRulesHiddenArray[0]">
                     <br>
+                    <strong>NOTE: Only change these values with permission from your dungeon master!</strong><br>
+                    <strong>D&D typically doesn't allow players to roll for stats over 18.</strong>
                     <div style="display: flex; align-items: center; gap: 4px;">
                         <span>Roll </span>
-                        <input type="number" id="numDice" style="width: 40px;" value=4 min="0" max="100" placeholder="e.g., 4" formControlName="rollDiceAmt"> <!-- 40 px is to allow for 3 digits -->
+                        <input type="number" id="numDice" style="width: 40px;" value=4 min="1" max="100" placeholder="e.g., 4" formControlName="rollDiceAmt"> <!-- 40 px is to allow for 3 digits -->
                         <span>d</span>
-                        <input type="number" id="typeDice" style="width: 40px;" value=6 min="0" max="100" placeholder="e.g., 6" formControlName="rollDiceType">
+                        <input type="number" id="typeDice" style="width: 40px;" value=6 min="1" max="100" placeholder="e.g., 6" formControlName="rollDiceType">
                         <span> dice, then the drop lowest </span>
                         <input type="number" id="dropDice" style="width: 40px;" value=1 min="0" max="100" placeholder="e.g., 1" formControlName="rollDropAmt">
-                        <span> for each stat.</span>
+                        <span> for each stat.</span> <button (click)="rollDiceDefault()">Return to Default</button>
                     </div>
                     <br>
                     <button type="button" id="rollStatsButton" (click)="rollStats()">Roll Stats</button><br>
@@ -398,7 +401,7 @@
                 </p> -->
             </div>
             <div class="button-group">
-                <br><button type="submit" onclick="prepFormSubmission()">Save Character</button>
+                <br><button type="submit">Save Character</button>
             </div>
             <div style="display:none">
                 <input type="number" id="final-str" name="final-str" value="8" min="1" max="20" readonly><br>
@@ -409,21 +412,24 @@
                 <input type="number" id="final-cha" name="final-cha" value="8" min="1" max="20" readonly><br>
             </div>
             <!-- Right Panel -->
-            <div class="character-summary">
-                <h2>Character Summary</h2>
-                <p><strong>Name:</strong> <span id="summary-name">{{this.name ? this.name : "None"}}</span></p>
-                <p><strong>Race:</strong> <span id="summary-race">{{this.race ? dndRaces()[this.race-1].name : "None"}}</span></p>
-                <p><strong>Class:</strong> <span id="summary-class">{{getClassString() ? getClassString() : "None"}}</span></p>
-                <p><strong>Stats:</strong></p>
-                <ul>
-                    <li>Strength: {{this.str}} ({{calculateStatModifier(this.str)}})</li>
-                    <li>Dexterity: {{this.dex}} ({{calculateStatModifier(this.dex)}})</li>
-                    <li>Constitution: {{this.con}} ({{calculateStatModifier(this.con)}})</li>
-                    <li>Intelligence: {{this.int}} ({{calculateStatModifier(this.int)}})</li>
-                    <li>Wisdom: {{this.wis}} ({{calculateStatModifier(this.wis)}})</li>
-                    <li>Charisma: {{this.cha}} ({{calculateStatModifier(this.cha)}})</li>
-                </ul>
-            </div>
+            <br>
+            
         </form>
     </div>
+</div>
+
+<div class="character-summary">
+    <h2>Character Summary</h2>
+    <p><strong>Name:</strong> <span id="summary-name">{{this.name ? this.name : "None"}}</span></p><br>
+    <p><strong>Race:</strong> <span id="summary-race">{{this.race ? dndRaces()[this.race-1].name : "None"}}</span></p><br>
+    <p><strong>Class:</strong> <span id="summary-class">{{getClassString() ? getClassString() : "None"}}</span></p><br>
+    <p><strong>Stats:</strong></p>
+    <ul>
+        <li>Strength: {{this.str}} ({{calculateStatModifier(this.str)}})</li>
+        <li>Dexterity: {{this.dex}} ({{calculateStatModifier(this.dex)}})</li>
+        <li>Constitution: {{this.con}} ({{calculateStatModifier(this.con)}})</li>
+        <li>Intelligence: {{this.int}} ({{calculateStatModifier(this.int)}})</li>
+        <li>Wisdom: {{this.wis}} ({{calculateStatModifier(this.wis)}})</li>
+        <li>Charisma: {{this.cha}} ({{calculateStatModifier(this.cha)}})</li>
+    </ul>
 </div>

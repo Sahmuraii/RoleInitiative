@@ -1,19 +1,19 @@
 import { CommonModule } from '@angular/common';
 
-import { Component, inject, QueryList, signal, ViewChild, ViewChildren, OnInit } from '@angular/core';
-import { FormControl, FormGroup, FormBuilder, FormArray, ReactiveFormsModule, Validators, FormsModule } from '@angular/forms';
+import { Component, inject, signal, OnInit } from '@angular/core';
+import { FormControl, FormGroup, FormBuilder, FormArray, ReactiveFormsModule, Validators, FormsModule, ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
 import { CreateCharacterService } from '../../services/create-character.service';
-import { catchError, lastValueFrom, max } from 'rxjs';
 import { DND_Class } from '../../models/dnd_class.type';
 import { DND_Race } from '../../models/dnd_race.type';
 import { Class_Proficiency_Option } from '../../models/class_proficiency_option.type';
 import { Proficiency } from '../../models/proficiency.type';
-import { sourceMapsEnabled } from 'node:process';
+import { MatSnackBar, MatSnackBarModule, MatSnackBarConfig } from '@angular/material/snack-bar';
+
 
 @Component({
   selector: 'app-create-character',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, FormsModule],
+  imports: [ReactiveFormsModule, CommonModule, FormsModule, MatSnackBarModule],
   templateUrl: './create-character.component.html',
   styleUrl: './create-character.component.css'
 })
@@ -58,55 +58,55 @@ export class CreateCharacterComponent implements OnInit {
 
   hiddenArray = [false, true, true, true, true, true, true]
   // Cosntructor changed to initalized formGroup
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private snackbar: MatSnackBar) {
     // Initialize the form with a FormArray for class levels
     this.characterForm = this.fb.group({
       //Basic Info form elements
-      name: this.fb.control(null),
-      ruleset: this.fb.control("2014"),
-      levelMethod: this.fb.control("experience"),
-      encumberance: this.fb.control("false"),
+      name: this.fb.control(null, {validators: [Validators.required]}),
+      ruleset: this.fb.control("2014", {validators: [Validators.required]}),
+      levelMethod: this.fb.control("experience", {validators: [Validators.required]}),
+      encumberance: this.fb.control("false", {validators: [Validators.required]}),
 
       //Race selection form elements
-      race: this.fb.control(null),
+      race: this.fb.control(null, {validators: [Validators.required]}),
 
       //class selection form elements
-      classLevels: this.fb.array([]), // FormArray to store class levels
-      primaryClass: this.fb.control("None"),
+      classLevels: this.fb.array([], {validators: []}), // FormArray to store class levels
+      primaryClass: this.fb.control("None", {validators: [Validators.required, validatorNotNone()]}),
 
       //class proficiency form elements
-      classProficiencies: this.fb.array([]),
+      classProficiencies: this.fb.array([], {validators: []}),
 
       //stat allocation form elements
-      statRuleset: this.fb.control("roll"),
-      rollDiceAmt: this.fb.control(4),
-      rollDiceType: this.fb.control(6),
-      rollDropAmt: this.fb.control(1),
-      str: this.fb.control(8),
-      dex: this.fb.control(8),
-      con: this.fb.control(8),
-      int: this.fb.control(8),
-      wis: this.fb.control(8),
-      cha: this.fb.control(8),
+      statRuleset: this.fb.control("roll", {validators: []}),
+      rollDiceAmt: this.fb.control(4, {validators: []}),
+      rollDiceType: this.fb.control(6, {validators: []}),
+      rollDropAmt: this.fb.control(1, {validators: []}),
+      str: this.fb.control(8, {validators: []}),
+      dex: this.fb.control(8, {validators: []}),
+      con: this.fb.control(8, {validators: []}),
+      int: this.fb.control(8, {validators: []}),
+      wis: this.fb.control(8, {validators: []}),
+      cha: this.fb.control(8, {validators: []}),
 
       //Character details form elements
-      background: this.fb.control(""),
-      alignment: this.fb.control(""),
-      personality: this.fb.control(""),
-      faith: this.fb.control(""),
-      height: this.fb.control(""),
-      weight: this.fb.control(""),
-      skinColor: this.fb.control(""),
-      hairColor: this.fb.control(""),
-      eyeColor: this.fb.control(""),
-      age: this.fb.control(""),
-      appearance: this.fb.control(""),
-      backstory: this.fb.control(""),
-      bonds: this.fb.control(""),
-      miscDetails: this.fb.control(""),
+      background: this.fb.control("", {validators: []}),
+      alignment: this.fb.control("", {validators: []}),
+      personality: this.fb.control("", {validators: []}),
+      faith: this.fb.control("", {validators: []}),
+      height: this.fb.control("", {validators: []}),
+      weight: this.fb.control("", {validators: []}),
+      skinColor: this.fb.control("", {validators: []}),
+      hairColor: this.fb.control("", {validators: []}),
+      eyeColor: this.fb.control("", {validators: []}),
+      age: this.fb.control("", {validators: []}),
+      appearance: this.fb.control("", {validators: []}),
+      backstory: this.fb.control("", {validators: []}),
+      bonds: this.fb.control("", {validators: []}),
+      miscDetails: this.fb.control("", {validators: []}),
 
       //Equipment details form elements, subject to change
-      equipment: this.fb.control("")
+      equipment: this.fb.control("", {validators: []})
       
     });
   }
@@ -186,6 +186,26 @@ export class CreateCharacterComponent implements OnInit {
 
   get cha(): number {
     return this.characterForm.get('cha')?.value
+  }
+
+  // set classProficiencies(arr: FormArray) {
+  //   this.characterForm.get('classProficiencies')?.setValue(arr)
+  // }
+
+  set primaryClass(str: string) {
+    this.characterForm.get('primaryClass')?.setValue(str)
+  }
+
+  set rollDiceAmt(num: number) {
+    this.characterForm.get('rollDiceAmt')?.setValue(num)
+  }
+
+  set rollDiceType(num: number) {
+    this.characterForm.get('rollDiceType')?.setValue(num)
+  }
+
+  set rollDropAmt(num: number) {
+    this.characterForm.get('rollDropAmt')?.setValue(num)
   }
 
   set str(num: number) {
@@ -310,7 +330,7 @@ export class CreateCharacterComponent implements OnInit {
         selects: this.initializeProfOptions(x, index)
       }))
 
-    })
+    })    
     
   }
 
@@ -323,6 +343,17 @@ export class CreateCharacterComponent implements OnInit {
       }))
     }
     return arr
+  }
+
+  getProfOptions() {
+    let result: Array<string> = []
+    let classProfs = this.characterForm.get("classProficiencies")?.value
+    classProfs.forEach((element: {list_desc: string, selects: [{prof_list: Proficiency[], option: string}]}) => {
+      element.selects.forEach((element: {prof_list: Proficiency[], option: string}) => {
+        result.push(element.option)
+      })
+    });
+    return result
   }
 
 
@@ -365,11 +396,13 @@ export class CreateCharacterComponent implements OnInit {
     for(let i = 0; i < 6; i++) {
       let randInts: number[] = []
       let total = 0
-      for(let j = 0; j < 4; j++) {
-        randInts.push(this.getRandomValueBetween(1, 6))
+      for(let j = 0; j < this.rollDiceAmt; j++) {
+        randInts.push(this.getRandomValueBetween(1, this.rollDiceType))
       }
-      let indexOfLowest = randInts.indexOf(Math.min(...randInts))
-      randInts.splice(indexOfLowest, 1)
+      for(let j = 0; j < this.rollDropAmt; j++) {
+        let indexOfLowest = randInts.indexOf(Math.min(...randInts))
+        randInts.splice(indexOfLowest, 1)
+      }
       for(let num of randInts) {
         total += num
       }
@@ -377,6 +410,12 @@ export class CreateCharacterComponent implements OnInit {
     }
     this.rolledStats = result.sort(function (a, b) {  return a - b;  }).reverse()
     
+  }
+
+  rollDiceDefault() {
+    this.rollDiceAmt = 4
+    this.rollDiceType = 6
+    this.rollDropAmt = 1
   }
 
   getNewMaxBuyStat(stat: number, points: number) {
@@ -406,6 +445,24 @@ export class CreateCharacterComponent implements OnInit {
 
 
   //Miscellaneous Methods
+  openSnackBar() {
+    this.snackbar.open("ERROR: No race selected!", "Close", {panelClass : 'error-notif', duration: 5000})
+  }
+
+  validateClassProfsNone(): boolean {
+    let profOptions = this.getProfOptions()
+    for(let option of profOptions) {
+      if(option == "None") {
+        return false
+      }
+    }
+    return true
+  }
+  validateClassProfsRepeat() {
+    let profOptions = this.getProfOptions()
+    return !(new Set(profOptions).size != profOptions.length)
+  }
+
   calculateStatModifier(stat: number): string {
     let modifier = Math.floor((stat - 10) / 2)
     if(modifier >= 0) {
@@ -465,5 +522,24 @@ export class CreateCharacterComponent implements OnInit {
       }
     }
     
+  }
+
+  
+
+  onSubmit() {
+    if(!this.characterForm.get("name")?.valid) {
+      this.snackbar.open("ERROR: Your character needs a name!", "", {panelClass : 'error-notif', duration: 5000})
+    } else if(!this.characterForm.get("race")?.valid) {
+      this.snackbar.open("ERROR: Your character needs a race!", "", {panelClass : 'error-notif', duration: 5000})
+    } else if(!this.characterForm.get("primaryClass")?.valid) {
+      this.snackbar.open("ERROR: Your character needs a primary class!", "", {panelClass : 'error-notif', duration: 5000})
+    }
+  }
+}
+
+export function validatorNotNone(): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const value = control.value
+    return (value == "None") ? {isNone:true} : null;
   }
 }
