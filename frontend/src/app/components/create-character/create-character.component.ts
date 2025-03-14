@@ -323,15 +323,21 @@ export class CreateCharacterComponent implements OnInit {
   }
 
   initializeClassProficiencies(dndClass: string): void {
-    this.classProficiencies.clear()
-    this.getArrayOfProfTypes(dndClass).forEach((x, index) => {
-      this.classProficiencies.push(this.fb.group({
-        list_desc: x.list_description,
-        selects: this.initializeProfOptions(x, index)
-      }))
-
-    })    
-    
+    this.characterForm.setControl('classProficiencies', this.fb.array([]));
+  
+    if (dndClass === "None") {
+      return;
+    }
+  
+    const profTypes = this.getArrayOfProfTypes(dndClass);
+  
+    profTypes.forEach((profOption, index) => {
+      const proficiencyGroup = this.fb.group({
+        list_desc: profOption.list_description,
+        selects: this.initializeProfOptions(profOption, index)
+      });
+      (this.characterForm.get('classProficiencies') as FormArray).push(proficiencyGroup);
+    });
   }
 
   initializeProfOptions(x: Class_Proficiency_Option, index: number) {

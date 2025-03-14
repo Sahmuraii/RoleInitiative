@@ -70,17 +70,15 @@
                 <label for="selectFirstClass">Choose your primary class (affects character HP):</label>
                 <select id="selectFirstClass" name="selectFirstClass" formControlName="primaryClass" (change)="initializeClassProficiencies(this.primaryClass)">
                     @if (chosenClasses.length > 0) {
-                        <option ngValue="None" selected>Select a Class!</option>
-                        @for (class of chosenClasses; track $index) {
-                            <option [ngValue]="class">{{ dndClassesSignal()[class-1].name }}</option>
-                            
-                        }
+                      <option ngValue="None" selected>Select a Class!</option>
+                      @for (class of chosenClasses; track $index) {
+                        <option [ngValue]="class">{{ dndClassesSignal()[class-1].name }}</option>
+                      }
                     } @else {
-                        <option ngValue="None">No Classes Selected</option>
+                      <option ngValue="None">No Classes Selected</option>
                     }
-                    
-                    
-                </select><br>
+                  </select>
+                <br>
                 <div *ngFor="let dndClass of dndClassesSignal(); let i = index" formArrayName="classLevels">
                     <div class="level-control">
                         <label>{{ dndClass.name }}:</label>
