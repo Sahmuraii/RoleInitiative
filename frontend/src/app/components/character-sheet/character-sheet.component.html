@@ -8,9 +8,9 @@
         <!-- Hit Points-->
         <div class="character_hit_points_block" id="hit_points_block">
             <div class="hp_modifier_block" id="hp_modifier_block">
-                <button id="hp_heal_button" class="hp_heal_button">Heal</button>
-                <input type="number" id="hp_change_field" value="0" min="0" max="10000" step="1" class="hp_change_field">
-                <button id="hp_damage_button" class="hp_damage_button">Damage</button>
+                <input type="number" id="hp_change_field" value="0" min="0" max="10000" step="1" class="hp_change_field" [(ngModel)]="change_hp_amount">
+                <button id="hp_heal_button" class="hp_heal_button" (click)="heal_character_hp(change_hp_amount, 1)">Heal</button>
+                <button id="hp_damage_button" class="hp_damage_button" (click)="heal_character_hp(change_hp_amount, -1)">Damage</button>
             </div>
             <span class="hit_points_block_label" id="hit_point_label">Hit Points</span>
             <div class="hp_display_block" id="hp_display_block">
