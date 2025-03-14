@@ -10,6 +10,7 @@ import { CreateSpellComponent } from './components/create-spell/create-spell.com
 import { ProfileComponent } from './components/profile/profile.component';
 import { EditSpellComponent } from './components/edit-spell/edit-spell.component';
 import { EditBackgroundComponent } from './components/edit-background/edit-background.component';
+import { CreateMonsterComponent } from './components/create-monster/create-monster.component';
 
 export const routes: Routes = [
   { path: 'home', component: HomeComponent},
@@ -19,6 +20,7 @@ export const routes: Routes = [
   { path: 'inactive', component: InactiveComponent },
   { path: 'create/character', component: CreateCharacterComponent},
   { path: 'create/spell', component: CreateSpellComponent},
+  { path: 'create/monster', component: CreateMonsterComponent},
   { path: 'character-sheet', component: CharacterSheetComponent},
   { path: 'character-sheet/:char_id', component: CharacterSheetComponent},
   { path: 'profile/:username', component: ProfileComponent },
