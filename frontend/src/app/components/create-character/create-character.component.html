@@ -4,7 +4,7 @@
         <p>Welcome to the character creator! Here you can design your own Dungeons and Dragons character.</p>
         <p>Follow the steps below to build your character:</p>
         <p>Value: {{ characterForm.value | json }}</p>
-        <p>{{getProfOptions()}}</p>
+        <p>{{getStatArray()}}</p>
         <br>
     </div>
     <div class="tabs">
@@ -153,11 +153,11 @@
                         <input type="number" id="typeDice" style="width: 40px;" value=6 min="1" max="100" placeholder="e.g., 6" formControlName="rollDiceType">
                         <span> dice, then the drop lowest </span>
                         <input type="number" id="dropDice" style="width: 40px;" value=1 min="0" max="100" placeholder="e.g., 1" formControlName="rollDropAmt">
-                        <span> for each stat.</span> <button (click)="rollDiceDefault()">Return to Default</button>
+                        <span> for each stat.</span> <button type="button" (click)="rollDiceReset()">Return to Default</button>
                     </div>
                     <br>
                     <button type="button" id="rollStatsButton" (click)="rollStats()">Roll Stats</button><br>
-                    <br><p>Assign values from the rolled values: [ {{rolledStats}} ]</p>
+                    <br><p>Assign values from the rolled values: [{{rolledStats}}] (No reusing stats, fill in all fields!)</p>
                     <label>Strength: </label>
                     <select formControlName="str">
                         @for (stat of rolledStats; track $index) {
@@ -204,7 +204,7 @@
 
                 <!-- Standard Array -->
                 <div id="standard_array" [hidden]="attrRulesHiddenArray[1]">
-                    <p><br>Assign values from the standard array: [15, 14, 13, 12, 10, 8]<br></p>
+                    <p><br>Assign values from the standard array: [15, 14, 13, 12, 10, 8] (No reusing stats, fill in all fields!)<br></p>
                     <label>Strength: </label>
                     <select formControlName="str">
                         @for (stat of standardArray; track $index) {
@@ -252,7 +252,7 @@
                 <!-- Point Buy -->
                 <div id="point_buy" [hidden]="attrRulesHiddenArray[2]">
                     <p>Allocate points</p>
-                    <p><br>You have a max of 27 points to spend, and higher stats cost more points.<br></p>
+                    <p><br>You have a max of 27 points to spend. Higher stats cost more points, with a maximum stat of 15 and a minimum stat of 8.<br></p>
                     <p class="tooltip">Hover here to see the cost of each stat 
                         <span class="tooltiptext">
                             8 = 0 points<br>
@@ -292,19 +292,19 @@
                     <input type="number" min="1" max="20" formControlName="str">
                     <br>
                     <label>Dexterity: </label>
-                    <input type="number" min="1" max="20" formControlName="str">
+                    <input type="number" min="1" max="20" formControlName="dex">
                     <br>
                     <label>Constitution: </label>
-                    <input type="number" min="1" max="20" formControlName="str">
+                    <input type="number" min="1" max="20" formControlName="con">
                     <br>
                     <label>Intelligence: </label>
-                    <input type="number" min="1" max="20" formControlName="str">
+                    <input type="number" min="1" max="20" formControlName="int">
                     <br>
                     <label>Wisdom: </label>
-                    <input type="number" min="1" max="20" formControlName="str">
+                    <input type="number" min="1" max="20" formControlName="wis">
                     <br>
                     <label>Charisma: </label>
-                    <input type="number" min="1" max="20" formControlName="str">
+                    <input type="number" min="1" max="20" formControlName="cha">
                     <br>
                 </div>
 

@@ -8,6 +8,7 @@ import { DND_Race } from '../../models/dnd_race.type';
 import { Class_Proficiency_Option } from '../../models/class_proficiency_option.type';
 import { Proficiency } from '../../models/proficiency.type';
 import { MatSnackBar, MatSnackBarModule, MatSnackBarConfig } from '@angular/material/snack-bar';
+import test from 'node:test';
 
 
 @Component({
@@ -415,10 +416,9 @@ export class CreateCharacterComponent implements OnInit {
       result.push(total)
     }
     this.rolledStats = result.sort(function (a, b) {  return a - b;  }).reverse()
-    
   }
 
-  rollDiceDefault() {
+  rollDiceReset() {
     this.rollDiceAmt = 4
     this.rollDiceType = 6
     this.rollDropAmt = 1
@@ -448,12 +448,13 @@ export class CreateCharacterComponent implements OnInit {
     }
   }
 
+  getStatArray(): any[] {
+    return [this.str, this.dex, this.con, this.int, this.wis, this.cha]
+  }
+
 
 
   //Miscellaneous Methods
-  openSnackBar() {
-    this.snackbar.open("ERROR: No race selected!", "Close", {panelClass : 'error-notif', duration: 5000})
-  }
 
   validateClassProfsNone(): boolean {
     let profOptions = this.getProfOptions()
@@ -464,10 +465,51 @@ export class CreateCharacterComponent implements OnInit {
     }
     return true
   }
+
   validateClassProfsRepeat() {
     let profOptions = this.getProfOptions()
     return !(new Set(profOptions).size != profOptions.length)
   }
+
+  validateStats(): number {
+    if(this.statRuleset == "roll") {
+      if(this.rolledStats.length == 0) {
+        return 1
+      }
+      let tempStatArray: number[] = []
+      this.rolledStats.forEach(element => tempStatArray.push(element))
+      for(let stat of this.getStatArray()) {
+        if(tempStatArray.includes(parseInt(stat))) {
+          let i = tempStatArray.findIndex(element => element === parseInt(stat))
+          tempStatArray.splice(i, 1)
+        } else {
+          return 2
+        }
+      }
+    } else if(this.statRuleset == "standard_array") {
+      let tempStatArray = [15, 14, 13, 12, 10, 8]
+      for(let stat of this.getStatArray()) {
+        if(tempStatArray.includes(parseInt(stat))) {
+          let i = tempStatArray.findIndex(element => element === parseInt(stat))
+          tempStatArray.splice(i, 1)
+        } else {
+          return 2
+        }
+      }
+    } else if(this.statRuleset == "point_buy") {
+      if(this.spentPoints != 27) {
+        return 3
+      }
+    } else if(this.statRuleset == "manual") {
+      for(let stat of this.getStatArray()) {
+        if(parseInt(stat) > 20) {
+          return 4
+        }
+      }
+    }
+    return 0
+  }
+
 
   calculateStatModifier(stat: number): string {
     let modifier = Math.floor((stat - 10) / 2)
@@ -539,7 +581,20 @@ export class CreateCharacterComponent implements OnInit {
       this.snackbar.open("ERROR: Your character needs a race!", "", {panelClass : 'error-notif', duration: 5000})
     } else if(!this.characterForm.get("primaryClass")?.valid) {
       this.snackbar.open("ERROR: Your character needs a primary class!", "", {panelClass : 'error-notif', duration: 5000})
+    } else if(!this.validateClassProfsNone()) {
+      this.snackbar.open("ERROR: Class proficiencies left unselected!", "", {panelClass : 'error-notif', duration: 5000})
+    } else if(!this.validateClassProfsRepeat()) {
+      this.snackbar.open("ERROR: Class proficiencies cannot be repeated!", "", {panelClass : 'error-notif', duration: 5000})
+    } else if(this.validateStats() == 1) {
+      this.snackbar.open("ERROR: Stats not rolled!", "", {panelClass : 'error-notif', duration: 5000})
+    } else if(this.validateStats() == 2) {
+      this.snackbar.open("ERROR: Invalid stat choice!", "", {panelClass : 'error-notif', duration: 5000})
+    } else if(this.validateStats() == 3) {
+      this.snackbar.open("ERROR: Unspent points!", "", {panelClass : 'error-notif', duration: 5000})
+    } else if(this.validateStats() == 4) {
+      this.snackbar.open("ERROR: Stats exceeding max!", "", {panelClass : 'error-notif', duration: 5000})
     }
+    
   }
 }
 
