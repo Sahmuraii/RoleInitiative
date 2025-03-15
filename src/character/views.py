@@ -108,7 +108,35 @@ def get_character_info(request_char_id) -> dict:
     #print(char_info)
     return char_info
 
+@character_bp.route("/character/<int:character_id>/heal_hp/<int(signed=True):heal_amount>", methods=['GET','POST'])
+def heal_character(character_id, heal_amount):
+    user = current_user
+    #if not current_user.is_authenticated:
+    #    return "Unauthorized access", 403
 
+    char = Character.query.filter_by(char_id=character_id).first()
+    #char = Character.query.filter_by(owner_id=user.id, char_id=character_id).first()
+    if not char:
+        return "Character not found", 404
+
+    hit_points = Character_Hit_Points.query.filter_by(char_id=character_id).first()
+
+    # Test for damage, if so use temp_hp first
+    if (heal_amount < 0) and ((heal_amount*-1) > hit_points.temp_hit_points):
+        heal_amount = heal_amount + hit_points.temp_hit_points
+        hit_points.temp_hit_points = 0
+
+    # if hp is over max, cap at max hp
+    if (hit_points.hit_points + heal_amount > hit_points.max_hit_points):
+        hit_points.hit_points = hit_points.max_hit_points
+        heal_amount = 0
+    hit_points.hit_points = hit_points.hit_points + heal_amount
+
+    # if hp is below zero, cap at zero
+    if hit_points.hit_points < 0:
+        hit_points.hit_points = 0
+    db.session.commit()
+    return json.dumps({'hit_points':hit_points.hit_points, 'temp_hit_points': hit_points.temp_hit_points})
 
 
 @character_bp.route("/character/<character_id>", methods=['GET', 'POST'])
