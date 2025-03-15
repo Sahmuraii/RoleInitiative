@@ -108,7 +108,35 @@ def get_character_info(request_char_id) -> dict:
     #print(char_info)
     return char_info
 
+@character_bp.route("/character/<int:character_id>/heal_hp/<int(signed=True):heal_amount>", methods=['GET','POST'])
+def heal_character(character_id, heal_amount):
+    user = current_user
+    #if not current_user.is_authenticated:
+    #    return "Unauthorized access", 403
 
+    char = Character.query.filter_by(char_id=character_id).first()
+    #char = Character.query.filter_by(owner_id=user.id, char_id=character_id).first()
+    if not char:
+        return "Character not found", 404
+
+    hit_points = Character_Hit_Points.query.filter_by(char_id=character_id).first()
+
+    # Test for damage, if so use temp_hp first
+    if (heal_amount < 0) and ((heal_amount*-1) > hit_points.temp_hit_points):
+        heal_amount = heal_amount + hit_points.temp_hit_points
+        hit_points.temp_hit_points = 0
+
+    # if hp is over max, cap at max hp
+    if (hit_points.hit_points + heal_amount > hit_points.max_hit_points):
+        hit_points.hit_points = hit_points.max_hit_points
+        heal_amount = 0
+    hit_points.hit_points = hit_points.hit_points + heal_amount
+
+    # if hp is below zero, cap at zero
+    if hit_points.hit_points < 0:
+        hit_points.hit_points = 0
+    db.session.commit()
+    return json.dumps({'hit_points':hit_points.hit_points, 'temp_hit_points': hit_points.temp_hit_points})
 
 
 @character_bp.route("/character/<character_id>", methods=['GET', 'POST'])
@@ -225,46 +253,59 @@ def create():
             )]
 
     race_proficiency_lists = DND_Race_Proficiency_Option.query.join(DND_Race, DND_Race.race_id==DND_Race_Proficiency_Option.given_by_race).all()
-
+    
     if request.method == 'POST':
+        data = request.get_json()
+
+        if not data:
+            return jsonify({"error": "No data provided"}), 400
+
+        # Extract data from the JSON payload
+        user_id = data.get('user_id')  # Get the user ID to tie the spell to a user
+        if not user_id:
+            return jsonify({"error": "User ID is required"}), 400
+        
+        
         #returns list of levels where the class is the index. will have to be changed in the future for homebrew content
         #compare indexes of users choices with indexes of classes. save chosen level along with class_id to an array
-        levels = request.form.getlist("multiclass_level")
+        levels = data.get('classLevels')
         classes = []
         for i in range(len(levels)):
             if levels[i] != "0":
                 classes.append({'level':levels[i], 'class_id':f'{all_classes[i].class_id}'})
-        initial_class = request.form.get('selectFirstClass')
-        char_name = request.form.get('charname')
-        #ruleset = request.form.get('ruleset')
-        #xp_method = request.form.get('xp_method')
-        #encumbrance = request.form.get('encumbrance')
+        initial_class = data.get('primaryClass')
+        char_name = data.get('name')
+        race = data.get('race')
+        #ruleset = data.get('ruleset')
+        #xp_method = data.get('levelMethod')
+        #encumbrance = data.get('encumbrance')
 
-        strength = request.form.get('final-str')
-        dexterity = request.form.get('final-dex')
-        constitution = request.form.get('final-con')
-        intelligence = request.form.get('final-int')
-        wisdom = request.form.get('final-wis')
-        charisma = request.form.get('final-cha')
+        strength = data.get('str')
+        dexterity =  data.get('dex')
+        constitution =  data.get('con')
+        intelligence =  data.get('int')
+        wisdom =  data.get('wis')
+        charisma =  data.get('cha')
 
-        #selected_background = request.form.get('background')
-        alignment = request.form.get('alignment')
-        personality = request.form.get('personality')
-        height = request.form.get('height')
-        weight = request.form.get('weight')
-        skin_color = request.form.get('skin_color')
-        hair_color = request.form.get('hair_color')
-        eye_color = request.form.get('eye_color')
-        age = request.form.get('age')
-        faith = request.form.get('faith')
-        appearance = request.form.get('appearance')
-        backstory = request.form.get('backstory')
-        bonds = request.form.get('bonds')
-        misc_description = request.form.get('misc_description')
 
-        race = request.form.get('charrace')
+        #selected_background = data.get('background')
+        alignment = data.get('alignment')
+        personality = data.get('personality')
+        height = data.get('height')
+        weight = data.get('weight')
+        skin_color = data.get('skinColor')
+        hair_color = data.get('hairColor')
+        eye_color = data.get('eyeColor')
+        age = data.get('age')
+        faith = data.get('faith')
+        appearance = data.get('appearance')
+        backstory = data.get('backstory')
+        bonds = data.get('bonds')
+        misc_description = data.get('miscDetails')
 
-        #equipment = request.form.getlist('equipment')
+        
+
+        #equipment = data.get('equipment')
 
         new_character = Character(
             owner_id=current_user.id,

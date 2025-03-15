@@ -7,8 +7,11 @@ import { DND_Class } from '../../models/dnd_class.type';
 import { DND_Race } from '../../models/dnd_race.type';
 import { Class_Proficiency_Option } from '../../models/class_proficiency_option.type';
 import { Proficiency } from '../../models/proficiency.type';
+import { sourceMapsEnabled } from 'node:process';
 import { MatSnackBar, MatSnackBarModule, MatSnackBarConfig } from '@angular/material/snack-bar';
 import test from 'node:test';
+import { AuthService } from '../../services/auth.service';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -21,6 +24,8 @@ import test from 'node:test';
 export class CreateCharacterComponent implements OnInit {
   characterForm: FormGroup; // Changed Initalization of form group
   createCharacterService = inject(CreateCharacterService)
+  authService = inject(AuthService)
+  currentUserID: number | null = null;
 
   //Data Retrieved From Backend
   dndRaces = signal<Array<DND_Race>>([])
@@ -59,7 +64,7 @@ export class CreateCharacterComponent implements OnInit {
 
   hiddenArray = [false, true, true, true, true, true, true]
   // Cosntructor changed to initalized formGroup
-  constructor(private fb: FormBuilder, private snackbar: MatSnackBar) {
+  constructor(private fb: FormBuilder, private snackbar: MatSnackBar, private router: Router) {
     // Initialize the form with a FormArray for class levels
     this.characterForm = this.fb.group({
       //Basic Info form elements
@@ -456,6 +461,17 @@ export class CreateCharacterComponent implements OnInit {
 
   //Miscellaneous Methods
 
+  validateClassLevels() {
+    let total = 0
+    for(let level of this.classLevels.value) {
+      total += level
+    }
+    if(total > 20 || total <= 0) {
+      return false
+    }
+    return true
+  }
+
   validateClassProfsNone(): boolean {
     let profOptions = this.getProfOptions()
     for(let option of profOptions) {
@@ -521,6 +537,14 @@ export class CreateCharacterComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    const currentUser = this.authService.getCurrentUser();
+    if (currentUser && currentUser.id) {
+      this.currentUserID = currentUser.id; 
+    } else {
+      console.error('No user is logged in for Character.');
+      // alert('You must be logged in to create a character.');
+      this.router.navigate(['/login']); 
+    }
     this.createCharacterService.getRaceData().subscribe((races) => {
       this.dndRaces.set(races)
     })
@@ -581,6 +605,8 @@ export class CreateCharacterComponent implements OnInit {
       this.snackbar.open("ERROR: Your character needs a race!", "", {panelClass : 'error-notif', duration: 5000})
     } else if(!this.characterForm.get("primaryClass")?.valid) {
       this.snackbar.open("ERROR: Your character needs a primary class!", "", {panelClass : 'error-notif', duration: 5000})
+    } else if(!this.validateClassLevels()) {
+      this.snackbar.open("ERROR: Your level selection is invalid!", "", {panelClass : 'error-notif', duration: 5000})
     } else if(!this.validateClassProfsNone()) {
       this.snackbar.open("ERROR: Class proficiencies left unselected!", "", {panelClass : 'error-notif', duration: 5000})
     } else if(!this.validateClassProfsRepeat()) {
@@ -593,8 +619,22 @@ export class CreateCharacterComponent implements OnInit {
       this.snackbar.open("ERROR: Unspent points!", "", {panelClass : 'error-notif', duration: 5000})
     } else if(this.validateStats() == 4) {
       this.snackbar.open("ERROR: Stats exceeding max!", "", {panelClass : 'error-notif', duration: 5000})
+    } else {
+      const formData = this.characterForm.value;
+      console.log('Form Data:', formData); 
+      formData.user_id = this.currentUserID;
+      this.createCharacterService.createCharacter(formData).subscribe({
+        next: (response: any) => {
+          console.log('Character created successfully!', response);
+          this.snackbar.open("Character created successfully!", "", {panelClass : 'success-notif', duration: 5000})
+          this.router.navigate(['/home']);
+        },
+        error: (error: any) => {
+          console.error('Error creating character:', error);
+          this.snackbar.open("ERROR: Could not create character!", "", {panelClass : 'error-notif', duration: 5000})
+        }
+      });
     }
-    
   }
 }
 

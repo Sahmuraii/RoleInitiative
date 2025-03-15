@@ -5,13 +5,17 @@ import { UpperCasePipe } from '@angular/common';
 import { CapitalizePipe } from '../../capitalize.pipe';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { API_URL } from '../../constants';
 import { NONE_TYPE } from '@angular/compiler';
+import { catchError, tap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { of } from 'rxjs';
 
 @Component({
     selector: 'app-character-sheet',
     standalone: true,
-    imports: [CommonModule, CapitalizePipe, UpperCasePipe],
+    imports: [CommonModule, FormsModule, CapitalizePipe, UpperCasePipe],
     templateUrl: './character-sheet.component.html',
     styleUrl: './character-sheet.component.css'
 })
@@ -20,6 +24,7 @@ export class CharacterSheetComponent {
     Math: any;
     http = inject(HttpClient);
     char_data: any = {};
+    change_hp_amount: number = 0;
 
     constructor(
         private route: ActivatedRoute
@@ -57,5 +62,30 @@ export class CharacterSheetComponent {
             proficiency.type_name?.toLowerCase().includes('saving-throw') &&
             proficiency.proficiency_name?.toLowerCase().includes(stat.toLowerCase())
         );
-      }
+    }
+
+    heal_character_hp(amount: number, multiplier: number): void {
+        const heal_amount = amount * multiplier;
+
+        if (!this.char_data?.char_si?.char_id) {
+            return;
+        }
+        interface Character_Hit_Points {
+            [key: string]: any; // Allows for the extra fields of the Character_Hit_Points table
+        }
+        const api_heal_url = `${API_URL}/character/${this.char_data.char_si.char_id}/heal_hp/${heal_amount}`
+        console.log(api_heal_url);
+        this.http.post<any>(`${api_heal_url}`,null).pipe(
+            tap((newHitPoint)=>{
+                this.char_data.char_si.hit_points = newHitPoint['hit_points'];
+                this.char_data.char_si.temp_hit_points = newHitPoint['temp_hit_points'];
+                this.change_hp_amount = 0;
+                console.log('hp changed');
+            }),
+            catchError((error)=>{
+                console.log("api error healing character");
+                return of();
+            })
+        ).subscribe();
+    }
 }
