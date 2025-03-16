@@ -1,153 +1,216 @@
 <div class="main-content">
-    <h1>Create a New Monster</h1>
-    <form [formGroup]="monsterForm" (ngSubmit)="onSubmit()">
-      
+  <h1>Create a New Monster</h1>
+  <form [formGroup]="monsterForm" (ngSubmit)="onSubmit()">
+    
+    <!-- Monster Basics -->
+    <div class="section-container">
       <!-- Monster Basics -->
-      <div class="section-container">
-        <!-- Monster Basics -->
-        <div class="section">
-          <h2>Monster Basics</h2>
-          <div class="row">
-            <div>
-              <label for="name">Monster Name:</label>
-              <input type="text" id="name" formControlName="name">
-            </div>
-            <div>
-              <label for="size">Size:</label>
-              <select id="size" formControlName="size">
-                <option *ngFor="let size of sizes" [value]="size">{{ size }}</option>
-              </select>
-            </div>
-            <div>
-              <label for="type">Type:</label>
-              <select id="type" formControlName="type">
-                <option *ngFor="let type of types" [value]="type">{{ type }}</option>
-              </select>
-            </div>
-            <div>
-              <label for="subtype">Subtype:</label>
-              <select id="subtype" formControlName="subtype">
-                <option *ngFor="let subtype of subtypes" [value]="subtype">{{ subtype }}</option>
-              </select>
-            </div>
-            <div>
-              <label for="alignment">Alignment:</label>
-              <select id="alignment" formControlName="alignment">
-                <option *ngFor="let alignment of alignments" [value]="alignment">{{ alignment }}</option>
-              </select>
-            </div>
-          </div>
-        </div>
-  
-        <!-- Stats and Armor -->
-        <div class="section">
-          <h2>Stats and Armor</h2>
-          <div class="row">
-            <div>
-              <label for="armorClass">Armor Class:</label>
-              <input type="number" id="armorClass" formControlName="armorClass">
-            </div>
-            <div>
-              <label for="armorType">Armor Type:</label>
-              <select id="armorType" formControlName="armorType">
-                <option *ngFor="let armorType of armorTypes" [value]="armorType">{{ armorType }}</option>
-              </select>
-            </div>
-            <div>
-              <label for="hitPoints">Hit Points:</label>
-              <input type="number" id="hitPoints" formControlName="hitPoints">
-            </div>
-            <div>
-              <label for="hitDice">Hit Dice:</label>
-              <input type="text" id="hitDice" formControlName="hitDice">
-            </div>
-            <div>
-              <label for="speed">Speed:</label>
-              <input type="text" id="speed" formControlName="speed">
-            </div>
-          </div>
-        </div>
-      </div>
-  
-      <!-- Abilities and Skills -->
-      <div class="section-container">
-        <!-- Ability Scores -->
-        <div class="section">
-          <h2>Ability Scores</h2>
-          <div class="row">
-            <div>
-              <label for="strength">Strength:</label>
-              <input type="number" id="strength" formControlName="strength">
-            </div>
-            <div>
-              <label for="dexterity">Dexterity:</label>
-              <input type="number" id="dexterity" formControlName="dexterity">
-            </div>
-            <div>
-              <label for="constitution">Constitution:</label>
-              <input type="number" id="constitution" formControlName="constitution">
-            </div>
-            <div>
-              <label for="intelligence">Intelligence:</label>
-              <input type="number" id="intelligence" formControlName="intelligence">
-            </div>
-            <div>
-              <label for="wisdom">Wisdom:</label>
-              <input type="number" id="wisdom" formControlName="wisdom">
-            </div>
-            <div>
-              <label for="charisma">Charisma:</label>
-              <input type="number" id="charisma" formControlName="charisma">
-            </div>
-          </div>
-        </div>
-  
-        <!-- Skills and Saving Throws -->
-        <div class="section">
-          <h2>Skills and Saving Throws</h2>
-          <div class="row">
-            <div>
-              <label>Saving Throws:</label>
-              <div formArrayName="savingThrows">
-                <div *ngFor="let savingThrow of savingThrows.controls; let i = index" [formGroupName]="i" class="saving-throw-entry">
-                  <label>{{ savingThrow.get('stat')?.value }}:</label>
-                  <input type="number" formControlName="value">
-                </div>
-              </div>
-            </div>
-            <div>
-              <label>Skills:</label>
-              <div formArrayName="skills">
-                <div *ngFor="let skill of skills.controls; let i = index" [formGroupName]="i" class="skill-entry">
-                  <label>{{ skill.get('skill')?.value }}:</label>
-                  <input type="number" formControlName="value">
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-  
-      <!-- Actions and Traits -->
       <div class="section">
-        <h2>Actions and Traits</h2>
-        <div class="row full-width">
+        <h2>Monster Basics</h2>
+        <div class="row">
           <div>
-            <label>Actions:</label>
-            <div formArrayName="actions">
-              <div *ngFor="let action of actions.controls; let i = index" class="action-entry">
-                <input type="text" [formControlName]="i" placeholder="Action Name">
-                <textarea [formControlName]="i" placeholder="Action Description"></textarea>
-              </div>
-            </div>
-            <button type="button" (click)="addAction()">Add Action</button>
+            <label for="name">Monster Name:</label>
+            <input type="text" id="name" formControlName="name">
+          </div>
+          <div>
+            <label for="size">Size:</label>
+            <select id="size" formControlName="size">
+              <option *ngFor="let size of sizes" [value]="size">{{ size }}</option>
+            </select>
+          </div>
+          <div>
+            <label for="type">Type:</label>
+            <select id="type" formControlName="type">
+              <option *ngFor="let type of types" [value]="type">{{ type }}</option>
+            </select>
+          </div>
+          <div>
+            <label for="subtype">Subtype:</label>
+            <select id="subtype" formControlName="subtype">
+              <option *ngFor="let subtype of subtypes" [value]="subtype">{{ subtype }}</option>
+            </select>
+          </div>
+          <div>
+            <label for="alignment">Alignment:</label>
+            <select id="alignment" formControlName="alignment">
+              <option *ngFor="let alignment of alignments" [value]="alignment">{{ alignment }}</option>
+            </select>
+          </div>
+          <div> 
+            <label for="challengeRating">Challenge Rating:</label>
+            <select id="challengeRating" formControlName="challengeRating">
+              <option *ngFor="let challengeRating of challengeRatings" [value]="challengeRating">{{ challengeRating }}</option>
+            </select>
           </div>
         </div>
       </div>
-  
-      <!-- Submit Button -->
-      <div class="row full-width">
-        <button type="submit">Create Monster</button>
+
+      <!-- Defensive Stats -->
+      <div class="section">
+        <h2>Defensive Stats</h2>
+        <div class="row">
+          <div>
+            <label for="armorClass">Armor Class:</label>
+            <input type="number" id="armorClass" formControlName="armorClass">
+          </div>
+          <div>
+            <label for="armorType">Armor Type:</label>
+            <input type="text" id="armorType" formControlName="armorType">
+          </div>
+          <div>
+            <label for="initiativeBonus">Initiative Bonus:</label>
+            <input type="number" id="initiativeBonus" formControlName="initiativeBonus">
+          </div>
+          <div>
+            <label for="passivePerception">Passive Perception:</label>
+            <input type="number" id="passivePerception" formControlName="passivePerception">
+          </div>
+          <div>
+            <label for="averageHP">Average HP:</label>
+            <input type="number" id="averageHP" formControlName="averageHP">
+          </div>
+          <div>
+            <label for="hitPointsDieCount">Hit Dice Count:</label>
+            <input type="number" id="hitPointsDieCount" formControlName="hitPointsDieCount">
+          </div>
+          <div>
+            <label for="hitDiceValues">Hit Dice Value:</label>
+            <select id="hitDiceValues" formControlName="hitPointsValue">
+              <option *ngFor="let hitDiceValues of hitDiceValues" [value]="hitDiceValues">{{ hitDiceValues }}</option>
+            </select>
+          </div>
+          <div>
+            <label for="hitPointsModifier">Hit Points Modifier:</label>
+            <input type="number" id="hitPointsModifier" formControlName="hitPointsModifier">
+          </div>
+        </div>
       </div>
-    </form>
-  </div>
+    </div>
+
+
+     <!-- Ability Scores and Defenses -->
+    <div class="section">
+      <h2>Ability Scores and Defenses</h2>
+      <div class="row">
+        <div>
+          <label for="strength">Strength:</label>
+          <input type="number" id="strength" formControlName="strength">
+        </div>
+        <div>
+          <label for="dexterity">Dexterity:</label>
+          <input type="number" id="dexterity" formControlName="dexterity">
+        </div>
+        <div>
+          <label for="constitution">Constitution:</label>
+          <input type="number" id="constitution" formControlName="constitution">
+        </div>
+        <div>
+          <label for="intelligence">Intelligence:</label>
+          <input type="number" id="intelligence" formControlName="intelligence">
+        </div>
+        <div>
+          <label for="wisdom">Wisdom:</label>
+          <input type="number" id="wisdom" formControlName="wisdom">
+        </div>
+        <div>
+          <label for="charisma">Charisma:</label>
+          <input type="number" id="charisma" formControlName="charisma">
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <label>Saving Throws:</label>
+          <div formArrayName="savingThrows">
+            <div *ngFor="let savingThrow of savingThrows.controls; let i = index" [formGroupName]="i" class="saving-throw-entry">
+              <label>{{ savingThrow.get('stat')?.value }}:</label>
+              <input type="number" formControlName="value">
+            </div>
+          </div>
+        </div>
+        <div>
+          <label>Damage Adjustments:</label>
+          <div formArrayName="damageAdjustments">
+            <div *ngFor="let adjustment of damageAdjustments.controls; let i = index" [formGroupName]="i" class="adjustment-entry">
+              <label>{{ adjustment.get('type')?.value }}:</label>
+              <input type="text" formControlName="value">
+            </div>
+          </div>
+          <button type="button" (click)="addDamageAdjustment()">Add Damage Adjustment</button>
+        </div>
+        <div>
+          <label>Condition Immunities:</label>
+          <div formArrayName="conditionImmunities">
+            <div *ngFor="let immunity of conditionImmunities.controls; let i = index" [formGroupName]="i" class="immunity-entry">
+              <select [formControlName]="'condition'">
+                <option value="">Select a condition</option>
+                <option *ngFor="let condition of getAvailableConditions(i)" [value]="condition">{{ condition }}</option>
+              </select>
+              <span class="remove-icon" (click)="removeConditionImmunity(i)">×</span>
+            </div>
+          </div>
+          <button type="button" (click)="addConditionImmunity()">Add Condition Immunity</button>
+        </div>
+        <div>
+          <label>Monster Habitats:</label>
+          <div formArrayName="monsterHabitats">
+            <div *ngFor="let habitat of monsterHabitatsArray.controls; let i = index" [formGroupName]="i" class="habitat-entry">
+              <select [formControlName]="'habitat'">
+                <option value="">Select a habitat</option>
+                <option *ngFor="let habitat of getAvailableHabitats(i)" [value]="habitat">{{ habitat }}</option>
+              </select>
+              <span class="remove-icon" (click)="removeMonsterHabitat(i)">×</span>
+            </div>
+          </div>
+          <button type="button" (click)="addMonsterHabitat()">Add Habitat</button>
+        </div>
+      </div>
+    </div>
+
+      <!-- Skills and Saving Throws -->
+      <div class="section">
+        <h2>Skills and Saving Throws</h2>
+        <div class="row">
+          <div>
+            <label>Saving Throws:</label>
+            <div formArrayName="savingThrows">
+              <div *ngFor="let savingThrow of savingThrows.controls; let i = index" [formGroupName]="i" class="saving-throw-entry">
+                <label>{{ savingThrow.get('stat')?.value }}:</label>
+                <input type="number" formControlName="value">
+              </div>
+            </div>
+          </div>
+          <div>
+            <label>Skills:</label>
+            <div formArrayName="skills">
+              <div *ngFor="let skill of skills.controls; let i = index" [formGroupName]="i" class="skill-entry">
+                <label>{{ skill.get('skill')?.value }}:</label>
+                <input type="number" formControlName="value">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    <!-- Actions and Traits -->
+    <div class="section">
+      <h2>Actions and Traits</h2>
+      <div class="row full-width">
+        <div>
+          <label>Actions:</label>
+          <div formArrayName="actions">
+            <div *ngFor="let action of actions.controls; let i = index" class="action-entry">
+              <input type="text" [formControlName]="i" placeholder="Action Name">
+              <textarea [formControlName]="i" placeholder="Action Description"></textarea>
+            </div>
+          </div>
+          <button type="button" (click)="addAction()">Add Action</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="row full-width">
+      <button type="submit">Create Monster</button>
+    </div>
+  </form>
+</div>

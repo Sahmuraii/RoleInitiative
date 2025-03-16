@@ -3,14 +3,14 @@ import { FormBuilder, FormGroup, FormArray, FormControl, ReactiveFormsModule } f
 import { MonsterService } from '../../services/monster.service';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
-import { CommonModule, isPlatformBrowser } from '@angular/common'; // Import CommonModule
+import { CommonModule, isPlatformBrowser } from '@angular/common'; 
 
 @Component({
   selector: 'app-create-monster',
   standalone: true,
   templateUrl: './create-monster.component.html',
   styleUrls: ['./create-monster.component.css'],
-  imports: [ReactiveFormsModule, CommonModule], // Add CommonModule here
+  imports: [ReactiveFormsModule, CommonModule], 
 })
 export class CreateMonsterComponent implements OnInit {
   monsterForm: FormGroup;
@@ -25,7 +25,9 @@ export class CreateMonsterComponent implements OnInit {
   conditionTypes = ['Blinded', 'Charmed', 'Deafened', 'Frightened', 'Grappled', 'Incapacitated', 'Invisible', 'Paralyzed', 'Petrified', 'Poisoned', 'Prone', 'Restrained', 'Stunned', 'Unconscious'];
   skillTypes = ['Acrobatics', 'Animal Handling', 'Arcana', 'Athletics', 'Deception', 'History', 'Insight', 'Intimidation', 'Investigation', 'Medicine', 'Nature', 'Perception', 'Performance', 'Persuasion', 'Religion', 'Sleight of Hand', 'Stealth', 'Survival'];
   challengeRatings = ['0', '1/8', '1/4', '1/2', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30'];
-  monsterHabitats = ['Arctic', 'Coastal', 'Desert', 'Forest', 'Grassland', 'Hill', 'Mountain', 'Swamp', 'Underdark', 'Underwater', 'Urban'];
+  monsterHabitats = ['Any', 'Arctic', 'Coastal', 'Desert', 'Forest', 'Grassland', 'Hill', 'Mountain', 'Swamp', 'Underdark', 'Underwater', 'Urban'];
+  damageAdjustmentTypes = ['Resist', 'Immune', 'Vulnerable'];
+  hitDiceValues = ['d4', 'd6', 'd8', 'd10', 'd12', 'd20'];
 
   constructor(
     private fb: FormBuilder,
@@ -84,7 +86,8 @@ export class CreateMonsterComponent implements OnInit {
       lairActions: this.fb.array([]), 
       monsterHabitats: this.fb.array([]), 
       gear: [''], 
-      description: [''] 
+      damageAdjustments: this.fb.array([]),
+      description: ['']
     });
 
     this.initializeSavingThrows();
@@ -185,6 +188,26 @@ export class CreateMonsterComponent implements OnInit {
     return this.monsterForm.get('monsterHabitats') as FormArray;
   }
 
+  get damageAdjustments(): FormArray {
+    return this.monsterForm.get('damageAdjustments') as FormArray;
+  }
+
+  getAvailableConditions(index: number): string[] {
+    const selectedConditions = this.conditionImmunities.controls
+      .map((control, i) => (i !== index ? control.get('condition')?.value : null))
+      .filter(condition => condition !== null);
+  
+    return this.conditionTypes.filter(condition => !selectedConditions.includes(condition));
+  }
+
+  getAvailableHabitats(index: number): string[] {
+    const selectedHabitats = this.monsterHabitatsArray.controls
+      .map((control, i) => (i !== index ? control.get('habitat')?.value : null))
+      .filter(habitat => habitat !== null);
+  
+    return this.monsterHabitats.filter(habitat => !selectedHabitats.includes(habitat));
+  }
+
   addDamageVulnerability(): void {
     this.damageVulnerabilities.push(new FormControl(''));
   }
@@ -210,11 +233,24 @@ export class CreateMonsterComponent implements OnInit {
   }
 
   addConditionImmunity(): void {
-    this.conditionImmunities.push(new FormControl(''));
+    this.conditionImmunities.push(this.fb.group({
+      condition: [''] 
+    }));
   }
 
   removeConditionImmunity(index: number): void {
     this.conditionImmunities.removeAt(index);
+  }
+
+  addDamageAdjustment(): void {
+    this.damageAdjustments.push(this.fb.group({
+      type: [''],
+      value: ['']
+    }));
+  }
+
+  removeDamageAdjustment(index: number): void {
+    this.damageAdjustments.removeAt(index);
   }
 
   addTrait(): void {
@@ -306,7 +342,9 @@ export class CreateMonsterComponent implements OnInit {
   }
 
   addMonsterHabitat(): void {
-    this.monsterHabitatsArray.push(new FormControl(''));
+    this.monsterHabitatsArray.push(this.fb.group({
+      habitat: [''] 
+    }));
   }
 
   removeMonsterHabitat(index: number): void {
