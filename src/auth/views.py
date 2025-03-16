@@ -116,26 +116,31 @@ def confirm_email(token):
 @auth_bp.route("/login", methods=["GET", "POST"])
 @logout_required
 def login():
-    form = LoginForm(request.form)
-    if form.validate_on_submit():
-        user = User.query.filter_by(email=form.email.data).first()
+    data = request.get_json()
 
-        if user :
-            # Stored password is encoded, so if we have a match between the encoding of the
-            # entered password and the stored password, the user is valid.
-            password_match = bcrypt.checkpw(form.password.data.encode('utf-8'), user.password.encode('utf-8'))
+    if not data or "email" not in data or "password" not in data:
+        return jsonify({"message": "Missing email or password"}), 400
 
-            # if user is not none and they entered the correct password
-            if password_match:
-                login_user(user)
-                return redirect(url_for("core.home"))
-            else:
-                flash("Invalid password. Please check your entered information, then try again", "danger")
-                return render_template("auth/login.html", form=form)
-        else:
-            flash("Invalid email. Please check your entered information, then try again", "danger")
-            return render_template("auth/login.html", form=form)
-    return render_template("auth/login.html", form=form)
+    email = data["email"]
+    password = data["password"]
+
+    user = User.query.filter_by(email=email).first()
+
+    if not user:
+        return jsonify({"message": "Invalid email"}), 401
+
+    if bcrypt.checkpw(password.encode('utf-8'), user.password.encode('utf-8')):
+        login_user(user)
+        return jsonify({
+            "message": "Login successful",
+            "user": {
+                "id": user.id,
+                "email": user.email,
+                "username": user.username
+            }
+        })
+    else:
+        return jsonify({"message": "Invalid password"}), 401
 
 
 @auth_bp.route("/logout")
