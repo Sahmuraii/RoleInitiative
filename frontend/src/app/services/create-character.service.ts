@@ -26,7 +26,7 @@ export class CreateCharacterService {
   }
 
   createCharacter(characterData: any): Observable<any> {
-    return this.http.post(`${API_URL}/create_background`, characterData);
+    return this.http.post(`${API_URL}/character/create`, characterData);
   }
   
 }

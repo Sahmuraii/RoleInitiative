@@ -193,7 +193,7 @@ def character(character_id):
     #return json.dumps({'character': jsonify(char.__dict__), 'current_class': jsonify(current_class), 'current_level(char.char_id)': jsonify(current_level), 'all_classes': jsonify(json.dumps(all_classes)), 'char_si': char_si})
     return json.dumps({'character': (char.__dict__), 'current_class': (current_class), 'current_level(char.char_id)': (current_level), 'all_classes': ((all_classes)), 'char_si': char_si})
 
-def calculate_max_hp(character_id):
+def calculate_max_hp(character_id, class_id):
     character = Character.query.get(character_id) # Get the character by ID
     if not character:
         raise ValueError(f"Character with ID {character_id} not found.")
@@ -206,11 +206,11 @@ def calculate_max_hp(character_id):
     if not character_classes:
         raise ValueError("Character has no associated classes.")
 
-    first_class = Character_Class.query.filter_by(char_id=character_id,is_initial_class=True).first()
-    first_class_data = DND_Class.query.get(first_class.class_id)
+    first_class: Character_Class = Character_Class.query.filter_by(char_id=character_id,is_initial_class=True).first()
+    first_class_data = DND_Class.query.get(class_id)
     
     if not first_class_data:
-        raise ValueError(f"Class with ID {first_class.class_id} not found.")
+        raise ValueError(f"Class with ID {class_id} not found.")
 
     hit_die = first_class_data.hit_die # Hit die for the first class
     first_level_hp = hit_die # First level HP is the max roll of the hit die
@@ -268,7 +268,7 @@ def create():
         
         #returns list of levels where the class is the index. will have to be changed in the future for homebrew content
         #compare indexes of users choices with indexes of classes. save chosen level along with class_id to an array
-        levels = data.get('classLevels')
+        levels = data.get('classLevels', [])
         classes = []
         for i in range(len(levels)):
             if levels[i] != "0":
@@ -308,7 +308,7 @@ def create():
         #equipment = data.get('equipment')
 
         new_character = Character(
-            owner_id=current_user.id,
+            owner_id=user_id,
             name=char_name,
             proficiency_bonus=math.ceil(sum(map(int, levels)) / 4) + 1,
             total_level=sum(map(int, levels)),
@@ -353,29 +353,28 @@ def create():
         db.session.add(new_character_race)
 
         for new_class in classes:
-
-            if initial_class == new_class['class_id']:
+            if new_class['level'] != 0:
+                if initial_class == new_class['class_id']:
+                        new_character_class = Character_Class(
+                        char_id = new_character.char_id,
+                        class_id = new_class['class_id'],
+                        class_level = new_class['level'],
+                        is_initial_class = True
+                    )
+                else:
                     new_character_class = Character_Class(
-                    char_id = new_character.char_id,
-                    class_id = new_class['class_id'],
-                    class_level = new_class['level'],
-                    is_initial_class = True
-                )
-            else:
-                new_character_class = Character_Class(
-                    char_id = new_character.char_id,
-                    class_id = new_class['class_id'],
-                    class_level = new_class['level'],
-                    is_initial_class = False
-                )
-            db.session.add(new_character_class)
+                        char_id = new_character.char_id,
+                        class_id = new_class['class_id'],
+                        class_level = new_class['level'],
+                        is_initial_class = False
+                    )
+                db.session.add(new_character_class)
         
         db.session.commit() # Needed in order to calculate max HP
-
         new_character_hp = Character_Hit_Points(
             char_id = new_character.char_id,
-            hit_points = calculate_max_hp(new_character.char_id),
-            max_hit_points = calculate_max_hp(new_character.char_id),
+            hit_points = calculate_max_hp(new_character.char_id, initial_class),
+            max_hit_points = calculate_max_hp(new_character.char_id, initial_class),
             temp_hit_points = 0
         )
         db.session.add(new_character_hp)
@@ -388,31 +387,36 @@ def create():
         )
         db.session.add(new_character_death_saves)
 
-
-        class_proficiency_choices = request.form.getlist(f"class_proficiency_list_{initial_class}_ids")
-        for list_id in class_proficiency_choices:
-            max_choices = request.form.get(f"class_proficiency_list_{initial_class}_{list_id}_length")
+        # class_proficiency_choices = request.form.getlist(f"class_proficiency_list_{initial_class}_ids")
+        class_proficiency_choices = data.get('classProficiencies', [])
+        profListIndex = 0
+        profListIDs = DND_Class_Proficiency_Option.query.filter(DND_Class_Proficiency_Option.given_by_class == initial_class)
+        for classProf in class_proficiency_choices:
+            
+            max_choices = len(classProf["selects"])
 
             max_list = Proficiency_Choice.query.filter(Proficiency_Choice.choice_list_id>=0).order_by(Proficiency_Choice.choice_list_id.desc()).first()
             new_choice_list_id = 1 if max_list is None else max_list.choice_list_id + 1
 
             new_character_proficiency_choice_list = Character_Proficiency_Choices(
                 char_id=new_character.char_id,
-                proficiency_list_id=int(list_id),
+                proficiency_list_id=int(profListIDs[profListIndex].proficiency_list_id),
                 max_choices=int(max_choices),
                 choice_list_id=new_choice_list_id
             )
             db.session.add(new_character_proficiency_choice_list)
 
             for i in range(int(max_choices)):
-                user_proficiency_choice = request.form.get(f"class_proficiency_list_{initial_class}_{list_id}_{i}_selection")
-
+                # user_proficiency_choice = request.form.get(f"class_proficiency_list_{initial_class}_{classProf}_{i}_selection")
+                user_proficiency_choice = classProf["selects"][i]["option"]
+                print(user_proficiency_choice)
                 new_choice_proficiency = Proficiency_Choice(
                     choice_list_id = new_choice_list_id,
                     proficiency_id = int(user_proficiency_choice)
                 )
                 db.session.add(new_choice_proficiency)
-
+            profListIndex += 1
+            
         # Only commit once all character data is ready to be entered
         db.session.commit()
         

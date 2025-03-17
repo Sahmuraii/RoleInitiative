@@ -620,6 +620,7 @@ export class CreateCharacterComponent implements OnInit {
     } else if(this.validateStats() == 4) {
       this.snackbar.open("ERROR: Stats exceeding max!", "", {panelClass : 'error-notif', duration: 5000})
     } else {
+      console.log(this.classProficiencies.value)
       const formData = this.characterForm.value;
       console.log('Form Data:', formData); 
       formData.user_id = this.currentUserID;
