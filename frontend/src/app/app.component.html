@@ -1,6 +1,6 @@
-<!-- Top Navigation Bar -->
-<app-navbar></app-navbar>
+<!-- Top Navigation Bar (show if not on auth page) -->
+<app-navbar *ngIf="showNavbar"></app-navbar>
 <section>
   <router-outlet></router-outlet>
-  
+
 </section>
