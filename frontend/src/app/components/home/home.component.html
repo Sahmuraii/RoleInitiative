@@ -1,9 +1,31 @@
 <div class="main-content">
     <p>Temporary Default Home Page</p>
-    <ul>
-        <li [routerLink]="['/create/background']">Create Background Page Link</li>
-        <li [routerLink]="['/create/character']">Create Character Page Link</li>
-    </ul>
+    <div class="homebrew-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(500px, 1fr)); gap: 16px;">
+        <div class="container">
+          <img src="../../assets/images/homebrew/background.jpg" alt="Background Feature" class="image">
+          <div class="overlay">
+            <a [routerLink]="['/create/background']" class="text">Create a background here</a>
+          </div>
+        </div>
+        <div class="container">
+          <img src="../../assets/images/homebrew/character.jpg" alt="Character Feature" class="image">
+          <div class="overlay">
+            <a [routerLink]="['/create/character']" class="text">Create a character here</a>
+          </div>
+        </div>
+      <div class="container">
+          <img src="../../assets/images/homebrew/spell.jpg" alt="Spell Feature" class="image">
+          <div class="overlay">
+            <a [routerLink]="['/create/spell']" class="text">Create a spell here</a>
+          </div>
+        </div>
+      <div class="container">
+          <img src="../../assets/images/homebrew/monster.jpg" alt="Monster Feature" class="image">
+          <div class="overlay">
+            <a [routerLink]="['/create/monster']" class="text">Create a monster here</a>
+          </div>
+        </div>
+    </div>
 
     <!-- Search Bar -->
     <div class="search-container" (click)="onFocus()" (focusout)="onBlur()">
