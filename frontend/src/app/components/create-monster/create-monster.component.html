@@ -118,50 +118,79 @@
         </div>
       </div>
       <div class="row">
-        <div>
-          <label>Saving Throws:</label>
-          <div formArrayName="savingThrows">
-            <div *ngFor="let savingThrow of savingThrows.controls; let i = index" [formGroupName]="i" class="saving-throw-entry">
-              <label>{{ savingThrow.get('stat')?.value }}:</label>
-              <input type="number" formControlName="value">
+      <!-- Damage Adjustments -->
+      <div class="section">
+        <h2>Damage Adjustments</h2>
+        <div class="row">
+          <div>
+            <div formArrayName="damageAdjustments">
+              <div *ngFor="let adjustment of damageAdjustments.controls; let i = index" [formGroupName]="i" class="adjustment-entry">
+                <div class="damage-type-container">
+                  <select formControlName="type">
+                    <option value="">Select a damage type</option>
+                    <option *ngFor="let damageType of damageTypes" [value]="damageType">{{ damageType }}</option>
+                  </select>
+                  <span class="remove-icon" (click)="removeDamageAdjustment(i)">×</span>
+                </div>
+
+                <div class="adjustment-type">
+                  <label>
+                    <input type="radio" formControlName="adjustmentType" value="Resist"> Resist
+                  </label>
+                  <label>
+                    <input type="radio" formControlName="adjustmentType" value="Immune"> Immune
+                  </label>
+                  <label>
+                    <input type="radio" formControlName="adjustmentType" value="Vulnerable"> Vulnerable
+                  </label>
+                </div>
+
+                <!-- Notes Input -->
+                <input type="text" formControlName="notes" placeholder="Notes (e.g., 'from spells only')">
+              </div>
+            </div>
+            <button type="button" (click)="addDamageAdjustment()">Add Damage Adjustment</button>
+          </div>
+        </div>
+      </div>
+        <!-- Condition Immunities -->
+        <div class="section">
+          <h2>Condition Immunities</h2>
+          <div class="row">
+            <div>
+              <div formArrayName="conditionImmunities">
+                <div *ngFor="let immunity of conditionImmunities.controls; let i = index" [formGroupName]="i" class="immunity-entry">
+                  <div class="condition-container">
+                    <select [formControlName]="'condition'">
+                      <option value="">Select a condition</option>
+                      <option *ngFor="let condition of getAvailableConditions(i)" [value]="condition">{{ condition }}</option>
+                    </select>
+                    <span class="remove-icon" (click)="removeConditionImmunity(i)">×</span>
+                  </div>
+                </div>
+              </div>
+              <button type="button" (click)="addConditionImmunity()">Add Condition Immunity</button>
             </div>
           </div>
         </div>
-        <div>
-          <label>Damage Adjustments:</label>
-          <div formArrayName="damageAdjustments">
-            <div *ngFor="let adjustment of damageAdjustments.controls; let i = index" [formGroupName]="i" class="adjustment-entry">
-              <label>{{ adjustment.get('type')?.value }}:</label>
-              <input type="text" formControlName="value">
+        <div class="section">
+          <h2>Monster Habitats</h2>
+          <div class="row">
+            <div>
+              <div formArrayName="monsterHabitats">
+                <div *ngFor="let habitat of monsterHabitatsArray.controls; let i = index" [formGroupName]="i" class="habitat-entry">
+                  <div class="habitat-container">
+                    <select [formControlName]="'habitat'">
+                      <option value="">Select a habitat</option>
+                      <option *ngFor="let habitat of getAvailableHabitats(i)" [value]="habitat">{{ habitat }}</option>
+                    </select>
+                    <span class="remove-icon" (click)="removeMonsterHabitat(i)">×</span>
+                  </div>
+                </div>
+              </div>
+              <button type="button" (click)="addMonsterHabitat()">Add Habitat</button>
             </div>
           </div>
-          <button type="button" (click)="addDamageAdjustment()">Add Damage Adjustment</button>
-        </div>
-        <div>
-          <label>Condition Immunities:</label>
-          <div formArrayName="conditionImmunities">
-            <div *ngFor="let immunity of conditionImmunities.controls; let i = index" [formGroupName]="i" class="immunity-entry">
-              <select [formControlName]="'condition'">
-                <option value="">Select a condition</option>
-                <option *ngFor="let condition of getAvailableConditions(i)" [value]="condition">{{ condition }}</option>
-              </select>
-              <span class="remove-icon" (click)="removeConditionImmunity(i)">×</span>
-            </div>
-          </div>
-          <button type="button" (click)="addConditionImmunity()">Add Condition Immunity</button>
-        </div>
-        <div>
-          <label>Monster Habitats:</label>
-          <div formArrayName="monsterHabitats">
-            <div *ngFor="let habitat of monsterHabitatsArray.controls; let i = index" [formGroupName]="i" class="habitat-entry">
-              <select [formControlName]="'habitat'">
-                <option value="">Select a habitat</option>
-                <option *ngFor="let habitat of getAvailableHabitats(i)" [value]="habitat">{{ habitat }}</option>
-              </select>
-              <span class="remove-icon" (click)="removeMonsterHabitat(i)">×</span>
-            </div>
-          </div>
-          <button type="button" (click)="addMonsterHabitat()">Add Habitat</button>
         </div>
       </div>
     </div>
@@ -183,10 +212,19 @@
             <label>Skills:</label>
             <div formArrayName="skills">
               <div *ngFor="let skill of skills.controls; let i = index" [formGroupName]="i" class="skill-entry">
-                <label>{{ skill.get('skill')?.value }}:</label>
+                <select [formControlName]="'skill'" (change)="onSkillChange($event, i)">
+                  <option value="">Select a skill</option>
+                  <optgroup *ngFor="let category of skillCategories" [label]="category.name">
+                    <option *ngFor="let skill of category.skills" [value]="skill">{{ skill }}</option>
+                  </optgroup>
+                  <option value="custom">Add Custom</option>
+                </select>
+                <input *ngIf="skill.get('skill')?.value === 'custom'" type="text" formControlName="customSkill" placeholder="Enter custom skill">
                 <input type="number" formControlName="value">
+                <span class="remove-icon" (click)="removeSkill(i)">×</span>
               </div>
             </div>
+            <button type="button" (click)="addSkill()">Add Skill</button>
           </div>
         </div>
       </div>

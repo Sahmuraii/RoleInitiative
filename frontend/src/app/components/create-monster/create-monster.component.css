@@ -1,7 +1,8 @@
 .main-content {
+    --navbar-height: 80px;
     max-width: 1200px;
     margin: auto;
-    padding: 20px;
+    padding: calc(var(--navbar-height) + 1rem) 2rem 2rem;
   }
   
   form {
@@ -104,19 +105,152 @@
     margin-bottom: 10px;
   }
 
-  .habitat-entry {
+  .habitat-container {
     display: flex;
     align-items: center;
+    gap: 10px;
+  }
+  
+  .habitat-container select {
+    flex: 1;
+    padding: 6px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+  }
+  
+  .habitat-entry {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
     margin-bottom: 10px;
+  }
+  
+  .habitat-entry .remove-icon {
+    margin-left: 10px;
+    cursor: pointer;
+    font-size: 20px;
+    color: #ff0000;
+  }
+  
+  .habitat-entry .remove-icon:hover {
+    color: #cc0000;
   }
   
   .remove-icon {
     margin-left: 10px;
     cursor: pointer;
     font-size: 20px;
-    color: #ff0000; /* Red color for the X */
+    color: #ff0000;
   }
   
   .remove-icon:hover {
-    color: #cc0000; /* Darker red on hover */
+    color: #cc0000; 
   }
+
+  
+  optgroup {
+    font-weight: bold;
+    font-style: normal;
+    border-bottom: 1px solid #ccc; 
+    padding-top: 5px;
+    padding-bottom: 5px;
+  }
+
+  optgroup option {
+    font-weight: normal;
+    padding-left: 20px; 
+  }
+
+  .skill-entry {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .skill-entry select {
+    flex: 1;
+  }
+
+  .skill-entry input[type="text"] {
+    flex: 1;
+    margin-left: 10px;
+  }
+
+  .skill-entry input[type="number"] {
+    width: 80px;
+  }
+
+  .adjustment-entry {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .damage-type-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .damage-type-container select {
+    flex: 1;
+    padding: 6px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+  }
+  
+  .adjustment-type {
+    display: flex;
+    gap: 10px;
+    margin-top: 5px;
+  }
+  
+  .adjustment-type label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  .adjustment-entry input[type="text"] {
+    width: 100%;
+    padding: 6px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+  }
+
+  .condition-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .condition-container select {
+    flex: 1;
+    padding: 6px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+  }
+
+  .condition-entry {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .condition-entry .remove-icon {
+    margin-left: 10px;
+    cursor: pointer;
+    font-size: 20px;
+    color: #ff0000;
+  }
+
+  .condition-entry .remove-icon:hover {
+    color: #cc0000;
+}

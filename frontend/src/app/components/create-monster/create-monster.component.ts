@@ -29,6 +29,14 @@ export class CreateMonsterComponent implements OnInit {
   damageAdjustmentTypes = ['Resist', 'Immune', 'Vulnerable'];
   hitDiceValues = ['d4', 'd6', 'd8', 'd10', 'd12', 'd20'];
 
+  skillCategories = [
+    { name: 'Strength', skills: ['Athletics'] },
+    { name: 'Dexterity', skills: ['Acrobatics', 'Sleight of Hand', 'Stealth'] },
+    { name: 'Intelligence', skills: ['Arcana', 'History', 'Investigation', 'Nature', 'Religion'] },
+    { name: 'Wisdom', skills: ['Animal Handling', 'Insight', 'Medicine', 'Perception', 'Survival'] },
+    { name: 'Charisma', skills: ['Deception', 'Intimidation', 'Performance', 'Persuasion'] }
+  ];
+
   constructor(
     private fb: FormBuilder,
     private monsterService: MonsterService,
@@ -120,13 +128,40 @@ export class CreateMonsterComponent implements OnInit {
 
   initializeSkills(): void {
     const skillsArray = this.monsterForm.get('skills') as FormArray;
-    this.skillTypes.forEach(skill => {
-      skillsArray.push(this.fb.group({
-        skill: [skill],
-        value: ['']
-      }));
-    });
+    skillsArray.clear(); 
+    skillsArray.push(this.fb.group({
+      skill: [''], 
+      customSkill: [''], 
+      value: [''] 
+    }));
   }
+
+  onSkillChange(event: Event, index: number): void {
+    const selectElement = event.target as HTMLSelectElement;
+    const selectedValue = selectElement.value;
+    const skillControl = this.skills.at(index);
+  
+    if (selectedValue === 'custom') {
+      skillControl.get('customSkill')?.enable(); 
+    } else {
+      skillControl.get('customSkill')?.disable(); 
+    }
+  }
+
+  addSkill(): void {
+    const skillsArray = this.monsterForm.get('skills') as FormArray;
+    skillsArray.push(this.fb.group({
+      skill: [''], 
+      customSkill: [''], 
+      value: [''] 
+    }));
+  }
+
+  removeSkill(index: number): void {
+    const skillsArray = this.monsterForm.get('skills') as FormArray;
+    skillsArray.removeAt(index); 
+  }
+  
 
   get savingThrows(): FormArray {
     return this.monsterForm.get('savingThrows') as FormArray;
@@ -244,8 +279,9 @@ export class CreateMonsterComponent implements OnInit {
 
   addDamageAdjustment(): void {
     this.damageAdjustments.push(this.fb.group({
-      type: [''],
-      value: ['']
+      type: [''], 
+      adjustmentType: [''], 
+      notes: [''] 
     }));
   }
 
