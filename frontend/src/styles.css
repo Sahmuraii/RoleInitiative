@@ -144,7 +144,7 @@ h1 {
 
 /* Main Content Styling */
 .main-content {
-    padding: calc(var(--navbar-height) + 1rem) 2rem 2rem;
+    padding: calc(var(--navbar-height) + 1rem) 2rem;
     margin: 3rem;
 }
 
