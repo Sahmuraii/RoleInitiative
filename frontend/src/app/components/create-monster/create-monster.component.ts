@@ -4,15 +4,35 @@ import { MonsterService } from '../../services/monster.service';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { CommonModule, isPlatformBrowser } from '@angular/common'; 
+import { QuillModule } from 'ngx-quill';
 
 @Component({
   selector: 'app-create-monster',
   standalone: true,
   templateUrl: './create-monster.component.html',
   styleUrls: ['./create-monster.component.css'],
-  imports: [ReactiveFormsModule, CommonModule], 
+  imports: [ReactiveFormsModule, CommonModule, QuillModule], 
 })
 export class CreateMonsterComponent implements OnInit {
+  quillConfig = {
+    toolbar: [
+      ['bold', 'italic', 'underline', 'strike'],
+      ['blockquote', 'code-block'],
+      [{ 'header': 1 }, { 'header': 2 }],
+      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+      [{ 'script': 'sub'}, { 'script': 'super' }],
+      [{ 'indent': '-1'}, { 'indent': '+1' }],
+      [{ 'direction': 'rtl' }],
+      [{ 'size': ['small', false, 'large', 'huge'] }],
+      [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+      [{ 'color': [] }, { 'background': [] }],
+      [{ 'font': [] }],
+      [{ 'align': [] }],
+      ['clean'],
+      ['link', 'image']
+    ]
+  };
+
   monsterForm: FormGroup;
   currentUserID: number | null = null;
 
@@ -83,19 +103,21 @@ export class CreateMonsterComponent implements OnInit {
       bonusActions: this.fb.array([]), 
       reactions: this.fb.array([]),
       isLegendary: [false],
-      legendaryActions: this.fb.array([]), 
       legendaryActionDescription: [''], 
       isMythic: [false], 
-      mythicActions: this.fb.array([]), 
       mythicActionDescription: [''], 
       hasLair: [false], 
       lairXP: [''], 
       lairDescription: [''],
-      lairActions: this.fb.array([]), 
       monsterHabitats: this.fb.array([]), 
       gear: [''], 
       damageAdjustments: this.fb.array([]),
-      description: ['']
+      description: [''],
+      traitsDescription: [''], 
+      actionsDescription: [''], 
+      bonusActionsDescription: [''], 
+      reactionsDescription: [''], 
+      monsterCharacteristicsDescription: [''] 
     });
 
     this.initializeSavingThrows();
@@ -161,6 +183,29 @@ export class CreateMonsterComponent implements OnInit {
     const skillsArray = this.monsterForm.get('skills') as FormArray;
     skillsArray.removeAt(index); 
   }
+
+  
+  onLegendaryChange(event: Event): void {
+    const isChecked = (event.target as HTMLInputElement).checked;
+    if (!isChecked) {
+      this.monsterForm.get('legendaryActionDescription')?.reset();
+    }
+  }
+
+  onMythicChange(event: Event): void {
+    const isChecked = (event.target as HTMLInputElement).checked;
+    if (!isChecked) {
+      this.monsterForm.get('mythicActionDescription')?.reset();
+    }
+  }
+
+  onLairChange(event: Event): void {
+    const isChecked = (event.target as HTMLInputElement).checked;
+    if (!isChecked) {
+      this.monsterForm.get('lairXP')?.reset();
+      this.monsterForm.get('lairDescription')?.reset();
+    }
+  }
   
 
   get savingThrows(): FormArray {
@@ -205,18 +250,6 @@ export class CreateMonsterComponent implements OnInit {
 
   get reactions(): FormArray {
     return this.monsterForm.get('reactions') as FormArray;
-  }
-
-  get legendaryActions(): FormArray {
-    return this.monsterForm.get('legendaryActions') as FormArray;
-  }
-
-  get mythicActions(): FormArray {
-    return this.monsterForm.get('mythicActions') as FormArray;
-  }
-
-  get lairActions(): FormArray {
-    return this.monsterForm.get('lairActions') as FormArray;
   }
 
   get monsterHabitatsArray(): FormArray {
@@ -342,39 +375,6 @@ export class CreateMonsterComponent implements OnInit {
 
   removeReaction(index: number): void {
     this.reactions.removeAt(index);
-  }
-
-  addLegendaryAction(): void {
-    this.legendaryActions.push(this.fb.group({
-      name: [''],
-      description: [''] 
-    }));
-  }
-
-  removeLegendaryAction(index: number): void {
-    this.legendaryActions.removeAt(index);
-  }
-
-  addMythicAction(): void {
-    this.mythicActions.push(this.fb.group({
-      name: [''],
-      description: [''] 
-    }));
-  }
-
-  removeMythicAction(index: number): void {
-    this.mythicActions.removeAt(index);
-  }
-
-  addLairAction(): void {
-    this.lairActions.push(this.fb.group({
-      name: [''], 
-      description: [''] 
-    }));
-  }
-
-  removeLairAction(index: number): void {
-    this.lairActions.removeAt(index);
   }
 
   addMonsterHabitat(): void {

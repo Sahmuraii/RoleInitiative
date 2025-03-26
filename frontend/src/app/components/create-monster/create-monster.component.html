@@ -4,7 +4,6 @@
     
     <!-- Monster Basics -->
     <div class="section-container">
-      <!-- Monster Basics -->
       <div class="section">
         <h2>Monster Basics</h2>
         <div class="row">
@@ -232,16 +231,126 @@
     <!-- Actions and Traits -->
     <div class="section">
       <h2>Actions and Traits</h2>
+      <div class="row">
+        <!-- Traits Description -->
+        <div>
+          <label>Traits Description:</label>
+          <quill-editor 
+            formControlName="traitsDescription"
+            [modules]="quillConfig"
+            placeholder="Enter traits description">
+          </quill-editor>
+        </div>
+        <!-- Actions Description -->
+        <div>
+          <label>Actions Description:</label>
+          <quill-editor 
+            formControlName="actionsDescription"
+            [modules]="quillConfig"
+            placeholder="Enter actions description">
+          </quill-editor>
+        </div>
+        <!-- Bonus Actions Description -->
+        <div>
+          <label>Bonus Actions Description:</label>
+          <quill-editor 
+            formControlName="bonusActionsDescription"
+            [modules]="quillConfig"
+            placeholder="Enter bonus actions description">
+          </quill-editor>
+        </div>
+        <!-- Reactions Description -->
+        <div>
+          <label>Reactions Description:</label>
+          <quill-editor 
+            formControlName="reactionsDescription"
+            [modules]="quillConfig"
+            placeholder="Enter reactions description">
+          </quill-editor>
+        </div>
+      </div>
+    </div>
+
+    <!-- Monster Characteristics Description -->
+    <div class="section">
+      <h2>Monster Characteristics Description</h2>
       <div class="row full-width">
         <div>
-          <label>Actions:</label>
-          <div formArrayName="actions">
-            <div *ngFor="let action of actions.controls; let i = index" class="action-entry">
-              <input type="text" [formControlName]="i" placeholder="Action Name">
-              <textarea [formControlName]="i" placeholder="Action Description"></textarea>
-            </div>
-          </div>
-          <button type="button" (click)="addAction()">Add Action</button>
+          <quill-editor 
+            formControlName="monsterCharacteristicsDescription"
+            [modules]="quillConfig"
+            placeholder="Enter monster characteristics description">
+          </quill-editor>
+        </div>
+      </div>
+    </div>
+
+    <!-- Legendary Section -->
+    <div class="section">
+      <h2>Legendary Traits</h2>
+      <div class="checkbox-row">
+        <input type="checkbox" id="isLegendary" formControlName="isLegendary" 
+              (change)="onLegendaryChange($event)">
+        <label for="isLegendary">Is Legendary?</label>
+      </div>
+      
+      <div class="row" *ngIf="monsterForm.get('isLegendary')?.value">
+        <div>
+          <label>Legendary Actions Description:</label>
+          <quill-editor 
+            formControlName="legendaryActionDescription"
+            [modules]="quillConfig"
+            placeholder="Describe the monster's legendary actions">
+          </quill-editor>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mythic Section -->
+    <div class="section">
+      <h2>Mythic Traits</h2>
+      <div class="checkbox-row">
+        <input type="checkbox" id="isMythic" formControlName="isMythic" 
+              (change)="onMythicChange($event)">
+        <label for="isMythic">Is Mythic?</label>
+      </div>
+      
+      <div class="row" *ngIf="monsterForm.get('isMythic')?.value">
+        <div>
+          <label>Mythic Actions Description:</label>
+          <quill-editor 
+            formControlName="mythicActionDescription"
+            [modules]="quillConfig"
+            placeholder="Describe the monster's mythic actions">
+          </quill-editor>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lair Section -->
+    <div class="section">
+      <h2>Lair Information</h2>
+      <div class="checkbox-row">
+        <input type="checkbox" id="hasLair" formControlName="hasLair" 
+              (change)="onLairChange($event)">
+        <label for="hasLair">Has Lair?</label>
+      </div>
+      
+      <div class="row" *ngIf="monsterForm.get('hasLair')?.value">
+        <div>
+          <label>Lair XP:</label>
+          <input type="number" formControlName="lairXP" placeholder="Enter XP value">
+        </div>
+      </div>
+      
+      <div class="row full-width" *ngIf="monsterForm.get('hasLair')?.value">
+        <div>
+          <label>Lair & Lair Actions Description:</label>
+          <quill-editor 
+            formControlName="lairDescription"
+            [modules]="quillConfig"
+            placeholder="Describe the lair and its special actions">
+          </quill-editor>
         </div>
       </div>
     </div>
