@@ -35,6 +35,8 @@ export class CreateMonsterComponent implements OnInit {
 
   monsterForm: FormGroup;
   currentUserID: number | null = null;
+  imagePreview: string | ArrayBuffer | null = null; 
+  selectedFile: File | null = null; 
 
   sizes = ['Tiny', 'Small', 'Medium', 'Large', 'Huge', 'Gargantuan'];
   types = ['Aberration', 'Beast', 'Celestial', 'Construct', 'Dragon', 'Elemental', 'Fey', 'Fiend', 'Giant', 'Humanoid', 'Monstrosity', 'Ooze', 'Plant', 'Undead'];
@@ -48,6 +50,8 @@ export class CreateMonsterComponent implements OnInit {
   monsterHabitats = ['Any', 'Arctic', 'Coastal', 'Desert', 'Forest', 'Grassland', 'Hill', 'Mountain', 'Swamp', 'Underdark', 'Underwater', 'Urban'];
   damageAdjustmentTypes = ['Resist', 'Immune', 'Vulnerable'];
   hitDiceValues = ['d4', 'd6', 'd8', 'd10', 'd12', 'd20'];
+  senseTypes = ['Blindsight', 'Darkvision', 'Tremorsense', 'Truesight', 'Normal Vision', 'None'];
+  languagesList = ['Common', 'Draconic', 'Elvish', 'Giant', 'Goblin', 'Infernal', 'Orc', 'Primordial', 'Sylvan', 'Undercommon', 'None'];
 
   skillCategories = [
     { name: 'Strength', skills: ['Athletics'] },
@@ -72,8 +76,6 @@ export class CreateMonsterComponent implements OnInit {
       alignment: [''], 
       armorClass: [''], 
       armorType: [''], 
-      hitPoints: [''], 
-      hitDice: [''], 
       hitPointsDieCount: [''], 
       hitPointsValue: [''], 
       hitPointsModifier: [''], 
@@ -86,6 +88,7 @@ export class CreateMonsterComponent implements OnInit {
       wisdom: [''],
       charisma: [''], 
       initiativeBonus: [''], 
+      proficiencyBonus: [''],
       passivePerception: [''], 
       savingThrows: this.fb.array([]), 
       skills: this.fb.array([]), 
@@ -93,8 +96,8 @@ export class CreateMonsterComponent implements OnInit {
       damageResistances: this.fb.array([]), 
       damageImmunities: this.fb.array([]), 
       conditionImmunities: this.fb.array([]), 
-      senses: [''], 
-      languages: [''],
+      senses: this.fb.array([]),
+      languages: this.fb.array([]),
       languageNotes: [''], 
       challengeRating: [''], 
       traits: this.fb.array([]), 
@@ -207,6 +210,81 @@ export class CreateMonsterComponent implements OnInit {
     }
   }
   
+  onImageUpload(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (!input.files || input.files.length === 0) return;
+  
+    const file = input.files[0];
+    this.selectedFile = file;
+
+    if (!file.type.match('image.*')) {
+      alert('Only image files are allowed!');
+      return;
+    }
+  
+    if (file.size > 2 * 1024 * 1024) {
+      alert('Maximum allowed image size is 2MB');
+      return;
+    }
+  
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.imagePreview = reader.result;
+      
+      const img = new Image();
+      img.onload = () => {
+        if (img.width !== 256 || img.height !== 256) {
+          alert('Image must be exactly 256x256 pixels');
+          this.imagePreview = null;
+          this.selectedFile = null;
+          return;
+        }
+        this.monsterForm.patchValue({ image: file });
+      };
+      img.src = reader.result as string;
+    };
+    reader.readAsDataURL(file);
+  }
+  
+  removeImage(): void {
+    this.imagePreview = null;
+    this.selectedFile = null;
+    this.monsterForm.patchValue({ image: null });
+    
+    const fileInput = document.getElementById('monsterImage') as HTMLInputElement;
+    if (fileInput) fileInput.value = '';
+  }
+
+  addSense() {
+    const sensesArray = this.monsterForm.get('senses') as FormArray;
+    sensesArray.push(this.fb.group({
+      type: [''], 
+      value: [''] 
+    }));
+  }
+
+  removeSense(index: number) {
+    this.senses.removeAt(index);
+  }
+
+  get senses(): FormArray {
+    return this.monsterForm.get('senses') as FormArray;
+  }
+
+  get languages(): FormArray {
+    return this.monsterForm.get('languages') as FormArray;
+  }
+  
+  addLanguage(): void {
+    this.languages.push(this.fb.group({
+      language: [''],
+      notes: ['']
+    }));
+  }
+  
+  removeLanguage(index: number): void {
+    this.languages.removeAt(index);
+  }
 
   get savingThrows(): FormArray {
     return this.monsterForm.get('savingThrows') as FormArray;
@@ -389,27 +467,84 @@ export class CreateMonsterComponent implements OnInit {
 
   onSubmit(): void {
     if (this.monsterForm.invalid || !this.currentUserID) {
-      alert('Please fill out all required fields and ensure you are logged in.');
+      const missingFields = [];
+      for (const controlName in this.monsterForm.controls) {
+        const control = this.monsterForm.get(controlName);
+        if (control?.invalid && control?.errors?.['required']) {
+          missingFields.push(controlName);
+        }
+      }
+  
+      if (missingFields.length > 0) {
+        alert(`The following fields are required: ${missingFields.join(', ')}`);
+      } else {
+        alert('Please ensure you are logged in and fill out all required fields.');
+      }
       return;
     }
-
-    const monsterData = {
+  
+    // Format arrays into strings where needed (similar to spell's components handling)
+    const formattedData = {
       ...this.monsterForm.value,
+      savingThrows: this.savingThrows.value
+        .filter((st: any) => st.value)
+        .map((st: any) => `${st.stat} ${st.value}`)
+        .join(', '),
+      skills: this.skills.value
+        .filter((skill: any) => skill.skill || skill.customSkill)
+        .map((skill: any) => `${skill.skill === 'custom' ? skill.customSkill : skill.skill} ${skill.value}`)
+        .join(', '),
+      damageVulnerabilities: this.damageVulnerabilities.value.join(', '),
+      damageResistances: this.damageResistances.value.join(', '),
+      damageImmunities: this.damageImmunities.value.join(', '),
+      conditionImmunities: this.conditionImmunities.value
+        .map((ci: any) => ci.condition)
+        .join(', '),
+      senses: this.senses.value
+        .map((sense: any) => `${sense.type} ${sense.value}`)
+        .join(', '),
+      languages: this.languages.value
+        .map((lang: any) => lang.language)
+        .join(', '),
+      monsterHabitats: this.monsterHabitatsArray.value
+        .map((habitat: any) => habitat.habitat)
+        .join(', '),
       userID: this.currentUserID
     };
-
-    console.log('Monster data:', monsterData);
-
-    this.monsterService.createMonster(monsterData).subscribe({
-      next: (response) => {
-        alert('Monster created successfully!');
-        console.log('Monster created with response:', response);
-        this.router.navigate(['/create_monster']);
-      },
-      error: (error) => {
-        console.error('Error creating monster:', error);
-        alert('Failed to create monster. Please try again.');
-      }
-    });
+  
+    console.log('Monster data:', formattedData);
+  
+    // Handle image separately if needed
+    if (this.selectedFile) {
+      const formData = new FormData();
+      formData.append('image', this.selectedFile);
+      formData.append('data', JSON.stringify(formattedData));
+      
+      this.monsterService.createMonster(formData).subscribe({
+        next: (response) => {
+          alert('Monster created successfully!');
+          console.log('Monster created with response:', response);
+          this.router.navigate(['/create_monster']);
+        },
+        error: (error) => {
+          console.log('Error creating monster:', error);
+          console.error('Error creating monster:', error);
+          alert('Failed to create monster. Please try again.');
+        }
+      });
+    } else {
+      this.monsterService.createMonster(formattedData).subscribe({
+        next: (response) => {
+          alert('Monster created successfully!');
+          console.log('Monster created with response:', response);
+          this.router.navigate(['/create_monster']);
+        },
+        error: (error) => {
+          console.log('Error creating monster:', error);
+          console.error('Error creating monster:', error);
+          alert('Failed to create monster. Please try again.');
+        }
+      });
+    }
   }
 }

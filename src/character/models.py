@@ -3,6 +3,7 @@ from src.auth.models import User
 from sqlalchemy.orm import backref
 from flask import jsonify
 import json
+from datetime import datetime
 
 #----------------------------------------------------------
 #   Character table (Parent)
@@ -198,6 +199,145 @@ class UserSpell(db.Model):
         dict_repr.pop("_sa_instance_state", None)  # Remove SQLAlchemy internal state
         return f"<{self.__class__.__name__}({dict_repr})>"
 
+
+class UserMonster(db.Model):
+    __tablename__ = 'monsters'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    
+    # Basic Info
+    name = db.Column(db.String(100), nullable=False)
+    size = db.Column(db.String(50))
+    type = db.Column(db.String(50))
+    subtype = db.Column(db.String(50))
+    alignment = db.Column(db.String(50))
+    
+    # Combat Stats
+    armor_class = db.Column(db.Integer)
+    armor_type = db.Column(db.String(50))
+    hit_points_die_count = db.Column(db.Integer)
+    hit_points_value = db.Column(db.String(10))
+    hit_points_modifier = db.Column(db.Integer)
+    average_hp = db.Column(db.Integer)
+    speed = db.Column(db.Integer)
+    
+    # Ability Scores
+    strength = db.Column(db.Integer)
+    dexterity = db.Column(db.Integer)
+    constitution = db.Column(db.Integer)
+    intelligence = db.Column(db.Integer)
+    wisdom = db.Column(db.Integer)
+    charisma = db.Column(db.Integer)
+    
+    # Other Stats
+    initiative_bonus = db.Column(db.Integer)
+    proficiency_bonus = db.Column(db.Integer)
+    passive_perception = db.Column(db.Integer)
+    saving_throws = db.Column(db.Text)
+    skills = db.Column(db.Text)
+    
+    # Damage Properties
+    damage_vulnerabilities = db.Column(db.Text)
+    damage_resistances = db.Column(db.Text)
+    damage_immunities = db.Column(db.Text)
+    condition_immunities = db.Column(db.Text)
+    
+    # Senses and Languages
+    senses = db.Column(db.Text)
+    languages = db.Column(db.Text)
+    language_notes = db.Column(db.Text)
+    
+    # Challenge Rating
+    challenge_rating = db.Column(db.String(10))
+    
+    # Special Flags
+    is_legendary = db.Column(db.Boolean, default=False)
+    legendary_action_description = db.Column(db.Text)
+    is_mythic = db.Column(db.Boolean, default=False)
+    mythic_action_description = db.Column(db.Text)
+    has_lair = db.Column(db.Boolean, default=False)
+    lair_xp = db.Column(db.Integer)
+    lair_description = db.Column(db.Text)
+    
+    # Habitats
+    monster_habitats = db.Column(db.Text)
+    
+    # Equipment
+    gear = db.Column(db.Text)
+    
+    # Descriptions
+    description = db.Column(db.Text)
+    traits_description = db.Column(db.Text)
+    actions_description = db.Column(db.Text)
+    bonus_actions_description = db.Column(db.Text)
+    reactions_description = db.Column(db.Text)
+    monster_characteristics_description = db.Column(db.Text)
+    
+    # Timestamps
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    # Relationships
+    damage_adjustments = db.relationship('UserMonster_DamageAdjustments', backref='monster', lazy=True, cascade="all, delete-orphan")
+    traits = db.relationship('UserMonster_Traits', backref='monster', lazy=True, cascade="all, delete-orphan")
+    special_abilities = db.relationship('UserMonster_SpecialAbilitys', backref='monster', lazy=True, cascade="all, delete-orphan")
+    actions = db.relationship('UserMonster_Actions', backref='monster', lazy=True, cascade="all, delete-orphan")
+    bonus_actions = db.relationship('UserMonster_BonusActions', backref='monster', lazy=True, cascade="all, delete-orphan")
+    reactions = db.relationship('UserMonster_Reactions', backref='monster', lazy=True, cascade="all, delete-orphan")
+
+    # Images
+    #image_filename = db.Column(db.String(255))
+    #image_url = db.Column(db.String(255))
+
+class UserMonster_DamageAdjustments(db.Model):
+    __tablename__ = 'damage_adjustments'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    monster_id = db.Column(db.Integer, db.ForeignKey('monsters.id'), nullable=False)
+    type = db.Column(db.String(50))
+    adjustment_type = db.Column(db.String(50))  # Resist, Immune, Vulnerable
+    notes = db.Column(db.Text)
+
+class UserMonster_Traits(db.Model):
+    __tablename__ = 'traits'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    monster_id = db.Column(db.Integer, db.ForeignKey('monsters.id'), nullable=False)
+    name = db.Column(db.String(100))
+    description = db.Column(db.Text)
+
+class UserMonster_SpecialAbilitys(db.Model):
+    __tablename__ = 'special_abilities'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    monster_id = db.Column(db.Integer, db.ForeignKey('monsters.id'), nullable=False)
+    name = db.Column(db.String(100))
+    description = db.Column(db.Text)
+
+class UserMonster_Actions(db.Model):
+    __tablename__ = 'actions'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    monster_id = db.Column(db.Integer, db.ForeignKey('monsters.id'), nullable=False)
+    name = db.Column(db.String(100))
+    description = db.Column(db.Text)
+
+class UserMonster_BonusActions(db.Model):
+    __tablename__ = 'bonus_actions'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    monster_id = db.Column(db.Integer, db.ForeignKey('monsters.id'), nullable=False)
+    name = db.Column(db.String(100))
+    description = db.Column(db.Text)
+
+class UserMonster_Reactions(db.Model):
+    __tablename__ = 'reactions'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    monster_id = db.Column(db.Integer, db.ForeignKey('monsters.id'), nullable=False)
+    name = db.Column(db.String(100))
+    description = db.Column(db.Text)
 
 #----------------------------------------------------------
 #   D&D relation tables
