@@ -178,10 +178,11 @@ export class CreateSpellComponent implements OnInit {
     }
 
     const selectedComponents = this.spellComponents
-      .filter((component, index) => this.components.at(index).value)
-      .join(', ');
+      .filter((component, index) => this.components.at(index).value);
 
-    const materialDescription = this.isMaterialSelected ? ` (${this.spellForm.value.materialsDescription})` : '';
+    const materialDescription = selectedComponents.includes('M') && this.isMaterialSelected
+      ? ` (${this.spellForm.value.materialsDescription})`
+      : '';
 
     const conditions = this.conditionsArray.value.join(', ');
 
@@ -192,7 +193,8 @@ export class CreateSpellComponent implements OnInit {
 
     const spellData = {
       ...this.spellForm.value,
-      components: selectedComponents + materialDescription,
+      components: selectedComponents,
+      materialsDescription: materialDescription,
       conditions: conditions,
       range: rangeDescription,
       userID: this.currentUserID,

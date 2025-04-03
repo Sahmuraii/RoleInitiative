@@ -1,7 +1,7 @@
 .main-content {
   max-width: 1200px;
-  margin: auto;
-  padding: 20px;
+  padding: calc(var(--navbar-height) + 1rem) 2rem 2rem;
+  margin: 0 auto;
 }
 
 form {

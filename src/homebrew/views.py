@@ -378,13 +378,17 @@ def get_spells():
 
     try:
         spells = UserSpell.query.filter_by(user_id=user_id).all()
-        # Extract the spell data from the query results
         spells_data = [
             {
                 "spell_name": spell.spell_name,
                 "level": spell.level,
                 "school": spell.school,
                 "description": spell.description,
+                "casting_time": spell.casting_time, 
+                "spell_range": spell.range,
+                "components": spell.components,
+                "components_description": spell.materials_description,
+                "duration": spell.duration
             }
             for spell in spells
         ]
@@ -393,3 +397,92 @@ def get_spells():
     except Exception as e:
         print(f"Error fetching spells: {e}")
         return jsonify({"error": "Failed to fetch spells"}), 500
+
+@homebrew_bp.route('/monsters', methods=['GET'])
+def get_monsters():
+    user_id = request.args.get('userID')  # Get the user ID from the query parameters
+    if not user_id:
+        return jsonify({"error": "User ID is required"}), 400
+
+    try:
+        # Get all monsters for the user
+        monsters = UserMonster.query.filter_by(user_id=user_id).all()
+        
+        # Prepare the response data
+        monsters_data = []
+        for monster in monsters:
+            # Get related data from join tables
+            traits = UserMonster_Traits.query.filter_by(monster_id=monster.id).all()
+            special_abilities = UserMonster_SpecialAbilitys.query.filter_by(monster_id=monster.id).all()
+            actions = UserMonster_Actions.query.filter_by(monster_id=monster.id).all()
+            bonus_actions = UserMonster_BonusActions.query.filter_by(monster_id=monster.id).all()
+            reactions = UserMonster_Reactions.query.filter_by(monster_id=monster.id).all()
+            damage_adjustments = UserMonster_DamageAdjustments.query.filter_by(monster_id=monster.id).all()
+
+            # Build the monster object
+            monster_obj = {
+                "id": monster.id,
+                "name": monster.name,
+                "size": monster.size,
+                "type": monster.type,
+                "subtype": monster.subtype,
+                "alignment": monster.alignment,
+                "armorClass": monster.armor_class,
+                "armorType": monster.armor_type,
+                "hitPointsDieCount": monster.hit_points_die_count,
+                "hitPointsValue": monster.hit_points_value,
+                "hitPointsModifier": monster.hit_points_modifier,
+                "averageHP": monster.average_hp,
+                "speed": monster.speed,
+                "strength": monster.strength,
+                "dexterity": monster.dexterity,
+                "constitution": monster.constitution,
+                "intelligence": monster.intelligence,
+                "wisdom": monster.wisdom,
+                "charisma": monster.charisma,
+                "initiativeBonus": monster.initiative_bonus,
+                "proficiencyBonus": monster.proficiency_bonus,
+                "passivePerception": monster.passive_perception,
+                "savingThrows": monster.saving_throws,
+                "skills": monster.skills,
+                "damageVulnerabilities": monster.damage_vulnerabilities,
+                "damageResistances": monster.damage_resistances,
+                "damageImmunities": monster.damage_immunities,
+                "conditionImmunities": monster.condition_immunities,
+                "senses": monster.senses,
+                "languages": monster.languages,
+                "languageNotes": monster.language_notes,
+                "challengeRating": monster.challenge_rating,
+                "isLegendary": monster.is_legendary,
+                "legendaryActionDescription": monster.legendary_action_description,
+                "isMythic": monster.is_mythic,
+                "mythicActionDescription": monster.mythic_action_description,
+                "hasLair": monster.has_lair,
+                "lairXP": monster.lair_xp,
+                "lairDescription": monster.lair_description,
+                "monsterHabitats": monster.monster_habitats,
+                "gear": monster.gear,
+                "description": monster.description,
+                "traitsDescription": monster.traits_description,
+                "actionsDescription": monster.actions_description,
+                "bonusActionsDescription": monster.bonus_actions_description,
+                "reactionsDescription": monster.reactions_description,
+                "monsterCharacteristicsDescription": monster.monster_characteristics_description,
+                "traits": [{"name": t.name, "description": t.description} for t in traits],
+                "specialAbilities": [{"name": sa.name, "description": sa.description} for sa in special_abilities],
+                "actions": [{"name": a.name, "description": a.description} for a in actions],
+                "bonusActions": [{"name": ba.name, "description": ba.description} for ba in bonus_actions],
+                "reactions": [{"name": r.name, "description": r.description} for r in reactions],
+                "damageAdjustments": [{
+                    "type": da.type,
+                    "adjustmentType": da.adjustment_type,
+                    "notes": da.notes
+                } for da in damage_adjustments]
+            }
+            monsters_data.append(monster_obj)
+
+        return jsonify(monsters_data), 200
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error fetching monsters: {e}")
+        return jsonify({"error": "Failed to fetch monsters"}), 500

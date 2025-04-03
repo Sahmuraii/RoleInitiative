@@ -1,133 +1,151 @@
- /* Container for all spell cards */
- .spell-cards {
+  .spell-cards {
     display: flex;
     flex-wrap: wrap;
-    gap: 20px;
+    gap: 30px;
     margin-top: 20px;
   }
-  
-  /* Individual spell card */
-  .spell-card {
-    background-color: #ffffff;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+  .spell-stat-block {
+    background-color: #f9f2e0;
+    border: 1px solid #c9ad6a;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     padding: 20px;
-    width: 300px;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    width: 320px;
+    font-family: 'Times New Roman', serif;
+    color: #3a3a3a;
+    position: relative;
   }
-  
-  .spell-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+
+  .spell-stat-block::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 10px;
+    background: linear-gradient(to right, #8b5a2b, #c9ad6a, #8b5a2b);
+    border-radius: 5px 5px 0 0;
   }
-  
-  /* Spell header (name and level/school) */
+
   .spell-header {
+    text-align: center;
     margin-bottom: 15px;
   }
-  
-  .spell-header h4 {
+
+  .spell-name {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #58180D;
     margin: 0;
-    font-size: 1.5rem;
-    color: #333;
+    font-variant: small-caps;
+    letter-spacing: 1px;
   }
-  
-  .spell-level {
-    font-size: 0.9rem;
-    color: #666;
+
+  .spell-meta {
     font-style: italic;
+    margin: 5px 0;
   }
-  
-  /* Spell description */
+
+  .spell-divider {
+    height: 2px;
+    background: linear-gradient(to right, transparent, #c9ad6a, transparent);
+    margin: 10px 0;
+  }
+
+  .spell-attributes {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .spell-attribute {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .attribute-label {
+    font-weight: bold;
+  }
+
   .spell-description {
-    font-size: 0.9rem;
-    color: #444;
-    line-height: 1.5;
+    margin: 8px 0;
+    line-height: 1.4;
   }
 
-  /* Spell actions (e.g., Edit Button) */
-.spell-actions {
+  .spell-stat-block .edit-button {
     margin-top: 15px;
-    text-align: right;
-  }
-  
-  .edit-button {
-    background-color: #007bff; /* Blue color */
-    color: white;
-    border: none;
-    border-radius: 4px;
-    padding: 8px 16px;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-  }
-  
-  .edit-button:hover {
-    background-color: #0056b3; /* Darker blue on hover */
+    width: 100%;
+    background-color: #8b5a2b;
   }
 
-  /* Container for all background cards */
-.background-cards {
+  .spell-stat-block .edit-button:hover {
+    background-color: #6d4621;
+  }
+
+  .background-cards {
     display: flex;
     flex-wrap: wrap;
-    gap: 20px;
+    gap: 30px;
     margin-top: 20px;
   }
-  
-  /* Individual background card */
-  .background-card {
-    background-color: #ffffff;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+  .background-stat-block {
+    background-color: #f9f2e0;
+    border: 1px solid #c9ad6a;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     padding: 20px;
-    width: 300px;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    width: 320px;
+    font-family: 'Times New Roman', serif;
+    color: #3a3a3a;
+    position: relative;
   }
-  
-  .background-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+
+  .background-stat-block::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 10px;
+    background: linear-gradient(to right, #8b5a2b, #c9ad6a, #8b5a2b);
+    border-radius: 5px 5px 0 0;
   }
-  
-  /* Background header (name) */
+
   .background-header {
+    text-align: center;
     margin-bottom: 15px;
   }
-  
-  .background-header h4 {
+
+  .background-name {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #58180D;
     margin: 0;
-    font-size: 1.5rem;
-    color: #333;
+    font-variant: small-caps;
+    letter-spacing: 1px;
   }
-  
-  /* Background description */
+
+  .background-divider {
+    height: 2px;
+    background: linear-gradient(to right, transparent, #c9ad6a, transparent);
+    margin: 10px 0;
+  }
+
   .background-description {
-    font-size: 0.9rem;
-    color: #444;
-    line-height: 1.5;
+    margin: 8px 0;
+    line-height: 1.4;
   }
-  
-  /* Background actions (e.g., Edit Button) */
-  .background-actions {
+
+  .background-stat-block .edit-button {
     margin-top: 15px;
-    text-align: right;
+    width: 100%;
+    background-color: #8b5a2b;
   }
-  
-  .edit-button {
-    background-color: #007bff; /* Blue color */
-    color: white;
-    border: none;
-    border-radius: 4px;
-    padding: 8px 16px;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-  }
-  
-  .edit-button:hover {
-    background-color: #0056b3; /* Darker blue on hover */
+
+  .background-stat-block .edit-button:hover {
+    background-color: #6d4621;
   }
 
 .homebrew-content {
@@ -149,4 +167,154 @@
   
   .homebrew-section ul li {
     padding: 5px 0;
+  }
+
+  .monster-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  margin-top: 20px;
+  }
+
+  .monster-stat-block {
+  background-color: #f9f2e0;
+  border: 1px solid #c9ad6a;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  width: 320px;
+  font-family: 'Times New Roman', serif;
+  color: #3a3a3a;
+  position: relative;
+  }
+
+  .monster-stat-block::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 10px;
+  background: linear-gradient(to right, #8b5a2b, #c9ad6a, #8b5a2b);
+  border-radius: 5px 5px 0 0;
+  }
+
+  .monster-header {
+  text-align: center;
+  margin-bottom: 15px;
+  }
+
+  .monster-name {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #58180D;
+  margin: 0;
+  font-variant: small-caps;
+  letter-spacing: 1px;
+  }
+
+  .monster-meta {
+  font-style: italic;
+  margin: 5px 0;
+  }
+
+  .monster-divider {
+  height: 2px;
+  background: linear-gradient(to right, transparent, #c9ad6a, transparent);
+  margin: 10px 0;
+  }
+
+  .monster-attributes {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  }
+
+  .attribute {
+  display: flex;
+  justify-content: space-between;
+  }
+
+  .attribute-label {
+  font-weight: bold;
+  }
+
+  .monster-abilities {
+  display: flex;
+  justify-content: space-between;
+  text-align: center;
+  margin: 10px 0;
+  }
+
+  .ability {
+  display: flex;
+  flex-direction: column;
+  }
+
+  .ability-label {
+  font-weight: bold;
+  font-size: 0.9rem;
+  }
+
+  .ability-value {
+  font-size: 0.9rem;
+  }
+
+  .monster-feature {
+  margin: 8px 0;
+  }
+
+  .feature-label {
+  font-weight: bold;
+  font-style: italic;
+  }
+
+  .monster-actions {
+  margin-top: 15px;
+  }
+
+  .action-type {
+  font-size: 1.2rem;
+  font-variant: small-caps;
+  color: #58180D;
+  border-bottom: 2px solid #c9ad6a;
+  margin: 15px 0 5px 0;
+  padding-bottom: 3px;
+  }
+
+  .action {
+  margin: 8px 0;
+  }
+
+  .action-name {
+  font-weight: bold;
+  font-style: italic;
+  }
+
+  .action-description {
+  display: block;
+  margin-left: 15px;
+  }
+
+  .monster-stat-block .edit-button {
+  margin-top: 15px;
+  width: 100%;
+  background-color: #8b5a2b;
+  }
+
+  .monster-stat-block .edit-button:hover {
+  background-color: #6d4621;
+  }
+
+  .feature-value {
+    margin-left: 5px;
+  }
+
+  .ability-value {
+    font-size: 0.9rem;
+  }
+
+  .challenge-rating {
+    font-weight: normal;
+    font-style: italic;
   }

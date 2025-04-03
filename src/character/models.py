@@ -201,7 +201,7 @@ class UserSpell(db.Model):
 
 
 class UserMonster(db.Model):
-    __tablename__ = 'monsters'
+    __tablename__ = 'user_monster'
 
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
@@ -291,51 +291,51 @@ class UserMonster(db.Model):
     #image_url = db.Column(db.String(255))
 
 class UserMonster_DamageAdjustments(db.Model):
-    __tablename__ = 'damage_adjustments'
+    __tablename__ = 'usermonster_damageadjustments'
     
     id = db.Column(db.Integer, primary_key=True)
-    monster_id = db.Column(db.Integer, db.ForeignKey('monsters.id'), nullable=False)
+    monster_id = db.Column(db.Integer, db.ForeignKey('user_monster.id'), nullable=False)
     type = db.Column(db.String(50))
     adjustment_type = db.Column(db.String(50))  # Resist, Immune, Vulnerable
     notes = db.Column(db.Text)
 
 class UserMonster_Traits(db.Model):
-    __tablename__ = 'traits'
+    __tablename__ = 'usermonster_traits'
     
     id = db.Column(db.Integer, primary_key=True)
-    monster_id = db.Column(db.Integer, db.ForeignKey('monsters.id'), nullable=False)
+    monster_id = db.Column(db.Integer, db.ForeignKey('user_monster.id'), nullable=False)
     name = db.Column(db.String(100))
     description = db.Column(db.Text)
 
 class UserMonster_SpecialAbilitys(db.Model):
-    __tablename__ = 'special_abilities'
+    __tablename__ = 'usermonster_specialabilitys'
     
     id = db.Column(db.Integer, primary_key=True)
-    monster_id = db.Column(db.Integer, db.ForeignKey('monsters.id'), nullable=False)
+    monster_id = db.Column(db.Integer, db.ForeignKey('user_monster.id'), nullable=False)
     name = db.Column(db.String(100))
     description = db.Column(db.Text)
 
 class UserMonster_Actions(db.Model):
-    __tablename__ = 'actions'
+    __tablename__ = 'usermonster_actions'
     
     id = db.Column(db.Integer, primary_key=True)
-    monster_id = db.Column(db.Integer, db.ForeignKey('monsters.id'), nullable=False)
+    monster_id = db.Column(db.Integer, db.ForeignKey('user_monster.id'), nullable=False)
     name = db.Column(db.String(100))
     description = db.Column(db.Text)
 
 class UserMonster_BonusActions(db.Model):
-    __tablename__ = 'bonus_actions'
+    __tablename__ = 'usermonster_bonusactions'
     
     id = db.Column(db.Integer, primary_key=True)
-    monster_id = db.Column(db.Integer, db.ForeignKey('monsters.id'), nullable=False)
+    monster_id = db.Column(db.Integer, db.ForeignKey('user_monster.id'), nullable=False)
     name = db.Column(db.String(100))
     description = db.Column(db.Text)
 
 class UserMonster_Reactions(db.Model):
-    __tablename__ = 'reactions'
+    __tablename__ = 'usermonster_reactions'
     
     id = db.Column(db.Integer, primary_key=True)
-    monster_id = db.Column(db.Integer, db.ForeignKey('monsters.id'), nullable=False)
+    monster_id = db.Column(db.Integer, db.ForeignKey('user_monster.id'), nullable=False)
     name = db.Column(db.String(100))
     description = db.Column(db.Text)
 
