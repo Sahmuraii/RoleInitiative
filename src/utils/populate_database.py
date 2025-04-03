@@ -2,7 +2,7 @@ from src import db
 import requests
 
 from src.auth.models import User
-from src.character.models import DND_Class, DND_Race, DND_Condition, DND_Class_Feature, DND_Skill, Proficiency_Types, Proficiencies, DND_Race_Proficiency_Option, DND_Class_Proficiency_Option, Proficiency_List
+from src.character.models import DND_Class, DND_Race, DND_Condition, DND_Class_Feature, DND_Skill, Proficiency_Types, Proficiencies, DND_Race_Proficiency_Option, DND_Class_Proficiency_Option, Proficiency_List, DND_Spell
 
 DND_BASE_URL = "https://www.dnd5eapi.co"
 API_BASE_URL = "https://www.dnd5eapi.co/api"
@@ -12,6 +12,7 @@ API_CONDITION_URL = "https://www.dnd5eapi.co/api/conditions"
 API_CLASS_FEATURE_URL = "https://www.dnd5eapi.co/api/features"
 API_SKILLS_URL = "https://www.dnd5eapi.co/api/skills"
 API_PROFICIENCIES_URL = "https://www.dnd5eapi.co/api/proficiencies"
+API_SPELLS_URL = "https://www.dnd5eapi.co/api/spells"
 
 #Takes in a URL to an api, as well as any necessary headers
 #Returns the success of the API call, and the returned response (if any)
@@ -502,6 +503,149 @@ def fetch_and_populate_race_proficiencies():
         print(f"An error occurred: {e}")
 
 
+def fetch_and_populate_spells():
+    #Fetch all spells from the D&D API
+    success, response = fetch_api_info(API_SPELLS_URL, headers={"Accept": "application/json"})
+    if not success: return
+
+
+    # Extract the spells from the response
+    spells = response.json().get("results", [])
+
+    # Iterate over each spell
+    for spell in spells:
+        #fetch detailed information for each spell
+        existing_spell = DND_Spell.query.filter_by(spell_name=spell["name"]).first()
+        if existing_spell: continue
+
+        
+
+        success, api_details_response = fetch_api_info(f"{DND_BASE_URL}{spell['url']}", headers={"Accept": "application/json"})
+
+        # Check if the request was successful. Skip to the next spell
+        if not success: continue
+
+        # Grab spell details JSON from API
+        spell_details = api_details_response.json()
+
+        # Assemble the description into one string
+        full_description = ""
+        for string in spell_details['desc']:
+            full_description = full_description + string + " \n"
+
+        # Assemble the class and subclass arrays
+        classArray = []
+        for dnd_class in spell_details['classes']:
+            classArray.append(dnd_class['name'])
+
+        subclassArray = []
+        for dnd_subclass in spell_details['subclasses']:
+            subclassArray.append(dnd_subclass['name'])
+        
+        attack_type = None
+        try:
+            attack_type = spell_details['attack_type']
+        except:
+            attack_type = None
+
+        damage_slot_level = None
+        try:
+            damage_slot_level = spell_details['damage']['damage_at_slot_level']
+        except:
+            damage_slot_level = None
+
+        damage_char_level = None
+        try:
+            damage_char_level = spell_details['damage']['damage_at_character_level']
+        except:
+            damage_char_level = None
+
+        damage_type = None
+        try:
+            damage_type = spell_details['damage']['damage_type']['name']
+        except:
+            damage_type = None
+
+        heal_slot_level = None
+        try:
+            heal_slot_level = spell_details['heal_at_slot_level']
+        except:
+            heal_slot_level = None
+
+        dc_type = None
+        try:
+            dc_type = spell_details['dc']['dc_type']['index']
+        except:
+            dc_type = None
+
+        dc_success = None
+        try:
+            dc_success = spell_details['dc']['dc_success']
+        except:
+            dc_success = None
+
+        area_type = None
+        try:
+            area_type = spell_details['area_of_effect']['type']
+        except:
+            area_type = None
+
+        area_size = None
+        try:
+            area_size = spell_details['area_of_effect']['size']
+        except:
+            area_size = None
+
+        material = None
+        try:
+            material = spell_details['material']
+        except:
+            material = None
+
+        higher_level = None
+        try:
+            material = spell_details['higher_level'][0]
+        except:
+            material = None
+
+        
+
+        new_spell = DND_Spell(
+            spell_name = spell_details['name'],
+            spell_level = spell_details['level'],
+            spell_school = spell_details['school']['name'],
+            casting_time = spell_details['casting_time'],
+            attack_type = attack_type,
+            damage_slot_level = damage_slot_level,
+            damage_char_level = damage_char_level,
+            damage_type = damage_type,
+            heal_slot_level = heal_slot_level,
+            dc_type = dc_type,
+            dc_success = dc_success,
+            reaction_condition = "Reactions have conditions. Refer to outside of the SRD",
+            is_ritual = spell_details['ritual'],
+            is_concentration = spell_details['concentration'],
+            area_type = area_type,
+            area_size = area_size,
+            range = spell_details['range'],
+            components = spell_details['components'],
+            material = material,
+            duration = spell_details['duration'],
+            description = full_description,
+            higher_level = higher_level,
+            classes = classArray,
+            subclasses = subclassArray
+        )
+
+        db.session.add(new_spell)
+
+    # Commit all changes to the database
+    try:
+        db.session.commit()
+        print("Spells successfully populated!")
+    except Exception as e:
+        db.session.rollback()
+        print(f"An error occurred: {e}")
         
 
 def repopulate_empty_tables():
@@ -514,3 +658,4 @@ def repopulate_empty_tables():
     fetch_and_populate_proficiencies()
     fetch_and_populate_class_proficiencies()
     fetch_and_populate_race_proficiencies()
+    fetch_and_populate_spells()
