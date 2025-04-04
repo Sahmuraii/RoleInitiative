@@ -47,133 +47,13 @@ echo (1). Github Main Branch
 echo (2). Github Dev Branch
 echo (3). Local Files
 echo (4). *Custom Github branch
-choice /c 1234 /n /m "Enter the number (1, 2, 3, or 4): "
+echo (5). Github Dev Branch (Backend Only)
+choice /c 12345 /n /m "Enter the number (1, 2, 3, 4, or 5): "
 echo.
 
 :: Determine which Dockerfile to use based on user input
-if errorlevel 4 (
-	set /p choice="Enter the name of the branch: "
-	echo Creating Dockerfile1 (Custom - %choice%^)...
-	(
-		echo # Dockerfile - Custom-branch configuration
-		echo FROM python:3.12.7
-		echo.
-		echo ARG CACHEBUST=1
-		echo.
-		echo WORKDIR %appFolder%
-		echo RUN git clone -b %choice% https://github.com/Sahmuraii/RoleInitiative.git
-		echo.
-		echo WORKDIR %appFolder%%projectFolder%
-		echo COPY . . 
-		echo.
-		echo RUN pip install -r requirements.txt
-		echo.
-		echo EXPOSE 5000
-		echo.
-		echo #Run Github Branch
-		echo #WORKDIR %appFolder%%projectFolder%%appPath%
-		echo.
-		echo #Run local development
-		echo WORKDIR %appFolder%%projectFolder%%appPath%
-		echo.
-		echo ENTRYPOINT FLASK_APP=%appName% FLASK_DEBUG=1 flask run --port=5000 --host=0.0.0.0
-	) > %dockerfileBackendPath%
-	echo Creating Dockerfile2 (Custom - %choice%^)...
-	(
-		echo # Dockerfile - Custom-branch configuration - frontend
-		echo FROM node:22-alpine
-		echo.
-		echo ARG CACHEBUST=1
-		echo.
-		echo # Install git
-		echo RUN apk update ^&^& apk add --no-cache git
-		echo.
-		echo WORKDIR %appFolder%
-		echo RUN git clone -b %choice% https://github.com/Sahmuraii/RoleInitiative.git
-		echo.
-		echo WORKDIR %appFolder%%projectFolder%
-		echo COPY . . 
-		echo.
-		echo WORKDIR %appFolder%%projectFolder%%angularPath%
-		echo RUN npm config set strict-ssl false
-		echo RUN npm install -g @angular/cli
-		echo RUN npm install
-		echo RUN npm install -g http-server
-		echo.
-		echo RUN ng add @angular/material
-		echo.
-		echo EXPOSE 4200
-		echo.
-		echo # Set the working directory to the output folder of the Angular build
-		echo #WORKDIR %appFolder%%projectFolder%%angularPath%/dist/%angularAppName%
-		echo.
-		echo #ENTRYPOINT http-server . --port 4200
-		echo ENTRYPOINT ng serve --host 0.0.0.0
-	) > %dockerfileFrontendPath%
-	echo Using Dockerfile - Custom-branch configuration...
-) else if errorlevel 3 (
-	echo Creating Dockerfile1 (LocalFile^)...
-	(
-		echo # Dockerfile - Local File configuration
-		echo FROM python:3.12.7
-		echo.
-		echo ARG CACHEBUST=1
-		echo.
-		echo WORKDIR %appFolder%
-		echo #RUN git clone -b main https://github.com/Sahmuraii/RoleInitiative.git
-		echo #RUN git clone -b dev-branch https://github.com/Sahmuraii/RoleInitiative.git
-		echo.
-		echo WORKDIR %appFolder%%projectFolder%
-		echo COPY . . 
-		echo.
-		echo RUN pip install -r requirements.txt
-		echo.
-		echo EXPOSE 5000
-		echo.
-		echo #Run Github Branch
-		echo #WORKDIR %appFolder%%projectFolder%%appPath%
-		echo.
-		echo #Run local development
-		echo WORKDIR %appFolder%%projectFolder%%appPath%
-		echo.
-		echo ENTRYPOINT FLASK_APP=%appName% FLASK_DEBUG=1 flask run --port=5000 --host=0.0.0.0
-	) > %dockerfileBackendPath%
-	echo Creating Dockerfile2 (LocalFile^)...
-	(
-		echo # Dockerfile - Local File configuration - frontend
-		echo FROM node:22-alpine
-		echo.
-		echo ARG CACHEBUST=1
-		echo.
-		echo # Install git
-		echo RUN apk update ^&^& apk add --no-cache git
-		echo.
-		echo WORKDIR %appFolder%
-		echo #RUN git clone -b main https://github.com/Sahmuraii/RoleInitiative.git
-		echo #RUN git clone -b dev-branch https://github.com/Sahmuraii/RoleInitiative.git
-		echo.
-		echo WORKDIR %appFolder%%projectFolder%
-		echo COPY . . 
-		echo.
-		echo WORKDIR %appFolder%%projectFolder%%angularPath%
-		echo RUN npm config set strict-ssl false
-		echo RUN npm install -g @angular/cli
-		echo RUN npm install
-		echo RUN npm install -g http-server
-		echo.
-		echo RUN ng add @angular/material
-		echo.
-		echo EXPOSE 4200
-		echo.
-		echo # Set the working directory to the output folder of the Angular build
-		echo #WORKDIR %appFolder%%projectFolder%%angularPath%/dist/%angularAppName%
-		echo.
-		echo #ENTRYPOINT http-server . --port 4200
-		echo ENTRYPOINT ng serve --host 0.0.0.0
-	) > %dockerfileFrontendPath%
-	echo Using Dockerfile - Local File configuration...
-) else if errorlevel 2 (
-	echo Creating Dockerfile1 (DevGit^)...
+if errorlevel 5 (
+	echo Creating Backend Dockerfile (DevGit^)...
 	(
 		echo # Dockerfile - Developer Github configuration
 		echo FROM python:3.12.7
@@ -200,7 +80,168 @@ if errorlevel 4 (
 		echo.
 		echo ENTRYPOINT FLASK_APP=%appName% FLASK_DEBUG=1 flask run --port=5000 --host=0.0.0.0
     ) > %dockerfileBackendPath%
-	echo Creating Dockerfile2 (DevGit^)...
+	echo Creating Frontend Dockerfile (DevGit^)...
+	(
+		echo # Dockerfile - Developer Github configuration - frontend
+		echo FROM node:22-alpine
+		echo.
+		echo CMD sleep 1
+	) > %dockerfileFrontendPath%
+    echo Using Dockerfile - Developer Github configuration...
+) else if errorlevel 4 (
+	set /p choice="Enter the name of the branch: "
+	echo Creating Backend Dockerfile (Custom - %choice%^)...
+	(
+		echo # Dockerfile - Custom-branch configuration
+		echo FROM python:3.12.7
+		echo.
+		echo ARG CACHEBUST=1
+		echo.
+		echo WORKDIR %appFolder%
+		echo RUN git clone -b %choice% https://github.com/Sahmuraii/RoleInitiative.git
+		echo.
+		echo WORKDIR %appFolder%%projectFolder%
+		echo COPY . . 
+		echo.
+		echo RUN pip install -r requirements.txt
+		echo.
+		echo EXPOSE 5000
+		echo.
+		echo #Run Github Branch
+		echo #WORKDIR %appFolder%%projectFolder%%appPath%
+		echo.
+		echo #Run local development
+		echo WORKDIR %appFolder%%projectFolder%%appPath%
+		echo.
+		echo ENTRYPOINT FLASK_APP=%appName% FLASK_DEBUG=1 flask run --port=5000 --host=0.0.0.0
+	) > %dockerfileBackendPath%
+	echo Creating Frontend Dockerfile (Custom - %choice%^)...
+	(
+		echo # Dockerfile - Custom-branch configuration - frontend
+		echo FROM node:22-alpine
+		echo.
+		echo ARG CACHEBUST=1
+		echo.
+		echo # Install git
+		echo RUN apk update ^&^& apk add --no-cache git
+		echo.
+		echo WORKDIR %appFolder%
+		echo RUN git clone -b %choice% https://github.com/Sahmuraii/RoleInitiative.git
+		echo.
+		echo WORKDIR %appFolder%%projectFolder%
+		echo COPY . . 
+		echo.
+		echo WORKDIR %appFolder%%projectFolder%%angularPath%
+		echo RUN npm config set strict-ssl false
+		echo RUN npm install -g @angular/cli
+		echo RUN npm install
+		echo RUN npm install -g http-server
+		echo RUN npm install ngx-quill@25.3.3
+		echo RUN npm install quill
+		echo.
+		echo RUN ng add @angular/material
+		echo.
+		echo EXPOSE 4200
+		echo.
+		echo # Set the working directory to the output folder of the Angular build
+		echo #WORKDIR %appFolder%%projectFolder%%angularPath%/dist/%angularAppName%
+		echo.
+		echo #ENTRYPOINT http-server . --port 4200
+		echo ENTRYPOINT ng serve --host 0.0.0.0
+	) > %dockerfileFrontendPath%
+	echo Using Dockerfile - Custom-branch configuration...
+) else if errorlevel 3 (
+	echo Creating Backend Dockerfile (LocalFile^)...
+	(
+		echo # Dockerfile - Local File configuration
+		echo FROM python:3.12.7
+		echo.
+		echo ARG CACHEBUST=1
+		echo.
+		echo WORKDIR %appFolder%
+		echo #RUN git clone -b main https://github.com/Sahmuraii/RoleInitiative.git
+		echo #RUN git clone -b dev-branch https://github.com/Sahmuraii/RoleInitiative.git
+		echo.
+		echo WORKDIR %appFolder%%projectFolder%
+		echo COPY . . 
+		echo.
+		echo RUN pip install -r requirements.txt
+		echo.
+		echo EXPOSE 5000
+		echo.
+		echo #Run Github Branch
+		echo #WORKDIR %appFolder%%projectFolder%%appPath%
+		echo.
+		echo #Run local development
+		echo WORKDIR %appFolder%%projectFolder%%appPath%
+		echo.
+		echo ENTRYPOINT FLASK_APP=%appName% FLASK_DEBUG=1 flask run --port=5000 --host=0.0.0.0
+	) > %dockerfileBackendPath%
+	echo Creating Frontend Dockerfile (LocalFile^)...
+	(
+		echo # Dockerfile - Local File configuration - frontend
+		echo FROM node:22-alpine
+		echo.
+		echo ARG CACHEBUST=1
+		echo.
+		echo # Install git
+		echo RUN apk update ^&^& apk add --no-cache git
+		echo.
+		echo WORKDIR %appFolder%
+		echo #RUN git clone -b main https://github.com/Sahmuraii/RoleInitiative.git
+		echo #RUN git clone -b dev-branch https://github.com/Sahmuraii/RoleInitiative.git
+		echo.
+		echo WORKDIR %appFolder%%projectFolder%
+		echo COPY . . 
+		echo.
+		echo WORKDIR %appFolder%%projectFolder%%angularPath%
+		echo RUN npm config set strict-ssl false
+		echo RUN npm install -g @angular/cli
+		echo RUN npm install
+		echo RUN npm install -g http-server
+		echo RUN npm install ngx-quill@25.3.3
+		echo RUN npm install quill
+		echo.
+		echo RUN ng add @angular/material
+		echo.
+		echo EXPOSE 4200
+		echo.
+		echo # Set the working directory to the output folder of the Angular build
+		echo #WORKDIR %appFolder%%projectFolder%%angularPath%/dist/%angularAppName%
+		echo.
+		echo #ENTRYPOINT http-server . --port 4200
+		echo ENTRYPOINT ng serve --host 0.0.0.0
+	) > %dockerfileFrontendPath%
+	echo Using Dockerfile - Local File configuration...
+) else if errorlevel 2 (
+	echo Creating Backend Dockerfile (DevGit^)...
+	(
+		echo # Dockerfile - Developer Github configuration
+		echo FROM python:3.12.7
+		echo.
+		echo ARG CACHEBUST=1
+		echo.
+		echo WORKDIR %appFolder%
+		echo.
+		echo #RUN git clone -b main https://github.com/Sahmuraii/RoleInitiative.git
+		echo RUN git clone -b dev-branch https://github.com/Sahmuraii/RoleInitiative.git
+		echo.
+		echo WORKDIR %appFolder%%projectFolder%
+		echo COPY . . 
+		echo.
+		echo RUN pip install -r requirements.txt
+		echo.
+		echo EXPOSE 5000
+		echo.
+		echo #Run Github Branch
+		echo WORKDIR %appFolder%%projectFolder%%appPath%
+		echo.
+		echo #Run local development
+		echo #WORKDIR %appFolder%%appPath%
+		echo.
+		echo ENTRYPOINT FLASK_APP=%appName% FLASK_DEBUG=1 flask run --port=5000 --host=0.0.0.0
+    ) > %dockerfileBackendPath%
+	echo Creating Frontend Dockerfile (DevGit^)...
 	(
 		echo # Dockerfile - Developer Github configuration - frontend
 		echo FROM node:22-alpine
@@ -222,6 +263,8 @@ if errorlevel 4 (
 		echo RUN npm install -g @angular/cli
 		echo RUN npm install
 		echo RUN npm install -g http-server
+		echo RUN npm install ngx-quill@25.3.3
+		echo RUN npm install quill
 		echo.
 		echo RUN ng add @angular/material
 		echo.
@@ -235,7 +278,7 @@ if errorlevel 4 (
 	) > %dockerfileFrontendPath%
     echo Using Dockerfile - Developer Github configuration...
 ) else if errorlevel 1 (
-	echo Creating Dockerfile1 (MainGit^)...
+	echo Creating Backend Dockerfile (MainGit^)...
 	(
 		echo # Dockerfile - Main Github configuration
 		echo FROM python:3.12.7
@@ -262,7 +305,7 @@ if errorlevel 4 (
 		echo.
 		echo ENTRYPOINT FLASK_APP=%appName% FLASK_DEBUG=1 flask run --port=5000 --host=0.0.0.0
     ) > %dockerfileBackendPath%
-	echo Creating Dockerfile2 (MainGit^)...
+	echo Creating Frontend Dockerfile (MainGit^)...
 	(
 		echo # Dockerfile - Main Github configuration - frontend
 		echo FROM node:22-alpine
@@ -284,6 +327,8 @@ if errorlevel 4 (
 		echo RUN npm install -g @angular/cli
 		echo RUN npm install
 		echo RUN npm install -g http-server
+		echo RUN npm install ngx-quill@25.3.3
+		echo RUN npm install quill
 		echo.
 		echo RUN ng add @angular/material
 		echo.
@@ -297,7 +342,7 @@ if errorlevel 4 (
 	) > %dockerfileFrontendPath%
     echo Using Dockerfile - Main Github configuration...
 ) else (
-	echo Invalid choice. Please enter 1, 2, 3, or 4.
+	echo Invalid choice. Please enter 1, 2, 3, 4, or 5.
 	echo Closing in 5 seconds...
 	timeout /t 5 /nobreak >nul
 	exit /b 1
@@ -351,7 +396,7 @@ echo Creating Docker-Compose
 	echo                 - "no-cache=true"
 	echo         image: %frontendImageName%
 	echo         container_name: %frontendContainerName%
-	echo         restart: always
+	echo         restart: on-failure
 	echo         ports:
 	echo             - "4200:4200"
 	echo         networks:
