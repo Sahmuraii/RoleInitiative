@@ -170,6 +170,35 @@ class DND_Spell(db.Model):
     def __repr__(self):
         dict_repr = self.__dict__; [dict_repr.pop(i, None) for i in ["_sa_instance_state"]]
         return f"<{self.__class__.__name__}({self.__dict__})>"
+    
+    def serialize(self):
+        return {
+            "spell_id": self.spell_id,
+            "spell_name": self.spell_name,
+            "spell_level": self.spell_level,
+            "spell_school": self.spell_school,
+            "casting_time": self.casting_time,
+            "attack_type": self.attack_type,
+            "damage_slot_level": self.damage_slot_level,
+            "damage_char_level": self.damage_char_level,
+            "damage_type": self.damage_type,
+            "heal_slot_level": self.heal_slot_level,
+            "dc_type": self.dc_type,
+            "dc_success": self.dc_success,
+            "reaction_condition": self.reaction_condition,
+            "is_ritual": self.is_ritual,
+            "is_concentration": self.is_concentration,
+            "area_type": self.area_type,
+            "area_size": self.area_size,
+            "range": self.range,
+            "components": self.components,
+            "material": self.material,
+            "duration": self.duration,
+            "description": self.description,
+            "higher_level": self.higher_level,
+            "classes": self.classes,
+            "subclasses": self.subclasses,
+        }
 
 class UserSpell(db.Model):
     __tablename__ = 'user_spell'

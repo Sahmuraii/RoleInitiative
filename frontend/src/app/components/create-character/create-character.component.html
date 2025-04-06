@@ -11,8 +11,9 @@
         <button #tab class="tab" (click)="showTab('class')" [ngClass]="{'active' : !hiddenArray[2]}">Class</button>
         <button #tab class="tab" (click)="showTab('class_proficiencies')" [ngClass]="{'active' : !hiddenArray[3]}">Class Proficiencies</button>
         <button #tab class="tab" (click)="showTab('attributes')" [ngClass]="{'active' : !hiddenArray[4]}">Attributes</button>
-        <button #tab class="tab" (click)="showTab('details')" [ngClass]="{'active' : !hiddenArray[5]}">Character Details</button>
-        <button #tab class="tab" (click)="showTab('equipment')" [ngClass]="{'active' : !hiddenArray[6]}">Equipment</button>
+        <button #tab class="tab" (click)="showTab('spells')" [ngClass]="{'active' : !hiddenArray[5]}">Spells</button>
+        <button #tab class="tab" (click)="showTab('details')" [ngClass]="{'active' : !hiddenArray[6]}">Character Details</button>
+        <button #tab class="tab" (click)="showTab('equipment')" [ngClass]="{'active' : !hiddenArray[7]}">Equipment</button>
         <!-- {% if current_user.is_admin %}
             <button class="tab" onclick="showTab('debug')">Admin Tab</button>
         {% else %}
@@ -309,8 +310,15 @@
                 
             </div>
 
+
+            <!-- Spells -->
+             <div id="spells" [hidden]="hiddenArray[5]">
+                <spell-display></spell-display>
+                <spell-display></spell-display>
+             </div>
+
             <!-- Character Details -->
-            <div id="details" [hidden]="hiddenArray[5]">
+            <div id="details" [hidden]="hiddenArray[6]">
                 <h2>Character Details</h2><br>
                 <p>All fields on this page are optional.</p>
                 <h3>Personality Traits:</h3>
@@ -363,7 +371,7 @@
             </div>
 
             <!-- Equipment -->
-            <div id="equipment" [hidden]="hiddenArray[6]">
+            <div id="equipment" [hidden]="hiddenArray[7]">
                 <h2>Starting Equipment</h2>
                 <p>Select starting equipment based on your background, class, and race:</p>
                 <!-- Generate dynamically based on above-mentioned -->

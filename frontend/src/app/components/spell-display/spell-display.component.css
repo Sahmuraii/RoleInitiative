@@ -1,0 +1,46 @@
+.spell-display {
+    background-color: #f9f2e0;
+    border: 1px solid #c9ad6a;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    width: 70%;
+    font-family: 'Times New Roman', serif;
+    color: #3a3a3a;
+    position: relative;
+}
+
+.spell-text {
+    display:inline-block;
+    padding-right: 10%;
+}
+
+.spell-name {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #58180D;
+    margin: 0;
+    font-variant: small-caps;
+    letter-spacing: 1px;
+}
+
+.spell-subtext {
+    font-size: 0.8rem;
+    color: rgb(92, 92, 92);
+    text-align:center;
+}
+
+.spell-category {
+    font-size: 0.9rem;
+    color: #58180D;
+    font-weight: bold;
+}
+
+.spell-button {
+    padding-left: 2.5%;
+    padding-right: 2.5%;
+    padding-top: 1%;
+    padding-bottom: 1%;
+    border:0px;
+    background-color:#58180D;
+}

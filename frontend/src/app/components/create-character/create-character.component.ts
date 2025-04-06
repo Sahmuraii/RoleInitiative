@@ -12,12 +12,13 @@ import { MatSnackBar, MatSnackBarModule, MatSnackBarConfig } from '@angular/mate
 import test from 'node:test';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
+import { SpellDisplayComponent } from "../spell-display/spell-display.component";
 
 
 @Component({
   selector: 'app-create-character',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, FormsModule, MatSnackBarModule],
+  imports: [ReactiveFormsModule, CommonModule, FormsModule, MatSnackBarModule, SpellDisplayComponent],
   templateUrl: './create-character.component.html',
   styleUrl: './create-character.component.css'
 })
@@ -62,7 +63,7 @@ export class CreateCharacterComponent implements OnInit {
 
   
 
-  hiddenArray = [false, true, true, true, true, true, true]
+  hiddenArray = [false, true, true, true, true, true, true, true]
   // Cosntructor changed to initalized formGroup
   constructor(private fb: FormBuilder, private snackbar: MatSnackBar, private router: Router) {
     // Initialize the form with a FormArray for class levels
@@ -565,31 +566,35 @@ export class CreateCharacterComponent implements OnInit {
   public showTab(tabId: string) {
     switch(tabId) {
       case "basicInfo": {
-        this.hiddenArray = [false, true, true, true, true, true, true]
+        this.hiddenArray = [false, true, true, true, true, true, true, true]
         break;
       }
       case "race": {
-        this.hiddenArray = [true, false, true, true, true, true, true]
+        this.hiddenArray = [true, false, true, true, true, true, true, true]
         break; 
       }
       case "class": {
-        this.hiddenArray = [true, true, false, true, true, true, true];
+        this.hiddenArray = [true, true, false, true, true, true, true, true];
         break;
       }
       case "class_proficiencies": {
-        this.hiddenArray = [true, true, true, false, true, true, true]
+        this.hiddenArray = [true, true, true, false, true, true, true, true]
         break;
       }
       case "attributes": {
-        this.hiddenArray = [true, true, true, true, false, true, true]
+        this.hiddenArray = [true, true, true, true, false, true, true, true]
+        break;
+      }
+      case "spells": {
+        this.hiddenArray = [true, true, true, true, true, false, true, true]
         break;
       }
       case "details": {
-        this.hiddenArray = [true, true, true, true, true, false, true]
+        this.hiddenArray = [true, true, true, true, true, true, false, true]
         break;
       }
       case "equipment": {
-        this.hiddenArray = [true, true, true, true, true, true, false]
+        this.hiddenArray = [true, true, true, true, true, true, true, false]
         break;
       }
     }
