@@ -11,8 +11,9 @@
 }
 
 .spell-text {
-    display:inline-block;
+    display: inline-block;
     padding-right: 10%;
+    vertical-align: middle;
 }
 
 .spell-name {
@@ -27,7 +28,7 @@
 .spell-subtext {
     font-size: 0.8rem;
     color: rgb(92, 92, 92);
-    text-align:center;
+    text-align: center;
 }
 
 .spell-category {
@@ -37,10 +38,11 @@
 }
 
 .spell-button {
-    padding-left: 2.5%;
-    padding-right: 2.5%;
-    padding-top: 1%;
-    padding-bottom: 1%;
-    border:0px;
-    background-color:#58180D;
+    padding: 6px 12px;
+    border: 0;
+    background-color: #58180D;
+    color: white;
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 10px;
 }

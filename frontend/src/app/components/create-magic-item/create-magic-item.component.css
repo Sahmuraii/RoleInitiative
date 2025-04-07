@@ -1,0 +1,135 @@
+.main-content {
+    --navbar-height: 80px;
+    max-width: 1200px;
+    margin: auto;
+    padding: calc(var(--navbar-height) + 1rem) 2rem 2rem;
+  }
+  
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .section {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    background-color: #f9f9f9;
+  }
+  
+  .section h2 {
+    margin-top: 0;
+    color: #333;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 8px;
+  }
+  
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 15px;
+  }
+  
+  .row > div {
+    flex: 1;
+    min-width: 200px;
+  }
+  
+  .row.full-width > div {
+    flex: 0 0 100%;
+  }
+  
+  label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  
+  input, select, textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  textarea {
+    min-height: 100px;
+    resize: vertical;
+  }
+  
+  .checkbox-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+  }
+  
+  .checkbox-row input[type="checkbox"] {
+    width: auto;
+  }
+  
+  .modifier-entry, .condition-entry, .spell-entry {
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    border: 1px solid #eee;
+  }
+  
+  .remove-btn {
+    background-color: #ff4444;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+  
+  .remove-btn:hover {
+    background-color: #cc0000;
+  }
+  
+  button[type="submit"] {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  button[type="submit"]:hover {
+    background-color: #45a049;
+  }
+
+  quill-editor {
+    width: 100%;
+    margin-bottom: 15px;
+  }
+  
+  .ql-container {
+    min-height: 150px;
+    border-radius: 0 0 5px 5px;
+  }
+  
+  .ql-toolbar {
+    border-radius: 5px 5px 0 0;
+    border: 1px solid #ccc !important;
+  }
+  
+  .ql-container {
+    border: 1px solid #ccc !important;
+    border-top: none !important;
+  }
+  
+  select[multiple] {
+    height: auto;
+    min-height: 100px;
+  }
+  
+  select[multiple] option {
+    padding: 5px;
+  }
