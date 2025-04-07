@@ -1,0 +1,303 @@
+<div class="homebrew-content">
+  <h2>My Homebrew</h2>
+  <div class="homebrew-section">
+      <h3>Monsters</h3>
+      @if (monsters.length > 0) {
+        <div class="monster-cards">
+          @for (monster of monsters; track monster.id) {
+            <div class="monster-stat-block">
+              <div class="monster-header">
+                <h4 class="monster-name">{{ monster.name }}</h4>
+                <div class="monster-meta">
+                  <span class="monster-size-type">{{ monster.size }} {{ monster.type }}</span>
+                  @if (monster.alignment) {
+                    <span class="monster-alignment">, {{ monster.alignment }}</span>
+                  }
+                </div>
+              </div>
+              
+              <div class="monster-divider"></div>
+              <div class="monster-attributes">
+                <div class="attribute">
+                  <span class="attribute-label">Armor Class</span>
+                  <span class="attribute-value">
+                    {{ monster.armorClass }}
+                    @if (monster.armorType && monster.armorType !== 'None') {
+                      ({{ monster.armorType }})
+                    }
+                  </span>
+                </div>
+                <div class="attribute">
+                  <span class="attribute-label">Hit Points</span>
+                  <span class="attribute-value">
+                    {{ monster.averageHP }} 
+                    @if (monster.hitPointsDieCount && monster.hitPointsValue) {
+                        ({{ monster.hitPointsDieCount }}{{ monster.hitPointsValue }}{{ monster.hitPointsModifier >= 0 ? '+' : '' }}{{ monster.hitPointsModifier }})
+                    }
+                  </span>
+                </div>
+                <div class="attribute">
+                  <span class="attribute-label">Speed</span>
+                  <span class="attribute-value">
+                    @if (monster.speed) {
+                      {{ monster.speed }} ft.
+                    }
+                  </span>
+                </div>
+              </div>
+              
+              <div class="monster-divider"></div>
+              
+              <div class="monster-abilities">
+                <div class="ability">
+                  <span class="ability-label">STR</span>
+                  <span class="ability-value">
+                    {{ monster.strength }} ({{ getModifier(monster.strength) }})
+                  </span>
+                </div>
+                <div class="ability">
+                  <span class="ability-label">DEX</span>
+                  <span class="ability-value">
+                    {{ monster.dexterity }} ({{ getModifier(monster.dexterity) }})
+                  </span>
+                </div>
+                <div class="ability">
+                  <span class="ability-label">CON</span>
+                  <span class="ability-value">
+                    {{ monster.constitution }} ({{ getModifier(monster.constitution) }})
+                  </span>
+                </div>
+                <div class="ability">
+                  <span class="ability-label">INT</span>
+                  <span class="ability-value">
+                    {{ monster.intelligence }} ({{ getModifier(monster.intelligence) }})
+                  </span>
+                </div>
+                <div class="ability">
+                  <span class="ability-label">WIS</span>
+                  <span class="ability-value">
+                    {{ monster.wisdom }} ({{ getModifier(monster.wisdom) }})
+                  </span>
+                </div>
+                <div class="ability">
+                  <span class="ability-label">CHA</span>
+                  <span class="ability-value">
+                    {{ monster.charisma }} ({{ getModifier(monster.charisma) }})
+                  </span>
+                </div>
+              </div>
+              
+              <div class="monster-divider"></div>
+              
+              @if (monster.savingThrows) {
+                <div class="monster-feature">
+                  <span class="feature-label">Saving Throws</span>
+                  <span class="feature-value">
+                    {{ formatSavingThrows(monster.savingThrows) }}
+                  </span>
+                </div>
+              }
+              
+              @if (monster.skills) {
+                <div class="monster-feature">
+                  <span class="feature-label">Skills</span>
+                  <span class="feature-value">
+                    {{ formatSkills(monster.skills) }}
+                  </span>
+                </div>
+              }
+              
+              @if (monster.damageVulnerabilities) {
+                <div class="monster-feature">
+                  <span class="feature-label">Damage Vulnerabilities</span>
+                  <span class="feature-value">
+                    {{ formatList(monster.damageVulnerabilities) }}
+                  </span>
+                </div>
+              }
+              
+              @if (monster.damageResistances) {
+                <div class="monster-feature">
+                  <span class="feature-label">Damage Resistances</span>
+                  <span class="feature-value">
+                    {{ formatList(monster.damageResistances) }}
+                  </span>
+                </div>
+              }
+              
+              @if (monster.damageImmunities) {
+                <div class="monster-feature">
+                  <span class="feature-label">Damage Immunities</span>
+                  <span class="feature-value">
+                    {{ formatList(monster.damageImmunities) }}
+                  </span>
+                </div>
+              }
+              
+              @if (monster.conditionImmunities) {
+                <div class="monster-feature">
+                  <span class="feature-label">Condition Immunities</span>
+                  <span class="feature-value">
+                    {{ formatList(monster.conditionImmunities) }}
+                  </span>
+                </div>
+              }
+              
+              @if (monster.senses) {
+                <div class="monster-feature">
+                  <span class="feature-label">Senses</span>
+                  <span class="feature-value">
+                    {{ formatList(monster.senses) }}
+                  </span>
+                </div>
+              }
+              
+              @if (monster.languages) {
+                <div class="monster-feature">
+                  <span class="feature-label">Languages</span>
+                  <span class="feature-value">
+                    {{ formatList(monster.languages) }}
+                  </span>
+                </div>
+              }
+              
+              <div class="monster-feature">
+                <span class="feature-label">Challenge</span>
+                <span class="feature-value">
+                  @if (monster.challengeRating === '0') {
+                    0 (0 XP)
+                  } @else {
+                    {{ monster.challengeRating }} ({{ calculateXP(monster.challengeRating) }} XP)
+                  }
+                </span>
+              </div>
+              
+              <div class="monster-divider"></div>
+              
+              @if (monster.traits && monster.traits.length > 0) {
+                <div class="monster-actions">
+                  <h5 class="action-type">Traits</h5>
+                  <div class="action-list">
+                    @for (trait of monster.traits; track $index) {
+                      <div class="action">
+                        <span class="action-name">{{ trait.name }}.</span>
+                        <span class="action-description">{{ trait.description }}</span>
+                      </div>
+                    }
+                  </div>
+                </div>
+              }
+              
+              @if (monster.actions && monster.actions.length > 0) {
+                <div class="monster-actions">
+                  <h5 class="action-type">Actions</h5>
+                  <div class="action-list">
+                    @for (action of monster.actions; track $index) {
+                      <div class="action">
+                        <span class="action-name">{{ action.name }}.</span>
+                        <span class="action-description">{{ action.description }}</span>
+                      </div>
+                    }
+                  </div>
+                </div>
+              }
+              
+              <div class="monster-actions">
+                <button class="edit-button" (click)="navigateToEditMonster(monster.id)">Edit</button>
+              </div>
+            </div>
+          }
+        </div>
+      } @else {
+        <p>No monsters created yet.</p>
+      }
+    </div>
+    
+    <div class="homebrew-section">
+      <h3>Spells</h3>
+      @if (spells.length > 0) {
+        <div class="spell-cards">
+          @for (spell of spells; track spell.id) {
+            <div class="spell-stat-block">
+              <div class="spell-header">
+                <h4 class="spell-name">{{ spell.spell_name }}</h4>
+                <div class="spell-meta">
+                  <span>{{ spell.level }} {{ spell.school }}</span>
+                </div>
+              </div>
+              
+              <div class="spell-divider"></div>
+              
+              <div class="spell-attributes">
+                @if (spell.casting_time) {
+                  <div class="spell-attribute">
+                    <span class="attribute-label">Casting Time</span>
+                    <span>{{ spell.casting_time }}</span>
+                  </div>
+                }
+                @if (spell.spell_range) {
+                  <div class="spell-attribute">
+                    <span class="attribute-label">Range</span>
+                    <span>{{ spell.spell_range }}</span>
+                  </div>
+                }
+                @if (spell.components) {
+                  <div class="spell-attribute">
+                    <span class="attribute-label">Components</span>
+                    <span>{{ spell.components }}</span>
+                  </div>
+                }
+                @if (spell.duration) {
+                  <div class="spell-attribute">
+                    <span class="attribute-label">Duration</span>
+                    <span>{{ spell.duration }}</span>
+                  </div>
+                }
+              </div>
+              
+              @if (spell.casting_time || spell.spell_range || spell.components || spell.duration) {
+                <div class="spell-divider"></div>
+              }
+              
+              <div class="spell-description">
+                <p>{{ spell.description }}</p>
+              </div>
+              
+              <div class="spell-actions">
+                <button class="edit-button" (click)="navigateToEditSpells(spell.id)">Edit</button>
+              </div>
+            </div>
+          }
+        </div>
+      } @else {
+        <p>No spells created yet.</p>
+      }
+    </div>
+
+    <div class="homebrew-section">
+      <h3>Backgrounds</h3>
+      @if (backgrounds.length > 0) {
+        <div class="background-cards">
+          @for (background of backgrounds; track background.id) {
+            <div class="background-stat-block">
+              <div class="background-header">
+                <h4 class="background-name">{{ background.background_name }}</h4>
+              </div>
+              
+              <div class="background-divider"></div>
+              
+              <div class="background-description">
+                <p>{{ background.background_description }}</p>
+              </div>
+              
+              <div class="background-actions">
+                <button class="edit-button" (click)="navigateToEditBackground(background.id)">Edit</button>
+              </div>
+            </div>
+          }
+        </div>
+      } @else {
+        <p>No backgrounds created yet.</p>
+      }
+    </div>
+</div>

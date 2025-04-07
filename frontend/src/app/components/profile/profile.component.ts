@@ -1,8 +1,9 @@
 import { Component, inject, Inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { CommonModule } from '@angular/common'; 
+import { CommonModule } from '@angular/common';
 import { MyHomebrewComponent } from '../my-homebrew/my-homebrew.component';
+import { SavedHomebrewComponent } from '../saved-homebrew/saved-homebrew.component';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list'
 import { HttpClient } from '@angular/common/http';
@@ -12,8 +13,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-profile',
-  standalone: true, 
-  imports: [CommonModule, MyHomebrewComponent, MatSidenavModule, MatListModule, RouterLink, MatTooltipModule], 
+  standalone: true,
+  imports: [CommonModule, MyHomebrewComponent, SavedHomebrewComponent, MatSidenavModule, MatListModule, RouterLink, MatTooltipModule],
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.css']
 })
@@ -23,13 +24,13 @@ export class ProfileComponent implements OnInit {
   userId: number | null = null;
   email: string = '';
   selectedTab: string = 'overview';
-  hiddenArray = [false, true, true];
+  hiddenArray = [false, true, true, true];
   currentUser: any;
   authService = inject(AuthService);
 
   constructor(
     private route: ActivatedRoute,
-    private http: HttpClient,
+    private http: HttpClient
   ) {}
 
   ngOnInit(): void {
@@ -46,15 +47,19 @@ export class ProfileComponent implements OnInit {
   public showTab(tabId: string) {
     switch(tabId) {
       case "myProfile": {
-        this.hiddenArray = [false, true, true];
+        this.hiddenArray = [false, true, true, true];
         break;
       }
       case "myCharacters": {
-        this.hiddenArray = [true, false, true];
+        this.hiddenArray = [true, false, true, true];
         break;
       }
       case "myHomebrew": {
-        this.hiddenArray = [true, true, false];
+        this.hiddenArray = [true, true, false, true];
+        break;
+      }
+      case "savedCommunity": {
+        this.hiddenArray = [true, true, true, false];
         break;
       }
     }

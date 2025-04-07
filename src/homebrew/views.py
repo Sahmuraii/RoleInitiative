@@ -1,10 +1,13 @@
 from flask import render_template, Blueprint, request, redirect, url_for, jsonify
-from src import db 
-from src.character.models import UserBackground, UserSpell
-from src.character.models import UserMonster, UserMonster_Actions, UserMonster_BonusActions, UserMonster_DamageAdjustments, UserMonster_Reactions, UserMonster_SpecialAbilitys, UserMonster_Traits
+from src import db
+from src.character.models import (UserBackground, UserSpell, UserMonster,
+                                  UserMonster_Actions, UserMonster_BonusActions, UserMonster_DamageAdjustments,
+                                  UserMonster_Reactions, UserMonster_SpecialAbilitys, UserMonster_Traits)
 import os 
 import uuid 
 import json
+
+from src.homebrew.models import SavedHomebrew
 
 homebrew_bp = Blueprint('homebrew_bp', __name__, template_folder='../templates')
 
@@ -486,3 +489,60 @@ def get_monsters():
         db.session.rollback()
         print(f"Error fetching monsters: {e}")
         return jsonify({"error": "Failed to fetch monsters"}), 500
+
+@homebrew_bp.route('/save-homebrew', methods=['POST'])
+def save_homebrew():
+    user_id = request.args.get('userID')   # Get the user ID from the query parameters
+    data = request.json
+    content_type = data.get('content_type')
+    content_id = data.get('content_id')
+
+    if not content_type or not content_id:
+        return jsonify({"error": "Missing content_type or content_id"}), 400
+
+    existing = SavedHomebrew.query.filter_by(
+        user_id=user_id,
+        content_type=content_type,
+        content_id=content_id
+    ).first()
+
+    if existing:
+        return jsonify({"message": "Already saved"}), 200
+
+    new_save = SavedHomebrew(
+        user_id=user_id,
+        content_type=content_type,
+        content_id=content_id
+    )
+    db.session.add(new_save)
+    db.session.commit()
+
+    return jsonify({"message": "Saved!"}), 201
+
+@homebrew_bp.route('/saved-homebrew', methods=['GET'])
+def get_saved_homebrew():
+    user_id = request.args.get('userID')   # Get the user ID from the query parameters
+    saved_items = SavedHomebrew.query.filter_by(user_id=user_id).all()
+
+    grouped = {"spell": [], "background": [], "monster": []}
+
+    #print(f"User ID: {user_id}")
+    #print(f"Saved items: {[{'type': i.content_type, 'id': i.content_id} for i in saved_items]}")
+
+    for item in saved_items:
+        model = None
+        if item.content_type == "spell":
+            #print(f"Trying to load spell with ID {item.content_id}")
+            model = UserSpell.query.get(item.content_id)
+        elif item.content_type == "background":
+            model = UserBackground.query.get(item.content_id)
+        elif item.content_type == "monster":
+            model = UserMonster.query.get(item.content_id)
+
+        if model:
+            model_dict = model.__dict__.copy()
+            model_dict.pop('_sa_instance_state', None)
+            grouped[item.content_type].append(model_dict)
+        #print(model) test to see full model
+
+    return jsonify(grouped)
