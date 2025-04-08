@@ -3,6 +3,7 @@ from src import db
 from src.character.models import (UserBackground, UserSpell, UserMonster,
                                   UserMonster_Actions, UserMonster_BonusActions, UserMonster_DamageAdjustments,
                                   UserMonster_Reactions, UserMonster_SpecialAbilitys, UserMonster_Traits)
+from sqlalchemy.inspection import inspect
 import os 
 import uuid 
 import json
@@ -546,3 +547,36 @@ def get_saved_homebrew():
         #print(model) test to see full model
 
     return jsonify(grouped)
+
+def to_dict(model):
+    return {c.key: getattr(model, c.key) for c in inspect(model).mapper.column_attrs}
+
+@homebrew_bp.route('/search', methods=['GET'])
+def search_homebrew():
+    content_type = request.args.get('type')
+    query = request.args.get('query', '')
+    page = int(request.args.get('page', 1))
+    page_size = int(request.args.get('pageSize', 20))
+
+    model_map = {
+        "spell": UserSpell,
+        "background": UserBackground,
+        "monster": UserMonster
+    }
+
+    model = model_map.get(content_type)
+    if not model:
+        return jsonify({"error": "Invalid type"}), 400
+
+    base_query = model.query
+    if query:
+        base_query = base_query.filter(model.spell_name.ilike(f"%{query}%")) if content_type == "spell" else \
+                     base_query.filter(model.name.ilike(f"%{query}%"))
+
+    total_items = base_query.count()
+    items = base_query.offset((page - 1) * page_size).limit(page_size).all()
+
+    return jsonify({
+        "items": [to_dict(item) for item in items],
+        "totalPages": (total_items + page_size - 1) // page_size
+    })

@@ -1,0 +1,32 @@
+<div class="main-content">
+    <div class="search-container">
+    <h2>Homebrew Search</h2>
+
+    <select [(ngModel)]="selectedType" (change)="onTypeChange()">
+      <option value="spell">Spells</option>
+      <option value="background">Backgrounds</option>
+      <option value="monster">Monsters</option>
+    </select>
+
+    <input
+      type="text"
+      placeholder="Search..."
+      [(ngModel)]="searchQuery"
+      (keyup.enter)="search()"
+    />
+    <button (click)="search()">Search</button>
+
+    <div *ngIf="results.length === 0">No results found.</div>
+    <ul>
+      <li *ngFor="let item of results">
+        {{ item.spell_name || item.name || item.title }}
+      </li>
+    </ul>
+
+    <div class="pagination">
+      <button (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 1">Previous</button>
+      <span>Page {{ currentPage }}</span>
+      <button (click)="onPageChange(currentPage + 1)" [disabled]="!hasMoreResults">Next</button>
+    </div>
+  </div>
+</div>

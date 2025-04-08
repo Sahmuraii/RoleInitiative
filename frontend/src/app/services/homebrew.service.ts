@@ -19,4 +19,15 @@ export class HomebrewService {
   getSavedHomebrew(userId: number): Observable<any> {
     return this.http.get(`${API_URL}/saved-homebrew`, { params: { userID: userId.toString() } });
   }
+
+  searchHomebrew(type: string, query: string, page: number): Observable<any> {
+    return this.http.get(`${API_URL}/search`, {
+      params: {
+        type,
+        query,
+        page: page.toString()
+      }
+    });
+  }
+
 }

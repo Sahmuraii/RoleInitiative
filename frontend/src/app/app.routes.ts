@@ -12,9 +12,11 @@ import { EditSpellComponent } from './components/edit-spell/edit-spell.component
 import { EditBackgroundComponent } from './components/edit-background/edit-background.component';
 import { CreateMonsterComponent } from './components/create-monster/create-monster.component';
 import { CreateMagicItemComponent } from './components/create-magic-item/create-magic-item.component';
+import { SearchComponent } from './components/search/search.component';
 
 export const routes: Routes = [
   { path: 'home', component: HomeComponent},
+  { path: 'search', component: SearchComponent },
   { path: 'create/background', component: CreateBackgroundComponent },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },

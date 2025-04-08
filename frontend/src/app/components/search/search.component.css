@@ -1,0 +1,24 @@
+.search-container {
+  padding: 1rem;
+  max-width: 600px;
+  margin: auto;
+}
+input, select, button {
+  margin-right: 0.5rem;
+}
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+li {
+  padding: 0.25rem 0;
+}
+.pagination {
+  margin-top: 1rem;
+}
+
+/* Main Content Styling */
+.main-content {
+    padding: calc(var(--navbar-height) + 1rem) 2rem 2rem;
+    margin: 3rem;
+}
