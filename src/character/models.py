@@ -15,6 +15,7 @@ class Character(db.Model):
     proficiency_bonus = db.Column(db.Integer, nullable=True)
     total_level = db.Column(db.Integer, nullable=True)
     inspiration = db.Column(db.Integer, nullable=True)
+    deactivated = db.Column(db.Boolean, nullable=False, default=False)
 
     # Relationships
     charRace = db.relationship("Character_Race", backref=backref("char", uselist=False), cascade="all, delete-orphan") #uselist False indicates one-to-one relationship

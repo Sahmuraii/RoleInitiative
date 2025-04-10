@@ -424,7 +424,7 @@ def fetch_and_populate_race_proficiencies():
                 if not 'desc' in choice_list: choice_list.update({'desc':default_description})
 
                 # Check if the races proficiency list already exists
-                existing_choice_list = DND_Class_Proficiency_Option.query.filter_by(given_by_class=race_referenced.race_id, list_description=choice_list['desc']).first()
+                existing_choice_list = DND_Race_Proficiency_Option.query.filter_by(given_by_race=race_referenced.race_id, list_description=choice_list['desc']).first()
                 if existing_choice_list: continue #If exist, continue to next one
 
                 max_list = Proficiency_List.query.filter(Proficiency_List.proficiency_list_id>=0).order_by(Proficiency_List.proficiency_list_id.desc()).first()
@@ -463,7 +463,7 @@ def fetch_and_populate_race_proficiencies():
                 default_description = "The following proficiencies are provided."
 
                 # Check if the classes proficiency list already exists
-                existing_choice_list = DND_Class_Proficiency_Option.query.filter_by(given_by_class=race_referenced.race_id, list_description=default_description).first()
+                existing_choice_list = DND_Race_Proficiency_Option.query.filter_by(given_by_race=race_referenced.race_id, list_description=default_description).first()
                 if existing_choice_list: continue #If exist, continue to next one
 
                 max_list = Proficiency_List.query.filter(Proficiency_List.proficiency_list_id>=0).order_by(Proficiency_List.proficiency_list_id.desc()).first()
