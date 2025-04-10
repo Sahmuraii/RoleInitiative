@@ -8,23 +8,28 @@
     font-family: 'Times New Roman', serif;
     color: #3a3a3a;
     position: relative;
-    min-width: max-content;
+    max-width: 75%;
     display: inline-block;
 }
 
 .small-display {
     display: flex;
     justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: nowrap;
+    gap: 1rem;
 }
 
 .description {
-    min-width: 100%;
-    max-width: min-content;
+    width: 100%;
+    white-space: normal;
+    word-wrap: break-word;
+    margin-top: 0.5rem;
 }
 
 .spell-text {
-    display: inline-block;
-    vertical-align: middle;
+    flex: 0 1 auto; 
+    min-width: 0; 
 }
 
 .spell-name {
@@ -34,6 +39,9 @@
     margin: 0;
     font-variant: small-caps;
     letter-spacing: 1px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .spell-subtext {
@@ -56,4 +64,5 @@
     display: inline-block;
     vertical-align: middle;
     margin-left: 10px;
+    flex-shrink: 0;
 }
