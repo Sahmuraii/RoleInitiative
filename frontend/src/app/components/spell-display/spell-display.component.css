@@ -1,18 +1,29 @@
+
 .spell-display {
     background-color: #f9f2e0;
     border: 1px solid #c9ad6a;
     border-radius: 5px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     padding: 10px;
-    width: 70%;
     font-family: 'Times New Roman', serif;
     color: #3a3a3a;
     position: relative;
+    min-width: max-content;
+    display: inline-block;
+}
+
+.small-display {
+    display: flex;
+    justify-content: space-between;
+}
+
+.description {
+    min-width: 100%;
+    max-width: min-content;
 }
 
 .spell-text {
     display: inline-block;
-    padding-right: 10%;
     vertical-align: middle;
 }
 

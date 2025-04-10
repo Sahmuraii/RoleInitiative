@@ -8,5 +8,7 @@ import { Component } from '@angular/core';
   styleUrl: './spell-display.component.css'
 })
 export class SpellDisplayComponent {
-
+  onMouseEnter() {
+    console.log("test")
+  }
 }

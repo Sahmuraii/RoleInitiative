@@ -313,8 +313,19 @@
 
             <!-- Spells -->
              <div id="spells" [hidden]="hiddenArray[5]">
-                <spell-display></spell-display>
-                <spell-display></spell-display>
+                <!-- Placeholder for future spellcaster check -->
+                @if(true) { 
+                    <div id="spells-text">
+                        <h2>Choose your spells</h2>
+                    </div>
+                    <div id="spells-list">
+                        <spell-display></spell-display>
+                    </div>
+                } @else {
+                    <h2>You don't currently have a spellcasting class.</h2>
+                }
+                
+                
              </div>
 
             <!-- Character Details -->
