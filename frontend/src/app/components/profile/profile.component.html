@@ -42,18 +42,29 @@
                                      style="width: 100%; height: 100%; object-fit: cover; transition: .3s;">
 
                                 <!-- Class Icon -->
-                                <div class="class-icon" style="position: absolute; top: 8px; left: 8px; width: 40px; height: 40px; background: #fff; border-radius: 50%; overflow: hidden; display: flex; justify-content: center; align-items: center; box-shadow: 0px 2px 4px rgba(0,0,0,0.2);">
-                                    <img
-                                      [src]="'assets/images/class_logo/' + character.highest_class + 'Logo.png'"
-                                      [alt]="character.highest_class + ' Class Icon'"
-                                      [matTooltip] = "getClassBreakdown(character)"
-                                      matTooltipClass="custom-tooltip"
-                                      matTooltipPosition="right"
-                                      #tooltip="matTooltip"
-                                      (mouseenter)="tooltip.show()"
-                                      style="width: 50px; height: 50px; object-fit: cover;"
-                                    >
-                                </div>
+                                <div class="class-icon" style="position: absolute; top: 8px; left: 8px; width: 40px; height: 40px; background: #ffffff00; border-radius: 50%; overflow: hidden; justify-content: center; align-items: center; box-shadow: 0px 2px 4px rgba(0,0,0,0.2);">
+                                  <img
+                                    [src]="'assets/images/class_logo/' + character.highest_class + '_Ring2.png'"
+                                    [alt]="character.highest_class + ' Class Icon'"
+                                    [matTooltip] = "getClassBreakdown(character)"
+                                    matTooltipClass="custom-tooltip"
+                                    matTooltipPosition="right"
+                                    #tooltip="matTooltip"
+                                    (mouseenter)="tooltip.show()"
+                                    style="width: 40px; height: 40px; object-fit: cover; position: absolute;"
+                                  >
+                                  <img
+                                    [src]="'assets/images/class_logo/' + character.highest_class + '_Icon.png'"
+                                    [alt]="character.highest_class + ' Class Icon'"
+                                    [matTooltip] = "getClassBreakdown(character)"
+                                    matTooltipClass="custom-tooltip"
+                                    matTooltipPosition="right"
+                                    #tooltip="matTooltip"
+                                    (mouseenter)="tooltip.show()"
+                                    style="width: 40px; height: 40px; object-fit: cover; position: absolute;"
+                                  >
+                                  
+                              </div>
                             </div>
 
                             <!-- Card Content -->
