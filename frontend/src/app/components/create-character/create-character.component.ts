@@ -7,6 +7,7 @@ import { DND_Class } from '../../models/dnd_class.type';
 import { DND_Race } from '../../models/dnd_race.type';
 import { Class_Proficiency_Option } from '../../models/class_proficiency_option.type';
 import { Proficiency } from '../../models/proficiency.type';
+import { DND_Spell } from '../../models/dnd_spell.type';
 import { sourceMapsEnabled } from 'node:process';
 import { MatSnackBar, MatSnackBarModule, MatSnackBarConfig } from '@angular/material/snack-bar';
 import test from 'node:test';
@@ -32,6 +33,7 @@ export class CreateCharacterComponent implements OnInit {
   dndRaces = signal<Array<DND_Race>>([])
   dndClassesSignal = signal<Array<DND_Class>>([])
   classProficiencyOptions = signal<Array<Class_Proficiency_Option>>([])
+  dndSpellsSignal = signal<Array<DND_Spell>>([])
 
   //Class Selection Variables
   minLevel = 0
@@ -458,6 +460,12 @@ export class CreateCharacterComponent implements OnInit {
     return [this.str, this.dex, this.con, this.int, this.wis, this.cha]
   }
 
+  //Spell methods
+
+  addToSpellList() {
+    console.log("spell added")
+  }
+
 
 
   //Miscellaneous Methods
@@ -559,6 +567,10 @@ export class CreateCharacterComponent implements OnInit {
 
     this.createCharacterService.getClassProficiencyData().subscribe((options) => {
       this.classProficiencyOptions.set(options)
+    })
+
+    this.createCharacterService.getSpellData().subscribe((spells) => {
+      this.dndSpellsSignal.set(spells)
     })
 
   }

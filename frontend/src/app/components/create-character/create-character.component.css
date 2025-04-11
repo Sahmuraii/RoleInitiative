@@ -26,3 +26,13 @@
 .tooltip:hover .tooltiptext {
   visibility: visible;
 }
+
+.spells-text {
+  float: left;
+  width: 50%;
+}
+
+.spells-list {
+  float: right;
+  width: 50%;
+}

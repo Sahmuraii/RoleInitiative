@@ -315,10 +315,24 @@
              <div id="spells" [hidden]="hiddenArray[5]">
                 <!-- Placeholder for future spellcaster check -->
                 @if(true) { 
-                    <div id="spells-text">
+                    <div class="spells-text">
                         <h2>Choose your spells</h2>
                     </div>
-                    <div id="spells-list">
+                    <div class="spells-list">
+                        <h2>List of spells</h2>
+                        <p>Hover over spell cards to see description</p>
+                        @for (spell of dndSpellsSignal(); track $index) {
+                            <spell-display 
+                            [spellId]="spell.spell_id" 
+                            [spellName]="spell.spell_name" 
+                            [spellLevel]="spell.spell_level" 
+                            [spellSchool]="spell.spell_school" 
+                            [castingTime]="spell.casting_time" 
+                            [duration]="spell.duration"
+                            [spellRange]="spell.range"
+                            [spellDesc]="spell.description"
+                            [buttonFunc]="addToSpellList"></spell-display>
+                        }
                         <spell-display></spell-display>
                     </div>
                 } @else {

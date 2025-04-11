@@ -1,24 +1,24 @@
-<div class="spell-display" (mouseenter)="onMouseEnter()">
+<div class="spell-display" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseExit()">
     <div class="small-display">
         <div class="spell-text">
-            <p class="spell-name">Test Text</p>
-            <p class="spell-subtext">Level 1 - Abjuration</p>
+            <p class="spell-name">{{ spellName }}</p>
+            <p class="spell-subtext">Level {{ spellLevel }} - {{ spellSchool }}</p>
         </div>
         <div class="spell-text">
             <p class="spell-category">Casting Time</p>
-            <p class="spell-subtext">1 Action</p>
+            <p class="spell-subtext">{{ castingTime }}</p>
         </div>
         <div class="spell-text">
             <p class="spell-category">Duration</p>
-            <p class="spell-subtext">1 Hour</p>
+            <p class="spell-subtext">{{ duration }}</p>
         </div>
         <div class="spell-text">
             <p class="spell-category">Range/Area</p>
-            <p class="spell-subtext">Touch</p>
+            <p class="spell-subtext">{{ spellRange }}</p>
         </div>
-        <button class="spell-button">Add</button>
+        <button class="spell-button" (click)="buttonFunc()">Add</button>
     </div>
-    <div class="description">
-        fffffffff ffffffffffffffff ffffffffffffff fffffffffffff ffffffffffffff ffffffffffffffffffff ffffffffffff fffffffffffffff ffffffffffffffffff ffffffffffffff ffffffffffff ffffffffffff ffffffffffffffffff ffffffff ffffffffffffff fffffffffffff ffffff ffff
+    <div class="description" [hidden]="hideDesc">
+        {{ spellDesc }}
     </div>
 </div>
