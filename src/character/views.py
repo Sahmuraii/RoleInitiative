@@ -315,7 +315,7 @@ def create():
         )
         db.session.add(new_character)
 
-        db.session.commit() #Code below breaks without this, as it relies on having a valid character id
+        db.session.flush() #Code below breaks without this, as it relies on having a valid character id
 
         new_character_details = Character_Details(
             char_id = new_character.char_id,
@@ -370,7 +370,7 @@ def create():
                     )
                 db.session.add(new_character_class)
         
-        db.session.commit() # Needed in order to calculate max HP
+        db.session.flush() # Needed in order to calculate max HP
         new_character_hp = Character_Hit_Points(
             char_id = new_character.char_id,
             hit_points = calculate_max_hp(new_character.char_id, initial_class),

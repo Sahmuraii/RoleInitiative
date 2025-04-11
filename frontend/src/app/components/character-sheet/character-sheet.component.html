@@ -61,7 +61,8 @@
                     [id]="'class_level_container_' + (i+1)"
                     >
                     <span [id]="'class_level_' + (i+1)">Level {{ cls.level }} {{ cls.class_name }}</span>
-                    <span>&#44;   <ng-container *ngIf="!isLast">{{ char_data.char_si.classes.length/4 > 1 ? '&nbsp;' : ''}}</ng-container></span>
+                    <span><ng-container *ngIf="!isLast">&#44; {{ char_data.char_si.classes.length/4 > 1 ? '&nbsp;' : ''}}</ng-container></span>
+                    <span><ng-container *ngIf="isLast">&#46;</ng-container></span>
                     <ng-container *ngIf="i % Math.ceil(char_data.char_si.classes.length/4) == 0"><br></ng-container>
                     <ng-container *ngIf="i % Math.ceil(char_data.char_si.classes.length/4) != 0">&#9;</ng-container>
                 </span>
