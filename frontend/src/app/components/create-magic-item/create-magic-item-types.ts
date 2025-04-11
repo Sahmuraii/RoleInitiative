@@ -1,4 +1,5 @@
 export type ModifierType =
+  | 'Custom'
   | 'Bonus'
   | 'Damage'
   | 'Advantage'
@@ -39,6 +40,15 @@ export type ModifierSubtypes = {
   [key in ModifierType]?: string[];
 };
 
+export type CurrencyType = 'CP' | 'SP' | 'EP' | 'GP' | 'PP' | 'Custom';
+export type WeaponCategory = 'Simple' | 'Martial';
+export type WeaponRangeType = 'Melee' | 'Ranged';
+
+export interface AmmoDetails {
+  type: string;
+  capacity: number;
+}
+
 export const modifierSubtypes: ModifierSubtypes = {
   'Bonus': ['Attack Rolls', 'Damage Rolls', 'Ability Checks', 'Saving Throws', 'AC', 'Speed', 'Other'],
   'Damage': ['Acid', 'Bludgeoning', 'Cold', 'Fire', 'Force', 'Lightning', 'Necrotic', 'Piercing', 'Poison', 'Psychic', 'Radiant', 'Slashing', 'Thunder'],
@@ -70,6 +80,7 @@ export function getModifierSubtypes(type: ModifierType): string[] {
 }
 
 export const allModifierTypes: ModifierType[] = [
+  'Custom',
   'Bonus',
   'Damage',
   'Advantage',

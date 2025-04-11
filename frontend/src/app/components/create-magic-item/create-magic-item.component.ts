@@ -5,7 +5,7 @@ import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { QuillModule } from 'ngx-quill';
-import { ModifierType, ModifierSubtypes, MagicItemModifier, getModifierSubtypes, allModifierTypes } from './create-magic-item-types';
+import { ModifierType, ModifierSubtypes, MagicItemModifier, getModifierSubtypes, allModifierTypes, CurrencyType, WeaponCategory, WeaponRangeType } from './create-magic-item-types';
 import { AbstractControl } from '@angular/forms';
 
 @Component({
@@ -23,7 +23,8 @@ export class CreateMagicItemComponent {
     toolbar: [
       ['bold', 'italic', 'underline', 'strike'],
       ['blockquote', 'code-block'],
-      [{ 'header': 1 }, { 'header': 2 }],
+      [{ 'header': 1 }, { 'header': 2 }, { 'header': 3 }], 
+      [{ 'size': ['10px', '12px', '14px', '16px', '18px', '20px'] }],
       [{ 'list': 'ordered'}, { 'list': 'bullet' }],
       ['link', 'image'],
       ['clean']
@@ -35,18 +36,22 @@ export class CreateMagicItemComponent {
   imagePreview: string | ArrayBuffer | null = null;
   selectedFile: File | null = null;
   
-  rarities = ['Common', 'Uncommon', 'Rare', 'Very Rare', 'Legendary', 'Artifact', 'Other'];
-  itemTypes = ['Item', 'Armor', 'Weapon'];
-  magicItemTypes = ['Potion', 'Wondrous Item', 'Rod', 'Staff', 'Wand', 'Ring', 'Scroll', 'Armor', 'Weapon'];
+  rarities = ['None', 'Common', 'Uncommon', 'Rare', 'Very Rare', 'Legendary', 'Artifact', 'Other'];
+  itemTypes = ['Item', 'Armor', 'Weapon', 'Custom'];
+  magicItemTypes = ['None', 'Potion', 'Wondrous Item', 'Rod', 'Staff', 'Wand', 'Ring', 'Scroll', 'Armor', 'Weapon', 'Custom'];
+  sizes = ['Tiny', 'Small', 'Medium', 'Large', 'Huge', 'Gargantuan', 'Custom'];
   damageTypes = ['Acid', 'Bludgeoning', 'Cold', 'Fire', 'Force', 'Lightning', 'Necrotic', 'Piercing', 'Poison', 'Psychic', 'Radiant', 'Slashing', 'Thunder'];
   weaponTypes = ['Battleaxe', 'Longsword', 'Shortsword', 'Dagger', 'Greatsword', 'Rapier', 'Warhammer', 'Custom'];
-  weaponProperties = ['Ammunition', 'Finesse', 'Heavy', 'Light', 'Loading', 'Reach', 'Special', 'Thrown', 'Two-Handed', 'Versatile'];
-  conditionTypes = ['Blinded', 'Charmed', 'Deafened', 'Frightened', 'Grappled', 'Incapacitated', 'Invisible', 'Paralyzed', 'Petrified', 'Poisoned', 'Prone', 'Restrained', 'Stunned', 'Unconscious'];
+  weaponProperties = ['Ammunition', 'Finesse', 'Heavy', 'Light', 'Loading', 'Reach', 'Special', 'Thrown', 'Two-Handed', 'Versatile', 'Custom'];
+  conditionTypes = ['Blinded', 'Charmed', 'Deafened', 'Frightened', 'Grappled', 'Incapacitated', 'Invisible', 'Paralyzed', 'Petrified', 'Poisoned', 'Prone', 'Restrained', 'Stunned', 'Unconscious', 'All', 'None', 'Other'];
   abilities = ['Strength', 'Dexterity', 'Constitution', 'Intelligence', 'Wisdom', 'Charisma'];
   spellList = ['Fireball', 'Magic Missile', 'Cure Wounds', 'Shield', 'Mage Armor', 'Invisibility', 'Fly'];
   modifierTypes: ModifierType[] = allModifierTypes;
   currentModifierSubtypes: string[] = []; 
   weightCategories = ['Light', 'Medium', 'Heavy', 'Varies'];
+  currencyTypes: CurrencyType[] = ['CP', 'SP', 'EP', 'GP', 'PP', 'Custom'];
+  weaponCategories: WeaponCategory[] = ['Simple', 'Martial'];
+  weaponRangeTypes: WeaponRangeType[] = ['Melee', 'Ranged'];
 
   constructor(
     private fb: FormBuilder,
@@ -86,7 +91,31 @@ export class CreateMagicItemComponent {
       notes: [''],
       weightCategory: [''],
       description: [''],
+      customItemType: [''],
+      customMagicItemType: [''],
+      size: [''],
+      customSize: [''],
+      cost: [''],
+      currencyType: ['GP'],
+      customCurrency: [''],
+      weaponCategory: [''],
+      weaponRangeType: [''],
+      range: [''],
+      customPropertyName: [''],
+      customPropertyDescription: [''],
+      ammoType: [''],
+      ammoCapacity: ['']
       //image: [null]
+    });
+
+    this.magicItemForm.get('currencyType')?.valueChanges.subscribe(type => {
+      if (type === 'Custom') {
+        this.magicItemForm.get('customCurrency')?.setValidators([Validators.required]);
+      } else {
+        this.magicItemForm.get('customCurrency')?.clearValidators();
+        this.magicItemForm.get('customCurrency')?.setValue('');
+      }
+      this.magicItemForm.get('customCurrency')?.updateValueAndValidity();
     });
 
     this.magicItemForm.get('rarity')?.valueChanges.subscribe(rarity => {
@@ -107,6 +136,36 @@ export class CreateMagicItemComponent {
         this.magicItemForm.get('customWeaponType')?.setValue('');
       }
       this.magicItemForm.get('customWeaponType')?.updateValueAndValidity();
+    });
+
+    this.magicItemForm.get('itemType')?.valueChanges.subscribe(type => {
+      if (type === 'Custom') {
+        this.magicItemForm.get('customItemType')?.setValidators([Validators.required]);
+      } else {
+        this.magicItemForm.get('customItemType')?.clearValidators();
+        this.magicItemForm.get('customItemType')?.setValue('');
+      }
+      this.magicItemForm.get('customItemType')?.updateValueAndValidity();
+    });
+
+    this.magicItemForm.get('magicItemType')?.valueChanges.subscribe(type => {
+      if (type === 'Custom') {
+        this.magicItemForm.get('customMagicItemType')?.setValidators([Validators.required]);
+      } else {
+        this.magicItemForm.get('customMagicItemType')?.clearValidators();
+        this.magicItemForm.get('customMagicItemType')?.setValue('');
+      }
+      this.magicItemForm.get('customMagicItemType')?.updateValueAndValidity();
+    });
+    
+    this.magicItemForm.get('size')?.valueChanges.subscribe(size => {
+      if (size === 'Custom') {
+        this.magicItemForm.get('customSize')?.setValidators([Validators.required]);
+      } else {
+        this.magicItemForm.get('customSize')?.clearValidators();
+        this.magicItemForm.get('customSize')?.setValue('');
+      }
+      this.magicItemForm.get('customSize')?.updateValueAndValidity();
     });
   }
 
@@ -217,7 +276,9 @@ export class CreateMagicItemComponent {
       value: [''],
       description: [''],
       appliesTo: [''],
-      condition: ['']
+      condition: [''],
+      customModifierName: [''],
+      customModifierDescription: ['']
     }));
   }
 
@@ -267,40 +328,96 @@ export class CreateMagicItemComponent {
       }
       return;
     }
-
+  
     const rarity = this.magicItemForm.value.rarity === 'Other' 
       ? this.magicItemForm.value.customRarity 
       : this.magicItemForm.value.rarity;
-
+  
     const weaponType = this.magicItemForm.value.weaponType === 'Custom'
       ? this.magicItemForm.value.customWeaponType
       : this.magicItemForm.value.weaponType;
-
+  
+    const itemType = this.magicItemForm.value.itemType === 'Custom'
+      ? this.magicItemForm.value.customItemType
+      : this.magicItemForm.value.itemType;
+  
+    const magicItemType = this.magicItemForm.value.magicItemType === 'Custom'
+      ? this.magicItemForm.value.customMagicItemType
+      : this.magicItemForm.value.magicItemType;
+  
+    const size = this.magicItemForm.value.size === 'Custom'
+      ? this.magicItemForm.value.customSize
+      : this.magicItemForm.value.size;
+    
+    const currency = this.magicItemForm.value.currencyType === 'Custom'
+      ? this.magicItemForm.value.customCurrency
+      : this.magicItemForm.value.currencyType;
+  
+    const formattedModifiers = this.modifiers.value
+      .filter((mod: any) => mod.type)
+      .map((mod: any) => ({
+        type: mod.type,
+        subtype: mod.subtype || undefined,
+        value: mod.value || undefined,
+        description: mod.type === 'Custom' 
+          ? `${mod.customModifierName}: ${mod.customModifierDescription}`
+          : mod.description || undefined,
+        appliesTo: mod.appliesTo || undefined,
+        condition: mod.condition || undefined
+      }));
+  
+    const formattedSpells = this.spells.value
+      .filter((spell: any) => spell.spellName)
+      .map((spell: any) => `${spell.spellName} (${spell.castingFrequency}${spell.charges ? `, ${spell.charges} charges` : ''})`)
+      .join(', ');
+  
     const formattedData = {
       ...this.magicItemForm.value,
-        rarity,
-        weaponType,
-        modifiers: this.modifiers.value
-          .filter((mod: any) => mod.type)
-          .map((mod: any) => ({
-            type: mod.type,
-            subtype: mod.subtype || undefined,
-            value: mod.value || undefined,
-            description: mod.description || undefined,
-            appliesTo: mod.appliesTo || undefined,
-            condition: mod.condition || undefined
-          })),
-      conditionImmunities: this.conditionImmunities.value.join(', '),
-      spells: this.spells.value
-        .filter((spell: any) => spell.spellName)
-        .map((spell: any) => `${spell.spellName} (${spell.castingFrequency}${spell.charges ? `, ${spell.charges} charges` : ''}`)
-        .join(', '),
-      userID: this.currentUserID
+      rarity,
+      weaponType,
+      itemType,
+      magicItemType,
+      size,
+      modifiers: formattedModifiers,
+      conditionImmunities: this.conditionImmunities.value.filter(Boolean).join(', '),
+      spells: formattedSpells,
+      userID: this.currentUserID,
+      cost: {
+        amount: this.magicItemForm.value.cost,
+        currency: currency
+      },
+      weaponDetails: this.magicItemForm.value.weaponType === 'Custom' ? {
+        category: this.magicItemForm.value.weaponCategory,
+        rangeType: this.magicItemForm.value.weaponRangeType,
+        range: this.magicItemForm.value.range,
+        properties: this.magicItemForm.value.weaponProperties,
+        customProperty: this.magicItemForm.value.weaponProperties.includes('Custom') ? {
+          name: this.magicItemForm.value.customPropertyName,
+          description: this.magicItemForm.value.customPropertyDescription
+        } : undefined,
+        ammo: this.magicItemForm.value.weaponRangeType === 'Ranged' && 
+              this.magicItemForm.value.weaponProperties.includes('Ammunition') ? {
+          type: this.magicItemForm.value.ammoType,
+          capacity: this.magicItemForm.value.ammoCapacity
+        } : undefined
+      } : undefined
     };
-
+  
     delete formattedData.customRarity;
     delete formattedData.customWeaponType;
-
+    delete formattedData.customItemType;
+    delete formattedData.customMagicItemType;
+    delete formattedData.customSize;
+    delete formattedData.customModifierName;
+    delete formattedData.customModifierDescription;
+    delete formattedData.customCurrency;
+    delete formattedData.weaponCategory;
+    delete formattedData.weaponRangeType;
+    delete formattedData.customPropertyName;
+    delete formattedData.customPropertyDescription;
+    delete formattedData.ammoType;
+    delete formattedData.ammoCapacity;
+  
     if (this.selectedFile) {
       const formData = new FormData();
       formData.append('image', this.selectedFile);
