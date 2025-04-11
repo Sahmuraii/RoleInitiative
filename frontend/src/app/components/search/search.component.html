@@ -17,11 +17,49 @@
     <button (click)="search()">Search</button>
 
     <div *ngIf="results.length === 0">No results found.</div>
-    <ul>
-      <li *ngFor="let item of results">
-        {{ item.spell_name || item.name || item.title }}
-      </li>
-    </ul>
+    <div *ngFor="let item of results; let i = index">
+      <!-- Spell display -->
+      <div *ngIf="selectedType === 'spell'" class="spell-display">
+        <div class="small-display"
+             (mouseenter)="onMouseEnter(i)"
+             (mouseleave)="onMouseExit()">
+          <div class="spell-text">
+            <p class="spell-name">{{ item.spell_name }}</p>
+            <p class="spell-subtext">Level {{ item.level }} - {{ item.school }}</p>
+          </div>
+          <div class="spell-text">
+            <p class="spell-category">Casting Time</p>
+            <p class="spell-subtext">{{ item.casting_time }}</p>
+          </div>
+          <div class="spell-text">
+            <p class="spell-category">Duration</p>
+            <p class="spell-subtext">{{ item.duration }}</p>
+          </div>
+          <div class="spell-text">
+            <p class="spell-category">Range/Area</p>
+            <p class="spell-subtext">{{ item.range }}</p>
+          </div>
+          <button class="spell-button" (click)="saveHomebrew('spell', item.user_spell_id)">Save</button>
+        </div>
+        <div class="description" [class.expanded]="hoveredSpellIndex === i">
+          {{ item.description }}
+        </div>
+
+      </div>
+
+      <!-- Monster display -->
+      <div *ngIf="selectedType === 'monster'" class="monster-display">
+        <h3>{{ item.name }}</h3>
+        <p>Type: {{ item.type }}</p>
+        <!-- other monster-specific fields go here. idk what we want really -->
+      </div>
+
+      <!-- Background display -->
+      <div *ngIf="selectedType === 'background'" class="background-display">
+        <h3>{{ item.title }}</h3>
+        <p>{{ item.description }}</p>
+      </div>
+    </div>
 
     <div class="pagination">
       <button (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 1">Previous</button>

@@ -22,3 +22,86 @@ li {
     padding: calc(var(--navbar-height) + 1rem) 2rem 2rem;
     margin: 3rem;
 }
+
+
+.spell-display {
+    background-color: #f9f2e0;
+    border: 1px solid #c9ad6a;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    margin-top: 5px;
+    font-family: 'Times New Roman', serif;
+    color: #3a3a3a;
+    width: 100%;
+    position: relative;
+    display: inline-block;
+}
+
+.small-display {
+    display: flex;
+    min-width: max-content;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: nowrap;
+    gap: 1rem;
+}
+
+.description {
+    white-space: normal;
+    word-wrap: break-word;
+    margin-top: 0.5rem;
+}
+
+.spell-text {
+    flex: 0 1 auto;
+    min-width: 0;
+}
+
+.spell-name {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #58180D;
+    margin: 0;
+    font-variant: small-caps;
+    letter-spacing: 1px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.spell-subtext {
+    font-size: 0.8rem;
+    color: rgb(92, 92, 92);
+    text-align: center;
+}
+
+.spell-category {
+    font-size: 0.9rem;
+    color: #58180D;
+    font-weight: bold;
+}
+
+.spell-button {
+    padding: 6px 12px;
+    border: 0;
+    background-color: #58180D;
+    color: white;
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 10px;
+    flex-shrink: 0;
+}
+
+.description {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height 0.5s ease, opacity 0.3s ease;
+  margin-top: 0.5rem;
+}
+
+.description.expanded {
+  max-height: 500px; /* Arbitrary large value */
+  opacity: 1;
+}
