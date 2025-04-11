@@ -1,318 +1,418 @@
 <div class="main-content">
-    <h1>Create Custom Magic Item</h1>
-    <form [formGroup]="magicItemForm" (ngSubmit)="onSubmit()">
-      <!-- Basic Information -->
-      <div class="section">
-        <h2>Basic Information</h2>
-        <div class="row">
-          <div>
-            <label for="name">Item Name:</label>
-            <input type="text" id="name" formControlName="name" required>
-          </div>
-          <div>
-            <label for="rarity">Rarity:</label>
-            <select id="rarity" formControlName="rarity" required>
-              <option value="">Select Rarity</option>
-              <option *ngFor="let rarity of rarities" [value]="rarity">{{ rarity }}</option>
-            </select>
-          </div>
-          <div *ngIf="magicItemForm.get('rarity')?.value === 'Other'">
-            <label for="customRarity">Specify Rarity:</label>
-            <input type="text" id="customRarity" formControlName="customRarity" required>
-          </div>
+  <h1>Create Custom Magic Item</h1>
+  <form [formGroup]="magicItemForm" (ngSubmit)="onSubmit()">
+    <!-- Basic Information -->
+    <div class="section">
+      <h2>Basic Information</h2>
+      <div class="row">
+        <div>
+          <label for="name">Item Name:</label>
+          <input type="text" id="name" formControlName="name" required>
         </div>
+        <div>
+          <label for="rarity">Rarity:</label>
+          <select id="rarity" formControlName="rarity" required>
+            <option value="">Select Rarity</option>
+            <option *ngFor="let rarity of rarities" [value]="rarity">{{ rarity }}</option>
+          </select>
+        </div>
+        <div *ngIf="magicItemForm.get('rarity')?.value === 'Other'">
+          <label for="customRarity">Specify Rarity:</label>
+          <input type="text" id="customRarity" formControlName="customRarity" required>
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <label for="itemType">Base Item Type:</label>
+          <select id="itemType" formControlName="itemType" (change)="onItemTypeChange($event)" required>
+            <option value="">Select Item Type</option>
+            <option *ngFor="let type of itemTypes" [value]="type">{{ type }}</option>
+          </select>
+        </div>
+        <div *ngIf="magicItemForm.get('itemType')?.value === 'Custom'">
+          <label for="customItemType">Custom Item Type:</label>
+          <input type="text" id="customItemType" formControlName="customItemType" required>
+        </div>
+        <div>
+          <label for="magicItemType">Magic Item Type:</label>
+          <select id="magicItemType" formControlName="magicItemType">
+            <option value="">Select Magic Item Type</option>
+            <option *ngFor="let type of magicItemTypes" [value]="type">{{ type }}</option>
+          </select>
+        </div>
+        <div *ngIf="magicItemForm.get('magicItemType')?.value === 'Custom'">
+          <label for="customMagicItemType">Custom Magic Item Type:</label>
+          <input type="text" id="customMagicItemType" formControlName="customMagicItemType" required>
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <label for="size">Size:</label>
+          <select id="size" formControlName="size">
+            <option value="">Select Size</option>
+            <option *ngFor="let size of sizes" [value]="size">{{ size }}</option>
+          </select>
+        </div>
+        <div *ngIf="magicItemForm.get('size')?.value === 'Custom'">
+          <label for="customSize">Custom Size:</label>
+          <input type="text" id="customSize" formControlName="customSize" required>
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <label for="cost">Cost:</label>
+          <input type="number" id="cost" formControlName="cost" min="0">
+        </div>
+        <div>
+          <label for="currencyType">Currency Type:</label>
+          <select id="currencyType" formControlName="currencyType">
+            <option *ngFor="let currency of currencyTypes" [value]="currency">{{ currency }}</option>
+          </select>
+        </div>
+        <div *ngIf="magicItemForm.get('currencyType')?.value === 'Custom'">
+          <label for="customCurrency">Custom Currency:</label>
+          <input type="text" id="customCurrency" formControlName="customCurrency">
+        </div>
+      </div>
+    </div>
+    
+    <!-- Armor Specific Fields -->
+    <div class="section" *ngIf="isArmor()">
+      <h2>Armor Properties</h2>
+      <div class="row">
+        <div>
+          <label for="armorClass">Base Armor Class:</label>
+          <input type="number" id="armorClass" formControlName="armorClass">
+        </div>
+        <div>
+          <label for="dexBonus">Dexterity Bonus:</label>
+          <select id="dexBonus" formControlName="dexBonus">
+            <option value="0">None</option>
+            <option value="1">+1</option>
+            <option value="2">+2</option>
+            <option value="full">Full</option>
+          </select>
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <label for="strengthRequirement">Strength Requirement:</label>
+          <input type="number" id="strengthRequirement" formControlName="strengthRequirement">
+        </div>
+        <div>
+          <label for="stealthCheck">Stealth Check:</label>
+          <select id="stealthCheck" formControlName="stealthCheck">
+            <option value="none">No Penalty</option>
+            <option value="disadvantage">Disadvantage</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Weapon Specific Fields -->
+    <div class="section" *ngIf="isWeapon()">
+      <h2>Weapon Properties</h2>
+      
+      <!-- Weapon Type Selection -->
+      <div class="row">
+        <div>
+          <label for="weaponType">Weapon Type:</label>
+          <select id="weaponType" formControlName="weaponType">
+            <option value="">Select Weapon Type</option>
+            <option *ngFor="let type of weaponTypes" [value]="type">{{ type }}</option>
+          </select>
+        </div>
+        <div *ngIf="magicItemForm.get('weaponType')?.value === 'Custom'">
+          <label for="customWeaponType">Custom Weapon Type:</label>
+          <input type="text" id="customWeaponType" formControlName="customWeaponType" required>
+        </div>
+      </div>
+
+      <!-- Custom Weapon Details -->
+      <div *ngIf="magicItemForm.get('weaponType')?.value === 'Custom'">
         <div class="row">
           <div>
-            <label for="itemType">Base Item Type:</label>
-            <select id="itemType" formControlName="itemType" (change)="onItemTypeChange($event)" required>
-              <option value="">Select Item Type</option>
-              <option *ngFor="let type of itemTypes" [value]="type">{{ type }}</option>
+            <label for="weaponCategory">Weapon Category:</label>
+            <select id="weaponCategory" formControlName="weaponCategory" required>
+              <option value="">Select Category</option>
+              <option *ngFor="let category of weaponCategories" [value]="category">{{ category }}</option>
             </select>
           </div>
           <div>
-            <label for="magicItemType">Magic Item Type:</label>
-            <select id="magicItemType" formControlName="magicItemType">
-              <option value="">Select Magic Item Type</option>
-              <option *ngFor="let type of magicItemTypes" [value]="type">{{ type }}</option>
+            <label for="weaponRangeType">Range Type:</label>
+            <select id="weaponRangeType" formControlName="weaponRangeType" required>
+              <option value="">Select Range Type</option>
+              <option *ngFor="let rangeType of weaponRangeTypes" [value]="rangeType">{{ rangeType }}</option>
             </select>
+          </div>
+          <div *ngIf="magicItemForm.get('weaponRangeType')?.value === 'Ranged'">
+            <label for="range">Range:</label>
+            <input type="text" id="range" formControlName="range" placeholder="e.g., 30/120" required>
           </div>
         </div>
       </div>
-  
-      <!-- Armor Specific Fields -->
-      <div class="section" *ngIf="isArmor()">
-        <h2>Armor Properties</h2>
-        <div class="row">
-          <div>
-            <label for="armorClass">Base Armor Class:</label>
-            <input type="number" id="armorClass" formControlName="armorClass">
-          </div>
-          <div>
-            <label for="dexBonus">Dexterity Bonus:</label>
-            <select id="dexBonus" formControlName="dexBonus">
-              <option value="0">None</option>
-              <option value="1">+1</option>
-              <option value="2">+2</option>
-              <option value="full">Full</option>
-            </select>
-          </div>
+
+      <!-- Damage Information -->
+      <div class="row">
+        <div>
+          <label for="damageDice">Damage Dice:</label>
+          <input type="text" id="damageDice" formControlName="damageDice" placeholder="e.g., 1d6">
         </div>
-        <div class="row">
-          <div>
-            <label for="strengthRequirement">Strength Requirement:</label>
-            <input type="number" id="strengthRequirement" formControlName="strengthRequirement">
-          </div>
-          <div>
-            <label for="stealthCheck">Stealth Check:</label>
-            <select id="stealthCheck" formControlName="stealthCheck">
-              <option value="none">No Penalty</option>
-              <option value="disadvantage">Disadvantage</option>
-            </select>
-          </div>
+        <div>
+          <label for="damageType">Damage Type:</label>
+          <select id="damageType" formControlName="damageType">
+            <option value="">Select Damage Type</option>
+            <option *ngFor="let type of damageTypes" [value]="type">{{ type }}</option>
+          </select>
         </div>
       </div>
-  
-      <!-- Weapon Specific Fields -->
-      <div class="section" *ngIf="isWeapon()">
-        <h2>Weapon Properties</h2>
-        <div class="row">
-          <div>
-            <label for="weaponType">Weapon Type:</label>
-            <select id="weaponType" formControlName="weaponType">
-              <option value="">Select Weapon Type</option>
-              <option *ngFor="let type of weaponTypes" [value]="type">{{ type }}</option>
-            </select>
-          </div>
-          <div *ngIf="magicItemForm.get('weaponType')?.value === 'Custom'">
-            <label for="customWeaponType">Custom Weapon Type:</label>
-            <input type="text" id="customWeaponType" formControlName="customWeaponType" required>
-          </div>
-        </div>
-        <div class="row">
-          <div>
-            <label for="damageDice">Damage Dice:</label>
-            <input type="text" id="damageDice" formControlName="damageDice" placeholder="e.g., 1d6">
-          </div>
-          <div>
-            <label for="damageType">Damage Type:</label>
-            <select id="damageType" formControlName="damageType">
-              <option value="">Select Damage Type</option>
-              <option *ngFor="let type of damageTypes" [value]="type">{{ type }}</option>
-            </select>
-          </div>
-        </div>
-        <div class="row">
-          <div>
-            <label for="weaponProperties">Weapon Properties:</label>
-            <select id="weaponProperties" formControlName="weaponProperties" multiple>
-              <option *ngFor="let prop of weaponProperties" [value]="prop">{{ prop }}</option>
-            </select>
-          </div>
+
+      <!-- Weapon Properties -->
+      <div class="row">
+        <div>
+          <label for="weaponProperties">Weapon Properties:</label>
+          <select id="weaponProperties" formControlName="weaponProperties" multiple>
+            <option *ngFor="let prop of weaponProperties" [value]="prop">{{ prop }}</option>
+            <option value="Custom">Custom Property</option>
+          </select>
         </div>
       </div>
-  
-      <!-- Attunement -->
-      <div class="section">
-        <h2>Attunement</h2>
-        <div class="checkbox-row">
-          <input type="checkbox" id="requiresAttunement" formControlName="requiresAttunement">
-          <label for="requiresAttunement">Requires Attunement</label>
+
+      <!-- Custom Property Details -->
+      <div class="row" *ngIf="magicItemForm.get('weaponProperties')?.value?.includes('Custom')">
+        <div>
+          <label for="customPropertyName">Custom Property Name:</label>
+          <input type="text" id="customPropertyName" formControlName="customPropertyName">
         </div>
-        <div class="row" *ngIf="magicItemForm.get('requiresAttunement')?.value">
-          <div>
-            <label for="attunementDescription">Attunement Description:</label>
-            <textarea id="attunementDescription" formControlName="attunementDescription" 
-                     placeholder="Special conditions for attunement"></textarea>
-          </div>
+        <div>
+          <label for="customPropertyDescription">Description:</label>
+          <textarea id="customPropertyDescription" formControlName="customPropertyDescription"></textarea>
         </div>
       </div>
-  
-      <div class="section">
-        <h2>Modifiers</h2>
-        <div formArrayName="modifiers">
-          <div *ngFor="let modifier of modifiers.controls; let i = index" [formGroupName]="i" class="modifier-entry">
-            <div class="row">
-              <div>
-                <select formControlName="type" (change)="onModifierTypeChange(i)">
-                  <option value="">Select Modifier Type</option>
-                  <option *ngFor="let type of modifierTypes" [value]="type">{{ type }}</option>
-                </select>
-              </div>
-              
-              <div *ngIf="modifier.get('type')?.value && getModifierSubtypes(modifier.get('type')?.value)?.length">
-                <select formControlName="subtype">
-                  <option value="">Select Subtype</option>
-                  <option *ngFor="let subtype of getModifierSubtypes(modifier.get('type')?.value)" 
-                          [value]="subtype">{{ subtype }}</option>
-                </select>
-              </div>
-              
-              <div *ngIf="shouldShowValueField(modifier)">
-                <input type="text" formControlName="value" placeholder="Value">
-              </div>
-              
-              <div>
-                <input type="text" formControlName="description" placeholder="Description">
-              </div>
-              
-              <div>
-                <button type="button" (click)="removeModifier(i)" class="remove-btn">×</button>
-              </div>
-            </div>
-            
-            <!-- Additional fields for appliesTo and condition -->
-            <div class="row" *ngIf="modifier.get('type')?.value">
-              <div>
-                <input type="text" formControlName="appliesTo" placeholder="Applies to (optional)">
-              </div>
-              <div>
-                <input type="text" formControlName="condition" placeholder="Condition (optional)">
-              </div>
-            </div>
-          </div>
+
+      <!-- Ammo Details (for ranged weapons with Ammunition property) -->
+      <div class="row" *ngIf="magicItemForm.get('weaponRangeType')?.value === 'Ranged' && 
+                            magicItemForm.get('weaponProperties')?.value?.includes('Ammunition')">
+        <div>
+          <label for="ammoType">Ammo Type:</label>
+          <input type="text" id="ammoType" formControlName="ammoType">
         </div>
-        <button type="button" (click)="addModifier()">Add Modifier</button>
+        <div>
+          <label for="ammoCapacity">Ammo Capacity:</label>
+          <input type="number" id="ammoCapacity" formControlName="ammoCapacity" min="1">
+        </div>
       </div>
-  
-      <!-- Condition Immunities -->
-      <div class="section">
-        <h2>Condition Immunities</h2>
-        <div formArrayName="conditionImmunities">
-          <div *ngFor="let condition of conditionImmunities.controls; let i = index" class="condition-entry">
-            <div class="row">
-              <div>
-                <select [formControlName]="i">
-                  <option value="">Select Condition</option>
-                  <option *ngFor="let condition of conditionTypes" [value]="condition">{{ condition }}</option>
-                </select>
-              </div>
-              <div>
-                <button type="button" (click)="removeConditionImmunity(i)" class="remove-btn">×</button>
-              </div>
-            </div>
-          </div>
-        </div>
-        <button type="button" (click)="addConditionImmunity()">Add Condition Immunity</button>
+    </div>
+
+    <!-- Attunement -->
+    <div class="section">
+      <h2>Attunement</h2>
+      <div class="checkbox-row">
+        <input type="checkbox" id="requiresAttunement" formControlName="requiresAttunement">
+        <label for="requiresAttunement">Requires Attunement</label>
       </div>
-  
-      <!-- Spellcasting -->
-      <div class="section">
-        <h2>Spellcasting</h2>
-        <div class="checkbox-row">
-          <input type="checkbox" id="allowsSpellcasting" formControlName="allowsSpellcasting">
-          <label for="allowsSpellcasting">Allows Spellcasting</label>
+      <div class="row" *ngIf="magicItemForm.get('requiresAttunement')?.value">
+        <div>
+          <label for="attunementDescription">Attunement Description:</label>
+          <textarea id="attunementDescription" formControlName="attunementDescription" 
+                   placeholder="Special conditions for attunement"></textarea>
         </div>
-        
-        <div *ngIf="magicItemForm.get('allowsSpellcasting')?.value">
+      </div>
+    </div>
+
+    <!-- Modifiers -->
+    <div class="section">
+      <h2>Modifiers</h2>
+      <div formArrayName="modifiers">
+        <div *ngFor="let modifier of modifiers.controls; let i = index" [formGroupName]="i" class="modifier-entry">
           <div class="row">
             <div>
-              <label for="spellcastingAbility">Spellcasting Ability:</label>
-              <select id="spellcastingAbility" formControlName="spellcastingAbility">
-                <option value="">Select Ability</option>
-                <option *ngFor="let ability of abilities" [value]="ability">{{ ability }}</option>
+              <select formControlName="type" (change)="onModifierTypeChange(i)">
+                <option value="">Select Modifier Type</option>
+                <option *ngFor="let type of modifierTypes" [value]="type">{{ type }}</option>
               </select>
             </div>
-            <div>
-              <label for="spellSaveDC">Spell Save DC:</label>
-              <input type="number" id="spellSaveDC" formControlName="spellSaveDC">
+            
+            <div *ngIf="modifier.get('type')?.value === 'Custom'">
+              <input type="text" formControlName="customModifierName" placeholder="Modifier Name" required>
             </div>
+            
+            <div *ngIf="modifier.get('type')?.value && modifier.get('type')?.value !== 'Custom' && getModifierSubtypes(modifier.get('type')?.value)?.length">
+              <select formControlName="subtype">
+                <option value="">Select Subtype</option>
+                <option *ngFor="let subtype of getModifierSubtypes(modifier.get('type')?.value)" 
+                        [value]="subtype">{{ subtype }}</option>
+              </select>
+            </div>
+            
+            <div *ngIf="shouldShowValueField(modifier)">
+              <input type="text" formControlName="value" placeholder="Value">
+            </div>
+            
+            <div *ngIf="modifier.get('type')?.value === 'Custom'">
+              <textarea formControlName="customModifierDescription" placeholder="Custom Modifier Description" required></textarea>
+            </div>
+            <div *ngIf="modifier.get('type')?.value !== 'Custom'">
+              <input type="text" formControlName="description" placeholder="Description">
+            </div>
+            
             <div>
-              <label for="spellAttackBonus">Spell Attack Bonus:</label>
-              <input type="number" id="spellAttackBonus" formControlName="spellAttackBonus">
+              <button type="button" (click)="removeModifier(i)" class="remove-btn">×</button>
             </div>
           </div>
           
-          <h3>Spells</h3>
-          <div formArrayName="spells">
-            <div *ngFor="let spell of spells.controls; let i = index" [formGroupName]="i" class="spell-entry">
-              <div class="row">
-                <div>
-                  <select formControlName="spellName">
-                    <option value="">Select Spell</option>
-                    <option *ngFor="let spell of spellList" [value]="spell">{{ spell }}</option>
-                  </select>
-                </div>
-                <div>
-                  <select formControlName="castingFrequency">
-                    <option value="">Casting Frequency</option>
-                    <option value="at-will">At Will</option>
-                    <option value="1/day">1/Day</option>
-                    <option value="3/day">3/Day</option>
-                    <option value="charges">Charges</option>
-                  </select>
-                </div>
-                <div *ngIf="spell.get('castingFrequency')?.value === 'charges'">
-                  <input type="number" formControlName="charges" placeholder="Max Charges">
-                </div>
-                <div>
-                  <button type="button" (click)="removeSpell(i)" class="remove-btn">×</button>
-                </div>
+          <div class="row" *ngIf="modifier.get('type')?.value && modifier.get('type')?.value !== 'Custom'">
+            <div>
+              <input type="text" formControlName="appliesTo" placeholder="Applies to (optional)">
+            </div>
+            <div>
+              <input type="text" formControlName="condition" placeholder="Condition (optional)">
+            </div>
+          </div>
+        </div>
+      </div>
+      <button type="button" (click)="addModifier()">Add Modifier</button>
+    </div>
+
+    <!-- Condition Immunities -->
+    <div class="section">
+      <h2>Condition Immunities</h2>
+      <div formArrayName="conditionImmunities">
+        <div *ngFor="let condition of conditionImmunities.controls; let i = index" class="condition-entry">
+          <div class="row">
+            <div>
+              <select [formControlName]="i">
+                <option value="">Select Condition</option>
+                <option *ngFor="let condition of conditionTypes" [value]="condition">{{ condition }}</option>
+              </select>
+            </div>
+            <div>
+              <button type="button" (click)="removeConditionImmunity(i)" class="remove-btn">×</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button type="button" (click)="addConditionImmunity()">Add Condition Immunity</button>
+    </div>
+
+    <!-- Spellcasting -->
+    <div class="section">
+      <h2>Spellcasting</h2>
+      <div class="checkbox-row">
+        <input type="checkbox" id="allowsSpellcasting" formControlName="allowsSpellcasting">
+        <label for="allowsSpellcasting">Allows Spellcasting</label>
+      </div>
+      
+      <div *ngIf="magicItemForm.get('allowsSpellcasting')?.value">
+        <div class="row">
+          <div>
+            <label for="spellcastingAbility">Spellcasting Ability:</label>
+            <select id="spellcastingAbility" formControlName="spellcastingAbility">
+              <option value="">Select Ability</option>
+              <option *ngFor="let ability of abilities" [value]="ability">{{ ability }}</option>
+            </select>
+          </div>
+          <div>
+            <label for="spellSaveDC">Spell Save DC:</label>
+            <input type="number" id="spellSaveDC" formControlName="spellSaveDC">
+          </div>
+          <div>
+            <label for="spellAttackBonus">Spell Attack Bonus:</label>
+            <input type="number" id="spellAttackBonus" formControlName="spellAttackBonus">
+          </div>
+        </div>
+        
+        <h3>Spells</h3>
+        <div formArrayName="spells">
+          <div *ngFor="let spell of spells.controls; let i = index" [formGroupName]="i" class="spell-entry">
+            <div class="row">
+              <div>
+                <select formControlName="spellName">
+                  <option value="">Select Spell</option>
+                  <option *ngFor="let spell of spellList" [value]="spell">{{ spell }}</option>
+                </select>
+              </div>
+              <div>
+                <select formControlName="castingFrequency">
+                  <option value="">Casting Frequency</option>
+                  <option value="at-will">At Will</option>
+                  <option value="1/day">1/Day</option>
+                  <option value="3/day">3/Day</option>
+                  <option value="charges">Charges</option>
+                </select>
+              </div>
+              <div *ngIf="spell.get('castingFrequency')?.value === 'charges'">
+                <input type="number" formControlName="charges" placeholder="Max Charges">
+              </div>
+              <div>
+                <button type="button" (click)="removeSpell(i)" class="remove-btn">×</button>
               </div>
             </div>
           </div>
-          <button type="button" (click)="addSpell()">Add Spell</button>
+        </div>
+        <button type="button" (click)="addSpell()">Add Spell</button>
+      </div>
+    </div>
+
+    <!-- Additional Info -->
+    <div class="section">
+      <h2>Additional Information</h2>
+      <div class="checkbox-row">
+        <input type="checkbox" id="hasCharges" formControlName="hasCharges">
+        <label for="hasCharges">Has Charges</label>
+      </div>
+      
+      <div class="row" *ngIf="magicItemForm.get('hasCharges')?.value">
+        <div>
+          <label for="maxCharges">Maximum Charges:</label>
+          <input type="number" id="maxCharges" formControlName="maxCharges">
+        </div>
+        <div>
+          <label for="chargeResetCondition">Charge Reset Condition:</label>
+          <input type="text" id="chargeResetCondition" formControlName="chargeResetCondition" placeholder="e.g., 'at dawn'">
         </div>
       </div>
-  
-      <!-- Additional Info -->
-      <div class="section">
-        <h2>Additional Information</h2>
-        <div class="checkbox-row">
-          <input type="checkbox" id="hasCharges" formControlName="hasCharges">
-          <label for="hasCharges">Has Charges</label>
-        </div>
-        
-        <div class="row" *ngIf="magicItemForm.get('hasCharges')?.value">
-          <div>
-            <label for="maxCharges">Maximum Charges:</label>
-            <input type="number" id="maxCharges" formControlName="maxCharges">
-          </div>
-          <div>
-            <label for="chargeResetCondition">Charge Reset Condition:</label>
-            <input type="text" id="chargeResetCondition" formControlName="chargeResetCondition" placeholder="e.g., 'at dawn'">
-          </div>
-        </div>
-        
-        <div class="row" *ngIf="magicItemForm.get('hasCharges')?.value">
-          <div>
-            <label for="chargeResetDescription">Charge Reset Description:</label>
-            <textarea id="chargeResetDescription" formControlName="chargeResetDescription"></textarea>
-          </div>
-        </div>
-        
-        <div class="row">
-          <div>
-            <label for="weightCategory">Weight Category:</label>
-            <select id="weightCategory" formControlName="weightCategory">
-              <option value="">Select Weight</option>
-              <option *ngFor="let weight of weightCategories" [value]="weight">{{ weight }}</option>
-            </select>
-          </div>
-        </div>
-        
-        <div class="row full-width">
-          <div>
-            <label for="notes">Additional Notes:</label>
-            <textarea id="notes" formControlName="notes"></textarea>
-          </div>
+      
+      <div class="row" *ngIf="magicItemForm.get('hasCharges')?.value">
+        <div>
+          <label for="chargeResetDescription">Charge Reset Description:</label>
+          <textarea id="chargeResetDescription" formControlName="chargeResetDescription"></textarea>
         </div>
       </div>
-  
-      <!-- Description -->
-      <div class="section">
-        <h2>Description</h2>
-        <div class="row full-width">
-          <quill-editor 
-            formControlName="description"
-            [modules]="quillConfig"
-            placeholder="Enter detailed description of the magic item">
-          </quill-editor>
+      
+      <div class="row">
+        <div>
+          <label for="weightCategory">Weight Category:</label>
+          <select id="weightCategory" formControlName="weightCategory">
+            <option value="">Select Weight</option>
+            <option *ngFor="let weight of weightCategories" [value]="weight">{{ weight }}</option>
+          </select>
         </div>
       </div>
-  
-      <!-- Submit Button -->
+      
       <div class="row full-width">
-        <button type="submit">Create Magic Item</button>
+        <div>
+          <label for="notes">Additional Notes:</label>
+          <textarea id="notes" formControlName="notes"></textarea>
+        </div>
       </div>
-    </form>
-  </div>
+    </div>
+
+    <!-- Description -->
+    <div class="section">
+      <h2>Description</h2>
+      <div class="row full-width">
+        <quill-editor 
+          formControlName="description"
+          [modules]="quillConfig"
+          placeholder="Enter detailed description of the magic item">
+        </quill-editor>
+      </div>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="row full-width">
+      <button type="submit">Create Magic Item</button>
+    </div>
+  </form>
+</div>
