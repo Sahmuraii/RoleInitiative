@@ -3,6 +3,7 @@ from src import db
 from src.character.models import (UserBackground, UserSpell, UserMonster,
                                   UserMonster_Actions, UserMonster_BonusActions, UserMonster_DamageAdjustments,
                                   UserMonster_Reactions, UserMonster_SpecialAbilitys, UserMonster_Traits)
+from src.homebrew.models import UserMagicItem
 from sqlalchemy.inspection import inspect
 import os 
 import uuid 
@@ -580,3 +581,114 @@ def search_homebrew():
         "items": [to_dict(item) for item in items],
         "totalPages": (total_items + page_size - 1) // page_size
     })
+
+@homebrew_bp.route('/create_magic_item', methods=['GET', 'POST'])
+def create_magic_item():
+    if request.method == 'POST':
+        print("Received a request to /create_magic_item")
+        print("Request method:", request.method)
+        print("Request headers:", request.headers)
+        print("Request data:", request.get_json())
+
+        # Parse JSON data from the request
+        data = request.get_json()
+
+        if not data:
+            return jsonify({"error": "No data provided"}), 400
+
+        # Extract user ID (required)
+        user_id = data.get('userID')
+        if not user_id:
+            return jsonify({"error": "User ID is required"}), 400
+
+        # Extract basic information (required fields)
+        name = data.get('name')
+        rarity = data.get('rarity')
+        item_type = data.get('itemType')
+        
+        if not all([name, rarity, item_type]):
+            return jsonify({"error": "Name, rarity, and item_type are required"}), 400
+
+        # Extract cost information
+        cost_data = data.get('cost', {})
+        cost_amount = clean_int(cost_data.get('amount'))
+        cost_currency = cost_data.get('currency')
+
+        # Extract weapon details if they exist
+        weapon_details = data.get('weaponDetails', {})
+        
+        # Create new magic item object
+        new_item = UserMagicItem(
+            user_id=user_id,
+            name=name,
+            rarity=rarity,
+            item_type=item_type,
+            magic_item_type=data.get('magicItemType'),
+            size=data.get('size'),
+            cost_amount=cost_amount,
+            cost_currency=cost_currency,
+            
+            # Armor properties
+            armor_class=clean_int(data.get('armorClass')),
+            dex_bonus=data.get('dexBonus'),  # This might be a string like "+2" or "yes"
+            strength_requirement=clean_int(data.get('strengthRequirement')),
+            stealth_check=data.get('stealthCheck'),
+            
+            # Weapon properties
+            weapon_type=data.get('weaponType'),
+            weapon_category=weapon_details.get('category'),
+            weapon_range_type=weapon_details.get('rangeType'),
+            weapon_range=weapon_details.get('range'),
+            damage_dice=data.get('damageDice'),
+            damage_type=data.get('damageType'),
+            weapon_properties=data.get('weaponProperties', []),
+            custom_property_name=weapon_details.get('customProperty', {}).get('name'),
+            custom_property_description=weapon_details.get('customProperty', {}).get('description'),
+            ammo_type=weapon_details.get('ammo', {}).get('type'),
+            ammo_capacity=clean_int(weapon_details.get('ammo', {}).get('capacity')),
+            
+            # Attunement
+            requires_attunement=data.get('requiresAttunement', False),
+            attunement_description=data.get('attunementDescription'),
+            
+            # Modifiers
+            modifiers=data.get('modifiers', []),
+            
+            # Condition immunities
+            condition_immunities=data.get('conditionImmunities'),
+            
+            # Spellcasting
+            allows_spellcasting=data.get('allowsSpellcasting', False),
+            spellcasting_ability=data.get('spellcastingAbility'),
+            spell_save_dc=clean_int(data.get('spellSaveDC')),
+            spell_attack_bonus=clean_int(data.get('spellAttackBonus')),
+            spells=data.get('spells'),
+            
+            # Charges
+            has_charges=data.get('hasCharges', False),
+            max_charges=clean_int(data.get('maxCharges')),
+            charge_reset_condition=data.get('chargeResetCondition'),
+            charge_reset_description=data.get('chargeResetDescription'),
+            
+            # Additional info
+            weight_category=data.get('weightCategory'),
+            notes=data.get('notes'),
+            description=data.get('description')
+        )
+
+        # Add to database and commit
+        try:
+            db.session.add(new_item)
+            db.session.commit()
+            print(f"Magic item {name} successfully added to the database.")
+            return jsonify({
+                "message": "Magic item created successfully!",
+                "item_id": new_item.id
+            }), 201
+        except Exception as e:
+            db.session.rollback()
+            print(f"Error adding magic item to the database: {e}")
+            return jsonify({"error": "Failed to create magic item"}), 500
+
+    # Handle GET request 
+    return render_template('homebrew/create_magic_item.html')

@@ -5,7 +5,7 @@ import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { QuillModule } from 'ngx-quill';
-import { ModifierType, ModifierSubtypes, MagicItemModifier, getModifierSubtypes, allModifierTypes, CurrencyType, WeaponCategory, WeaponRangeType } from './create-magic-item-types';
+import { ModifierType, getModifierSubtypes, allModifierTypes, CurrencyType, WeaponCategory, WeaponRangeType } from './create-magic-item-types';
 import { AbstractControl } from '@angular/forms';
 
 @Component({
@@ -24,7 +24,7 @@ export class CreateMagicItemComponent {
       ['bold', 'italic', 'underline', 'strike'],
       ['blockquote', 'code-block'],
       [{ 'header': 1 }, { 'header': 2 }, { 'header': 3 }], 
-      [{ 'size': ['10px', '12px', '14px', '16px', '18px', '20px'] }],
+      [{ 'size': ['small', false, 'large', 'huge'] }],
       [{ 'list': 'ordered'}, { 'list': 'bullet' }],
       ['link', 'image'],
       ['clean']
@@ -312,19 +312,48 @@ export class CreateMagicItemComponent {
   }
 
   onSubmit(): void {
+    console.log('Form validation status:', this.magicItemForm.status);
+    console.log('Form errors:', this.magicItemForm.errors);
+    console.log('Form raw values:', JSON.parse(JSON.stringify(this.magicItemForm.value)));
+  
     if (this.magicItemForm.invalid || !this.currentUserID) {
-      const missingFields = [];
+      const missingFields: string[] = [];
+      const invalidFields: {name: string, errors: any, value: any}[] = [];
+      
       for (const controlName in this.magicItemForm.controls) {
         const control = this.magicItemForm.get(controlName);
-        if (control?.invalid && control?.errors?.['required']) {
-          missingFields.push(controlName);
+        if (control?.invalid) {
+          invalidFields.push({
+            name: controlName,
+            errors: control.errors,
+            value: control.value
+          });
+          
+          if (control.errors?.['required']) {
+            missingFields.push(controlName);
+          }
         }
       }
   
+      console.group('Form Validation Details');
+      console.log('Missing required fields:', missingFields);
+      console.log('All invalid fields:', invalidFields);
+      
+      invalidFields.forEach(field => {
+        console.groupCollapsed(`Invalid Field: ${field.name}`);
+        console.log('Current value:', field.value);
+        console.log('Validation errors:', field.errors);
+        console.groupEnd();
+      });
+      
+      console.groupEnd();
+  
       if (missingFields.length > 0) {
         alert(`The following fields are required: ${missingFields.join(', ')}`);
+      } else if (!this.currentUserID) {
+        alert('Please ensure you are logged in.');
       } else {
-        alert('Please ensure you are logged in and fill out all required fields.');
+        alert('Please correct the invalid fields (see browser console for details).');
       }
       return;
     }
@@ -418,6 +447,8 @@ export class CreateMagicItemComponent {
     delete formattedData.ammoType;
     delete formattedData.ammoCapacity;
   
+    console.log('Final payload being sent:', formattedData);
+  
     if (this.selectedFile) {
       const formData = new FormData();
       formData.append('image', this.selectedFile);
@@ -425,6 +456,7 @@ export class CreateMagicItemComponent {
       
       this.magicItemService.createMagicItem(formData).subscribe({
         next: (response) => {
+          console.log('Server response:', response);
           alert('Magic item created successfully!');
           this.router.navigate(['/magic-items']);
         },
@@ -436,6 +468,7 @@ export class CreateMagicItemComponent {
     } else {
       this.magicItemService.createMagicItem(formattedData).subscribe({
         next: (response) => {
+          console.log('Server response:', response);
           alert('Magic item created successfully!');
           this.router.navigate(['/magic-items']);
         },

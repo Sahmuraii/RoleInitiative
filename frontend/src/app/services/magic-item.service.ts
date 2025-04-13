@@ -10,7 +10,7 @@ export class MagicItemService {
   constructor(private http: HttpClient) {}
 
   createMagicItem(magicItemData: any): Observable<any> {
-    return this.http.post(`${API_URL}/magic_items`, magicItemData);
+    return this.http.post(`${API_URL}/create_magic_item`, magicItemData);
   }
 
   getMagicItems(): Observable<any> {

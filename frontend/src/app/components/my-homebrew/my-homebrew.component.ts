@@ -2,18 +2,18 @@ import { Component, Input, OnInit } from '@angular/core';
 import { SpellService } from '../../services/spell.service';
 import { BackgroundService } from '../../services/background.service';
 import { MonsterService } from '../../services/monster.service';
-import { CommonModule } from '@angular/common'; // Import CommonModule for *ngIf and *ngFor
-import { Router } from '@angular/router'; // Import Router
+import { CommonModule } from '@angular/common'; 
+import { Router } from '@angular/router'; 
  
 @Component({
   selector: 'app-my-homebrew',
-  standalone: true, // Ensure it's standalone
-  imports: [CommonModule], // Import CommonModule for directives
+  standalone: true, 
+  imports: [CommonModule], 
   templateUrl: './my-homebrew.component.html',
   styleUrls: ['./my-homebrew.component.css']
 })
 export class MyHomebrewComponent implements OnInit {
-  @Input() userId: number | null = null; // Define the input property
+  @Input() userId: number | null = null; 
   spells: any[] = [];
   backgrounds: any[] = [];
   monsters: any[] = [];
@@ -147,12 +147,12 @@ export class MyHomebrewComponent implements OnInit {
   fetchBackgrounds(): void {
     this.backgroundService.getBackgroundsByUser(this.userId!).subscribe({
       next: (backgrounds) => {
-        console.log('Backgrounds fetched:', backgrounds); // Log the fetched backgrounds
+        console.log('Backgrounds fetched:', backgrounds); 
         this.backgrounds = backgrounds;
       },
       error: (error) => {
         console.error('Error fetching backgrounds:', error);
-        console.error('Full error response:', error.error); // Log the full error response
+        console.error('Full error response:', error.error);
         alert('Failed to fetch backgrounds. Please check the console for details.');
       }
     });
@@ -161,7 +161,7 @@ export class MyHomebrewComponent implements OnInit {
   fetchMonsters(): void {
     this.monsterService.getMonstersByUser(this.userId!).subscribe({
       next: (monsters) => {
-        console.log('Monsters fetched:', monsters); // Log the fetched monsters
+        console.log('Monsters fetched:', monsters); 
         this.monsters = monsters;
       },
       error: (error) => {
@@ -171,14 +171,14 @@ export class MyHomebrewComponent implements OnInit {
   }
 
   navigateToEditSpells(spellId: number): void {
-    this.router.navigate(['/edit-spell', spellId]); // Navigate to the edit route
+    this.router.navigate(['/edit-spell', spellId]); 
   }
 
   navigateToEditBackground(backgroundId: number): void {
-    this.router.navigate(['/edit-background', backgroundId]); // Navigate to the edit route
+    this.router.navigate(['/edit-background', backgroundId]); 
   }
 
   navigateToEditMonster(monsterId: number): void {
-    this.router.navigate(['/edit-monster', monsterId]); // Navigate to the edit route
+    this.router.navigate(['/edit-monster', monsterId]); 
   }
 }
