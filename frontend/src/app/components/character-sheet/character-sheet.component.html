@@ -1,12 +1,12 @@
 
 <div class="main-content">
     <!-- Main Character View-->
-    <div class="character_viewer" id="character_viewer">
+    <div class="default_sheet_container character_viewer" id="character_viewer">
         <!-- Multiuse Block. TODO: Add tabs to block-->
-        <div class="multiuse_character_info_switch_block"></div>
+        <div class="char_sheet_block multiuse_character_info_switch_block"></div>
 
         <!-- Hit Points-->
-        <div class="character_hit_points_block" id="hit_points_block">
+        <div class="char_sheet_block character_hit_points_block" id="hit_points_block">
             <div class="hp_modifier_block" id="hp_modifier_block">
                 <input type="number" id="hp_change_field" value="0" min="0" max="10000" step="1" class="hp_change_field" [(ngModel)]="change_hp_amount">
                 <button id="hp_heal_button" class="hp_heal_button" (click)="heal_character_hp(change_hp_amount, 1)">Heal</button>
@@ -23,7 +23,7 @@
         </div>
 
         <!-- Character Modifiers-->
-        <div class="character_modifiers_block" id="modifiers_block">
+        <div class="char_sheet_block character_modifiers_block" id="modifiers_block">
             <div *ngFor="let mod of char_data.char_si?.modifier_scores; let i = index"
                 [class]="'character_modifier_' + ( i + 1) + ' character_modifier_base'"
                 [id]="'modifier_' + (i + 1)"
@@ -35,7 +35,7 @@
         </div>
 
         <!-- Character Skills-->
-        <div class="character_skills_block" id="character_skills">
+        <div class="char_sheet_block character_skills_block" id="character_skills">
             <div *ngFor="let skill of char_data.char_si?.skills; let i = index"  
                 class="character_skill_line" 
                 [id]="'skill_' + skill.skill_id"
@@ -55,7 +55,7 @@
         </div>
 
         <!-- Character Class Info-->
-        <div class="character_info_block" id="character_info_block">
+        <div class="char_sheet_block character_info_block" id="character_info_block">
             <span class="character_info_label" id="character_class_and_levels" *ngIf="char_data.char_si?.classes !== undefined">
                 <span *ngFor="let cls of char_data.char_si?.classes; let isLast = last; let i = index"
                     [id]="'class_level_container_' + (i+1)"
@@ -71,14 +71,15 @@
         </div>
 
         <!-- Character Name / Race / Level-->
-        <div class="title_block" id="title_block"><span class="character_name_label" id="character_name">{{ char_data.char_si?.name ?? 'Unknown' }}</span>
+        <div class="char_sheet_block title_block" id="title_block">
+            <div class="character_profile_image" id="character_profile_image"></div>
+            <span class="character_name_label" id="character_name">{{ char_data.char_si?.name ?? 'Unknown' }}</span>
             <span class="character_race_label">{{ char_data.char_si?.race_name ?? 'Unknown Race' }}</span>
             <span class="character_level_label">{{ char_data.char_si?.total_level ?? 'Unknown Level' }}</span>
-            <div class="character_profile_image" id="character_profile_image"></div>
         </div>
 
         <!-- Character Combat-ish Stats-->
-        <div class="character_combat_stats_block" id="combat_stats">
+        <div class="char_sheet_block character_combat_stats_block" id="combat_stats">
             <div class="combat_skill_base inspiration_block" id="inspiration_block">
                 <span class="inspiration_label" id="inspiration_label">Inspiration</span>
                 <button id="inspiration_field" class="inspiration_field">{{ (char_data.char_si?.inspiration !== undefined && char_data.char_si?.inspiration) ? (char_data.char_si?.inspiration == 1 ? '[ X ]' : '[ ' + char_data.char_si?.inspiration + ' ]') : ('[  ]') }}</button>
@@ -106,7 +107,7 @@
         </div>
 
         <!-- Character Saving Throws-->
-        <div class="saving_throws_block" id="saving_throws_block">
+        <div class="char_sheet_block saving_throws_block" id="saving_throws_block">
             <div class="saving_throws_block_footer" id="saving_throws_footer">
                 <span class="saving_throws_block_label" id="saving_throws_block_label">Saving Throws</span>
             </div>

@@ -23,54 +23,41 @@ html {
 .character_viewer * {
     font-family: "Playfair Display";
 }
-.title_block {
+.char_sheet_block {
     position: absolute;
+    transform-origin: 50% 50% 0px;
     border-style: solid;
+    border-color: rgb(17, 11, 4);
     border-width: 1px;
+    border-radius: 1px;
     transform: translate(-50%, -50%);
+    background-color: transparent;
+}
+.title_block {
     width: 42%;
     left: 21.75%;
     height: 7.5%;
     top: 4.5%;
 }
 .character_info_block {
-    position: absolute;
-    transform-origin: 50% 50% 0px;
-    border-style: solid;
-    border-width: 1px;
-    transform: translate(-50%, -50%);
     height: 7.5%;
     top: 4.5%;
     width: 56%;
     left: 71.5%;
 }
 .character_modifiers_block {
-    position: absolute;
-    transform-origin: 50% 50% 0px;
-    border-style: solid;
-    border-width: 1px;
-    transform: translate(-50%, -50%);
     width: 60%;
     left: 30.75%;
     height: 9%;
     top: 13.25%;
 }
 .character_hit_points_block {
-    position: absolute;
-    border-style: solid;
-    border-width: 1px;
     height: 9%;
     width: 38%;
-    transform: translate(-50%, -50%);
     top: 13.25%;
     left: 80.5%;
 }
 .character_skills_block {
-    position: absolute;
-    transform-origin: 50% 50% 0px;
-    border-style: solid;
-    border-width: 1px;
-    transform: translate(-50%, -50%);
     left: 18.25%;
     width: 35%;
     height: 62%;
@@ -94,8 +81,6 @@ html {
     top: 40%;
 }
 .character_profile_image {
-    position: absolute;
-    transform-origin: 50% 50% 0px;
     border-style: solid;
     border-width: 1px;
     border-radius: 4px;
@@ -141,9 +126,9 @@ html {
 }
 .hp_damage_button {
     display: block;
-    height: 25%;
+    height: 24%;
     position: absolute;
-    top: 83%;
+    top: 80%;
     transform: translate(-50%, -50%);
     font-size: 14px;
     background-color: transparent;
@@ -177,7 +162,7 @@ html {
 }
 .hp_heal_button {
     display: block;
-    height: 25%;
+    height: 24%;
     position: absolute;
     color: rgb(4, 62, 13);
     border-width: 1px;
@@ -185,7 +170,7 @@ html {
     border-radius: 4px;
     border-color: rgb(22, 83, 5);
     border-style: solid;
-    top: 17%;
+    top: 20%;
     transform: translate(-50%, -50%);
     width: 98%;
     left: 50%;
@@ -282,14 +267,10 @@ html {
     font-weight: bold;
 }
 .character_combat_stats_block {
-    position: absolute;
-    border-style: solid;
-    border-width: 1px;
     height: 9%;
     top: 23%;
     width: 63%;
     left: 68%;
-    transform: translate(-50%, -50%);
 }
 .combat_skill_base {
     position: absolute;
@@ -354,6 +335,10 @@ html {
     border-radius: 5px;
     font-size: 19px;
 }
+.inspiration_field:hover {
+    background-color:#d0d0d0;
+    transition: 0.4s;
+}
 .armor_class_field {
     position: absolute;
     left: 50%;
@@ -373,7 +358,7 @@ html {
     width: 70%;
     height: 23%;
     top: 24%;
-left: 50%;
+    left: 50%;
 }
 .armor_class_bottom_label {
     position: absolute;
@@ -498,7 +483,7 @@ left: 50%;
     background-color: transparent;
     width: 100%;
     height: 3.5%;
-    top: 2.25%;
+    top: 2.75%;
 }
 .character_skills_base_title {
     position: absolute;
@@ -603,12 +588,6 @@ left: 50%;
     line-height: 19px;
 }
 .saving_throws_block {
-    position: absolute;
-    transform: translate(-50%, -50%);
-    background-image: none;
-    background-color: transparent;
-    border-style: solid;
-    border-width: 1px;
     width: 35%;
     left: 18.25%;
     height: 18%;
@@ -803,12 +782,8 @@ left: 50%;
     top: 74%;
 }
 .multiuse_character_info_switch_block {
-    position: absolute;
-    transform: translate(-50%, -50%);
     left: 68%;
     width: 63%;
     top: 64%;
-    border-style: solid;
-    border-width: 1px;
     height: 71%;
 }
