@@ -692,3 +692,82 @@ def create_magic_item():
 
     # Handle GET request 
     return render_template('homebrew/create_magic_item.html')
+
+@homebrew_bp.route('/magic_items', methods=['GET'])
+def get_magic_items():
+    user_id = request.args.get('userID')  # Get the user ID from query parameters
+    if not user_id:
+        return jsonify({"error": "User ID is required"}), 400
+
+    try:
+        # Get all magic items for the user
+        magic_items = UserMagicItem.query.filter_by(user_id=user_id).all()
+        
+        # Prepare the response data
+        magic_items_data = []
+        for item in magic_items:
+            magic_item_obj = {
+                "id": item.id,
+                "user_id": item.user_id,
+                "name": item.name,
+                "rarity": item.rarity,
+                "item_type": item.item_type,
+                "magic_item_type": item.magic_item_type,
+                "size": item.size,
+                "cost": {
+                    "amount": item.cost_amount,
+                    "currency": item.cost_currency
+                },
+                "armor_properties": {
+                    "armor_class": item.armor_class,
+                    "dex_bonus": item.dex_bonus,
+                    "strength_requirement": item.strength_requirement,
+                    "stealth_check": item.stealth_check
+                } if item.item_type == 'Armor' else None,
+                "weapon_properties": {
+                    "weapon_type": item.weapon_type,
+                    "category": item.weapon_category,
+                    "range_type": item.weapon_range_type,
+                    "range": item.weapon_range,
+                    "damage_dice": item.damage_dice,
+                    "damage_type": item.damage_type,
+                    "properties": item.weapon_properties,
+                    "custom_property": {
+                        "name": item.custom_property_name,
+                        "description": item.custom_property_description
+                    } if item.custom_property_name else None,
+                    "ammo": {
+                        "type": item.ammo_type,
+                        "capacity": item.ammo_capacity
+                    } if item.ammo_type else None
+                } if item.item_type == 'Weapon' else None,
+                "attunement": {
+                    "required": item.requires_attunement,
+                    "description": item.attunement_description
+                },
+                "modifiers": item.modifiers,
+                "condition_immunities": item.condition_immunities,
+                "spellcasting": {
+                    "allowed": item.allows_spellcasting,
+                    "ability": item.spellcasting_ability,
+                    "save_dc": item.spell_save_dc,
+                    "attack_bonus": item.spell_attack_bonus,
+                    "spells": item.spells
+                } if item.allows_spellcasting else None,
+                "charges": {
+                    "has_charges": item.has_charges,
+                    "max_charges": item.max_charges,
+                    "reset_condition": item.charge_reset_condition,
+                    "reset_description": item.charge_reset_description
+                } if item.has_charges else None,
+                "weight_category": item.weight_category,
+                "notes": item.notes,
+                "description": item.description
+            }
+            magic_items_data.append(magic_item_obj)
+
+        return jsonify(magic_items_data), 200
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error fetching magic items: {e}")
+        return jsonify({"error": "Failed to fetch magic items"}), 500

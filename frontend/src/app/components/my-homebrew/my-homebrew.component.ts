@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { SpellService } from '../../services/spell.service';
 import { BackgroundService } from '../../services/background.service';
 import { MonsterService } from '../../services/monster.service';
+import { MagicItemService } from '../../services/magic-item.service';
 import { CommonModule } from '@angular/common'; 
 import { Router } from '@angular/router'; 
  
@@ -17,11 +18,14 @@ export class MyHomebrewComponent implements OnInit {
   spells: any[] = [];
   backgrounds: any[] = [];
   monsters: any[] = [];
+  magicItems: any[] = [];
+  collapsedDescriptions: {[key: number]: boolean} = {};
 
   constructor(
     private spellService: SpellService,
     private backgroundService: BackgroundService,
     private monsterService: MonsterService,
+    private magicItemService: MagicItemService,
     private router: Router 
   ) {}
 
@@ -50,7 +54,6 @@ export class MyHomebrewComponent implements OnInit {
       })
       .join(', ');
   }
-  
   
   formatSkills(skills: string): string {
     if (!skills) return '';
@@ -128,7 +131,45 @@ export class MyHomebrewComponent implements OnInit {
       this.fetchSpells();
       this.fetchBackgrounds();
       this.fetchMonsters();
+      this.fetchMagicItems();
     }
+  }
+
+  isDescriptionCollapsed(itemId: number): boolean {
+    return this.collapsedDescriptions[itemId] !== false;
+  }
+
+  toggleDescription(itemId: number): void {
+    this.collapsedDescriptions[itemId] = !this.isDescriptionCollapsed(itemId);
+  }
+
+  shouldShowToggle(description: string): boolean {
+    if (!description || description.length < 50) return false;
+    else return true
+  }
+
+  formatDescription(description: string): string {
+    let formatted = description.replace(/&nbsp;/g, ' ');
+  
+    formatted = formatted.replace(/<p><\/p>/g, '<p>&nbsp;</p>');
+  
+    return formatted;
+  }
+
+  fetchMagicItems(): void {
+    this.magicItemService.getMagicItemsByUser(this.userId!).subscribe({
+      next: (items) => {
+        console.log('Magic items fetched:', items);
+        this.magicItems = items;
+      },
+      error: (error) => {
+        console.error('Error fetching magic items:', error);
+      }
+    });
+  }
+
+  navigateToEditMagicItem(itemId: number): void {
+    this.router.navigate(['/edit-magic-item', itemId]);
   }
 
   fetchSpells(): void {
