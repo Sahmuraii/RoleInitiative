@@ -18,7 +18,6 @@
     min-width: max-content;
     justify-content: space-between;
     align-items: flex-start;
-    flex-wrap: nowrap;
     gap: 1rem;
 }
 
@@ -31,6 +30,7 @@
 .spell-text {
     flex: 0 1 auto; 
     min-width: 0; 
+    max-width: 20%;
 }
 
 .spell-name {
@@ -40,9 +40,8 @@
     margin: 0;
     font-variant: small-caps;
     letter-spacing: 1px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    white-space: initial;
+    
 }
 
 .spell-subtext {

@@ -17,7 +17,9 @@ export class SpellDisplayComponent {
   @Input() duration: string = "Default Duration";
   @Input() spellRange: string = "Default Range";
   @Input() spellDesc: string = "Default Description";
-  @Input() buttonFunc: () => void = () => {};
+  @Input() buttonText: string = "Add";
+  @Input() spellsArray: Array<number> = [];
+  @Input() buttonFunc: (inputArray: Array<number>, inputID: number) => void = () => {};
 
   onMouseEnter() {
     this.hideDesc = false;

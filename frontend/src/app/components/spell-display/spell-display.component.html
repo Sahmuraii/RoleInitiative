@@ -2,7 +2,11 @@
     <div class="small-display">
         <div class="spell-text">
             <p class="spell-name">{{ spellName }}</p>
-            <p class="spell-subtext">Level {{ spellLevel }} - {{ spellSchool }}</p>
+            @if (spellLevel == 0) {
+                <p class="spell-subtext">Cantrip - {{ spellSchool }}</p>
+            }  @else {
+                <p class="spell-subtext">Level {{ spellLevel }} - {{ spellSchool }}</p>
+            }
         </div>
         <div class="spell-text">
             <p class="spell-category">Casting Time</p>
@@ -16,9 +20,11 @@
             <p class="spell-category">Range/Area</p>
             <p class="spell-subtext">{{ spellRange }}</p>
         </div>
-        <button class="spell-button" (click)="buttonFunc()">Add</button>
+        <button class="spell-button" (click)="buttonFunc(spellsArray, spellId)" type="button">{{ buttonText }}</button>
     </div>
     <div class="description" [hidden]="hideDesc">
-        {{ spellDesc }}
+        @for (string of spellDesc; track $index) {
+            {{ string }}<br>
+        }
     </div>
 </div>

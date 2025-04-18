@@ -63,6 +63,8 @@ export class CreateCharacterComponent implements OnInit {
   spentPoints = 0
   maxBuyStatArray = [15, 15, 15, 15, 15, 15]
 
+  spellsKnownArray: Array<number> = []
+
   
 
   hiddenArray = [false, true, true, true, true, true, true, true]
@@ -97,6 +99,8 @@ export class CreateCharacterComponent implements OnInit {
       int: this.fb.control(8, {validators: []}),
       wis: this.fb.control(8, {validators: []}),
       cha: this.fb.control(8, {validators: []}),
+
+      spellsKnown: this.fb.control(this.spellsKnownArray, {validators: []}),
 
       //Character details form elements
       background: this.fb.control("", {validators: []}),
@@ -462,8 +466,8 @@ export class CreateCharacterComponent implements OnInit {
 
   //Spell methods
 
-  addToSpellList() {
-    console.log("spell added")
+  addToSpellList(inputArray: Array<number>, inputID: number) {
+    inputArray.push(inputID)
   }
 
 

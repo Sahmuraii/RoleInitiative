@@ -28,6 +28,7 @@ class Character(db.Model):
     charExtraSkills = db.relationship('Character_Extra_Skill', backref='char', cascade="all, delete-orphan")
     charCondition = db.relationship('Character_Condition', backref='char', cascade="all, delete-orphan")
     charInventory = db.relationship('Character_Inventory', backref='char', cascade="all, delete-orphan")
+    charSpells = db.relationship('Character_Spells_Known', backref='char', cascade="all, delete-orphan")
 
     def __repr__(self):
         dict_repr = self.__dict__; [dict_repr.pop(i, None) for i in ["_sa_instance_state"]]
@@ -85,6 +86,7 @@ class DND_Class(db.Model):
     hit_die = db.Column(db.Integer, nullable=False)
     is_official = db.Column(db.Boolean)
     characters = db.relationship("Character_Class", back_populates="class_", overlaps="character_classes") #Characters that have this class
+    levels_info = db.relationship("DND_Class_Levelup_Info", backref="class_")
 
     def __repr__(self):
         dict_repr = self.__dict__; [dict_repr.pop(i, None) for i in ["_sa_instance_state"]]
@@ -98,6 +100,30 @@ class DND_Class(db.Model):
             "hit_die": self.hit_die,
             "is_official": self.is_official
         }
+
+class DND_Class_Levelup_Info(db.Model):
+    __tablename__ = 'dnd_class_levelup_info'
+    class_id = db.Column(db.Integer, db.ForeignKey(DND_Class.class_id), primary_key=True, nullable=False)
+    one = db.Column(db.JSON, nullable=False)
+    two = db.Column(db.JSON, nullable=False)
+    three = db.Column(db.JSON, nullable=False)
+    four = db.Column(db.JSON, nullable=False)
+    five = db.Column(db.JSON, nullable=False)
+    six = db.Column(db.JSON, nullable=False)
+    seven = db.Column(db.JSON, nullable=False)
+    eight = db.Column(db.JSON, nullable=False)
+    nine = db.Column(db.JSON, nullable=False)
+    ten = db.Column(db.JSON, nullable=False)
+    eleven = db.Column(db.JSON, nullable=False)
+    twelve = db.Column(db.JSON, nullable=False)
+    thirteen = db.Column(db.JSON, nullable=False)
+    fourteen = db.Column(db.JSON, nullable=False)
+    fifteen = db.Column(db.JSON, nullable=False)
+    sixteen = db.Column(db.JSON, nullable=False)
+    seventeen = db.Column(db.JSON, nullable=False)
+    eighteen = db.Column(db.JSON, nullable=False)
+    nineteen = db.Column(db.JSON, nullable=False)
+    twenty = db.Column(db.JSON, nullable=False)
 
 class DND_Background(db.Model):
     __tablename__ = 'dnd_background'
@@ -163,7 +189,7 @@ class DND_Spell(db.Model):
     components = db.Column(db.ARRAY(db.String(10)), nullable=False)
     material = db.Column(db.Text, nullable=True)
     duration = db.Column(db.String(100), nullable=False)
-    description = db.Column(db.Text, nullable=False)
+    description = db.Column(db.ARRAY(db.Text), nullable=False)
     higher_level = db.Column(db.Text, nullable=True)
     classes = db.Column(db.ARRAY(db.String(50)), nullable=False)
     subclasses = db.Column(db.ARRAY(db.String(50)), nullable=True)
@@ -650,6 +676,13 @@ class Character_Inventory(db.Model):
     def __repr__(self):
         dict_repr = self.__dict__; [dict_repr.pop(i, None) for i in ["_sa_instance_state"]]
         return f"<{self.__class__.__name__}({self.__dict__})>"
+    
+#   >>> Spells
+class Character_Spells_Known(db.Model):
+    __tablename__ = "character_spells_known"
+    char_id = db.Column(db.Integer, db.ForeignKey(Character.char_id, ondelete='CASCADE'), primary_key=True, nullable=False)
+    spells = db.Column(db.ARRAY(db.Integer), nullable=True)
+
 
 class DND_Class_Feature(db.Model):
     __tablename__ = "dnd_class_features"

@@ -230,6 +230,9 @@ def fetch_and_populate_class_features():
         db.session.rollback()
         print(f"An error occurred: {e}")
 
+def populate_class_levelup_info():
+    pass
+
 
 def populate_proficiency_types():
     #Note: This function does not populate based on an api...
@@ -528,10 +531,7 @@ def fetch_and_populate_spells():
         # Grab spell details JSON from API
         spell_details = api_details_response.json()
 
-        # Assemble the description into one string
-        full_description = ""
-        for string in spell_details['desc']:
-            full_description = full_description + string + " \n"
+
 
         # Assemble the class and subclass arrays
         classArray = []
@@ -631,7 +631,7 @@ def fetch_and_populate_spells():
             components = spell_details['components'],
             material = material,
             duration = spell_details['duration'],
-            description = full_description,
+            description = spell_details['desc'],
             higher_level = higher_level,
             classes = classArray,
             subclasses = subclassArray
