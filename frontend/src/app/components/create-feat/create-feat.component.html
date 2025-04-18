@@ -1,0 +1,295 @@
+<div class="main-content">
+  <h1>Create New Feat</h1>
+  <form [formGroup]="featForm" (ngSubmit)="onSubmit()">
+    <!-- Basic Information -->
+    <div class="section">
+      <h2>Basic Information</h2>
+      <div class="row">
+        <div>
+          <label for="name">Feat Name:</label>
+          <input type="text" id="name" formControlName="name" required>
+        </div>
+      </div>
+      <label>Description</label>
+      <div class="row full-width">
+        <quill-editor 
+          formControlName="description"
+          [modules]="quillConfig"
+          placeholder="Enter detailed description of the feat">
+        </quill-editor>
+      </div>
+    </div>
+
+    <!-- Pre-requisites -->
+    <div class="section">
+        <h2>Prerequisite's</h2> 
+        <label>Prerequisite Description</label>
+        <div class="row">
+            <div class="row full-width">
+                <quill-editor 
+                formControlName="prerequisiteDescription"
+                [modules]="quillConfig"
+                placeholder="Add prerequisites to your Feat">
+                </quill-editor>
+            </div>
+        </div>
+    </div>
+
+    <!-- Options -->
+    <div class="section">
+      <h2>Options</h2>
+      <div class="row">
+        <div>
+          <label for="optionName">Option Name:</label>
+          <input type="text" id="optionName" formControlName="optionName">
+        </div>
+      </div>
+      <label>Option Description</label>
+      <div class="row full-width">
+        <quill-editor 
+          formControlName="optionDescription"
+          [modules]="quillConfig"
+          placeholder="Enter option description">
+        </quill-editor>
+      </div>
+    </div>
+
+    <!-- Modifiers -->
+    <div class="section">
+      <h2>Modifiers</h2>
+      <div class="row">
+        <div>
+          <label for="modifierType">Modifier Type:</label>
+          <select id="modifierType" formControlName="modifierType" (change)="onModifierTypeChange()">
+            <option value="">Select Modifier Type</option>
+            <option *ngFor="let type of modifierTypes" [value]="type">{{ type }}</option>
+          </select>
+        </div>
+        <div *ngIf="currentModifierSubtypes?.length">
+            <label for="modifierSubtype">Subtype:</label>
+            <select id="modifierSubtype" formControlName="modifierSubtype">
+                <option value="">Select Subtype</option>
+                <option *ngFor="let subtype of currentModifierSubtypes" [value]="subtype">{{ subtype }}</option>
+            </select>
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label for="modifierAbilityScore">Ability Score:</label>
+          <select id="modifierAbilityScore" formControlName="modifierAbilityScore">
+            <option value="">Select Ability</option>
+            <option *ngFor="let ability of abilityScores" [value]="ability">{{ ability }}</option>
+          </select>
+        </div>
+        <div>
+          <label for="modifierDiceCount">Dice Count:</label>
+          <input type="number" id="modifierDiceCount" formControlName="modifierDiceCount" min="0">
+        </div>
+        <div>
+          <label for="modifierDiceType">Dice Type:</label>
+          <select id="modifierDiceType" formControlName="modifierDiceType">
+            <option value="">Select Die</option>
+            <option *ngFor="let die of dieType" [value]="die">{{ die }}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label for="modifierFixedValue">Fixed Value:</label>
+          <input type="number" id="modifierFixedValue" formControlName="modifierFixedValue" min="0">
+        </div>
+        <div>
+          <label for="modifierDurationIntervalNum">Duration:</label>
+          <input type="number" id="modifierDurationIntervalNum" formControlName="modifierDurationIntervalNum" min="0" placeholder="Number">
+          <select formControlName="modifierDurationIntervalType">
+            <option value="">Select Unit</option>
+            <option value="rounds">Rounds</option>
+            <option value="minutes">Minutes</option>
+            <option value="hours">Hours</option>
+            <option value="days">Days</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="row full-width">
+        <div>
+          <label for="modifierDetails">Details:</label>
+          <textarea id="modifierDetails" formControlName="modifierDetails" placeholder="Additional details"></textarea>
+        </div>
+      </div>
+
+      <div class="bonus-type-container">
+        <h4>Additional Bonus Types</h4>
+        <div formArrayName="modifierAdditionalBonusTypes">
+            <div *ngFor="let bonus of getBonusTypesControls(); let i = index" class="row">
+            <div>
+                <input type="text" [formControlName]="i" placeholder="Bonus type">
+            </div>
+            <div>
+                <button type="button" (click)="removeModifierBonusType(i)" class="remove-btn">×</button>
+            </div>
+            </div>
+        </div>
+        <button type="button" (click)="addModifierBonusType()" class="add-bonus-btn">
+            <i class="fas fa-plus"></i> Add Bonus Type
+        </button>
+        </div>
+    </div>
+
+    <!-- Spell Options -->
+    <div class="section">
+    <h2>Spell Options</h2>
+    <div class="row">
+        <div>
+        <label for="featSpellName">Spell Name:</label>
+        <input type="text" id="featSpellName" formControlName="featSpellName">
+        </div>
+    </div>
+    
+    <div class="row">
+        <div>
+            <label>Spell Levels:</label>
+            <small class="hint">(Hold Ctrl/Cmd to select multiple)</small>
+            <select formControlName="featSpellLevels" multiple class="multi-select">
+            <option *ngFor="let level of spellLevels" [value]="level">{{ level }}</option>
+            </select>
+        </div>
+        <div>
+            <label>Spell Classes:</label>
+            <small class="hint">(Hold Ctrl/Cmd to select multiple)</small>
+            <select formControlName="featSpellClass" multiple class="multi-select">
+            <option *ngFor="let cls of spellClass" [value]="cls">{{ cls }}</option>
+            </select>
+        </div>
+        <div>
+            <label>Spell Schools:</label>
+            <small class="hint">(Hold Ctrl/Cmd to select multiple)</small>
+            <select formControlName="featSpellSchool" multiple class="multi-select">
+            <option *ngFor="let school of spellSchools" [value]="school">{{ school }}</option>
+            </select>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div>
+        <label for="featSpellAttackType">Attack Type:</label>
+        <select id="featSpellAttackType" formControlName="featSpellAttackType">
+            <option value="">Select Attack Type</option>
+            <option value="Melee Attack">Melee Attack</option>
+            <option value="Ranged Attack">Ranged Attack</option>
+            <option value="Melee and Ranged Attack">Both</option>
+        </select>
+        </div>
+        <div>
+        <label for="featSpellLevelDivisor">Level Divisor:</label>
+        <select id="featSpellLevelDivisor" formControlName="featSpellLevelDivisor">
+            <option value="">None</option>
+            <option value="2">2 Level</option>
+            <option value="3">3 Level</option>
+            <option value="4">4 Level</option>
+            <option value="5">5 Level</option>
+        </select>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div>
+        <label for="featSpellModifierOperator">Stat Modifier Operator:</label>
+        <select id="featSpellModifierOperator" formControlName="featSpellModifierOperator">
+            <option value="">Select Operator</option>
+            <option value="+">+ (Addition)</option>
+            <option value="x">x (Multiplication)</option>
+            <option value="-">- (Subtraction)</option>
+            <option value="/">/ (Division)</option>
+        </select>
+        </div>
+        <div>
+        <label for="featSpellAbilityModifier">Uses by Ability Modifier:</label>
+        <select id="featSpellAbilityModifier" formControlName="featSpellAbilityModifier">
+            <option value="">None</option>
+            <option *ngFor="let ability of abilityScores" [value]="ability">{{ ability }}</option>
+        </select>
+        </div>
+    </div>
+    
+    <div>
+        <label for="featSpellUseProfBonus">Use Proficiency Bonus:</label>
+        <input type="checkbox" id="featSpellUseProfBonus" formControlName="featSpellUseProfBonus">
+    </div>
+
+    <div class="row">
+        <div>
+        <label for="featSpellProfBonusOperator">Prof Bonus Operator:</label>
+        <select id="featSpellProfBonusOperator" formControlName="featSpellProfBonusOperator">
+            <option value="">Select Operator</option>
+            <option value="+">+ (Addition)</option>
+            <option value="x">x (Multiplication)</option>
+            <option value="-">- (Subtraction)</option>
+            <option value="/">/ (Division)</option>
+        </select>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div>
+        <label for="featSpellResetType">Reset Type:</label>
+        <select id="featSpellResetType" formControlName="featSpellResetType">
+            <option value="">Select Reset</option>
+            <option *ngFor="let reset of resetTypes" [value]="reset">{{ reset }}</option>
+        </select>
+        </div>
+        <div>
+        <label for="featSpellCastLevel">Cast at Level:</label>
+        <input type="number" id="featSpellCastLevel" formControlName="featSpellCastLevel" min="0">
+        </div>
+    </div>
+    
+    <div class="row">
+        <div>
+        <label for="featSpellCastingTime">Casting Time:</label>
+        <input type="text" id="featSpellCastingTime" formControlName="featSpellCastingTime">
+        </div>
+        <div>
+        <label for="featSpellActivationType">Activation Type:</label>
+        <select id="featSpellActivationType" formControlName="featSpellActivationType">
+            <option value="">Select Type</option>
+            <option *ngFor="let activation of activationType" [value]="activation">{{ activation }}</option>
+        </select>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div>
+        <label for="featSpellSpellRange">Spell Range Type:</label>
+        <select id="featSpellSpellRange" formControlName="featSpellSpellRange">
+            <option value="">Select Range Type</option>
+            <option *ngFor="let range of spellRangeType" [value]="range">{{ range }}</option>
+        </select>
+        </div>
+        <div>
+        <label for="featSpellRangeDistance">Range Distance:</label>
+        <input type="number" id="featSpellRangeDistance" formControlName="featSpellRangeDistance" min="0">
+        </div>
+    </div>
+    
+    <div class="row full-width">
+        <div>
+        <label for="featSpellDescription">Additional Description:</label>
+        <textarea id="featSpellDescription" formControlName="featSpellDescription"></textarea>
+        </div>
+    </div>
+    
+    <div class="checkbox-row">
+        <input type="checkbox" id="featSpellIsInfinite" formControlName="featSpellIsInfinite">
+        <label for="featSpellIsInfinite">Is Infinite</label>
+    </div>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="row full-width">
+      <button type="submit">Create Feat</button>
+    </div>
+  </form>
+</div>
