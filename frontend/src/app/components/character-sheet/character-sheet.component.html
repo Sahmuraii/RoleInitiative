@@ -75,7 +75,7 @@
             <div class="character_profile_image" id="character_profile_image"></div>
             <span class="character_name_label" id="character_name">{{ char_data.char_si?.name ?? 'Unknown' }}</span>
             <span class="character_race_label">{{ char_data.char_si?.race_name ?? 'Unknown Race' }}</span>
-            <span class="character_level_label">{{ char_data.char_si?.total_level ?? 'Unknown Level' }}</span>
+            <span class="character_level_label">Level {{ char_data.char_si?.total_level ?? 'Unknown' }}</span>
         </div>
 
         <!-- Character Combat-ish Stats-->
@@ -118,10 +118,10 @@
                 <button id="saving_throw_1_field" class="saving_throw_field">
                     <ng-container *ngIf="char_data.char_si?.modifier_scores !== undefined">
                         <ng-container *ngIf="checkProficiency('STR') && char_data.char_si?.proficiency_bonus !== undefined">
-                            {{ (char_data.char_si?.modifier_scores[4].value + char_data.char_si?.proficiency_bonus) >= 0 ? '+' : '' }} {{ (char_data.char_si?.modifier_scores[4].value + char_data.char_si?.proficiency_bonus) }}
+                            {{ (char_data.char_si?.modifier_scores[0].value + char_data.char_si?.proficiency_bonus) >= 0 ? '+' : '' }} {{ (char_data.char_si?.modifier_scores[0].value + char_data.char_si?.proficiency_bonus) }}
                         </ng-container>
                         <ng-container *ngIf="!(checkProficiency('STR') && char_data.char_si?.proficiency_bonus !== undefined)">
-                            {{ char_data.char_si?.modifier_scores[4].value >= 0 ? '+' : '' }} {{ char_data.char_si?.modifier_scores[4].value }}
+                            {{ char_data.char_si?.modifier_scores[0].value >= 0 ? '+' : '' }} {{ char_data.char_si?.modifier_scores[0].value }}
                         </ng-container>
                     </ng-container>
                     <ng-container *ngIf="!(char_data.char_si?.modifier_scores !== undefined)">--</ng-container>
@@ -150,10 +150,10 @@
                 <button id="saving_throw_1_field_2" class="saving_throw_field">
                     <ng-container *ngIf="char_data.char_si?.modifier_scores !== undefined">
                         <ng-container *ngIf="checkProficiency('CON') && char_data.char_si?.proficiency_bonus !== undefined">
-                            {{ (char_data.char_si?.modifier_scores[0].value + char_data.char_si?.proficiency_bonus) >= 0 ? '+' : '' }} {{ (char_data.char_si?.modifier_scores[0].value + char_data.char_si?.proficiency_bonus) }}
+                            {{ (char_data.char_si?.modifier_scores[2].value + char_data.char_si?.proficiency_bonus) >= 0 ? '+' : '' }} {{ (char_data.char_si?.modifier_scores[2].value + char_data.char_si?.proficiency_bonus) }}
                         </ng-container>
                         <ng-container *ngIf="!(checkProficiency('CON') && char_data.char_si?.proficiency_bonus !== undefined)">
-                            {{ char_data.char_si?.modifier_scores[0].value >= 0 ? '+' : '' }} {{ char_data.char_si?.modifier_scores[0].value }}
+                            {{ char_data.char_si?.modifier_scores[2].value >= 0 ? '+' : '' }} {{ char_data.char_si?.modifier_scores[2].value }}
                         </ng-container>
                     </ng-container>
                     <ng-container *ngIf="!(char_data.char_si?.modifier_scores !== undefined)">--</ng-container>
@@ -182,10 +182,10 @@
                 <button id="saving_throw_1_field_4" class="saving_throw_field">
                     <ng-container *ngIf="char_data.char_si?.modifier_scores !== undefined">
                         <ng-container *ngIf="checkProficiency('WIS') && char_data.char_si?.proficiency_bonus !== undefined">
-                            {{ (char_data.char_si?.modifier_scores[2].value + char_data.char_si?.proficiency_bonus) >= 0 ? '+' : '' }} {{ (char_data.char_si?.modifier_scores[2].value + char_data.char_si?.proficiency_bonus) }}
+                            {{ (char_data.char_si?.modifier_scores[4].value + char_data.char_si?.proficiency_bonus) >= 0 ? '+' : '' }} {{ (char_data.char_si?.modifier_scores[4].value + char_data.char_si?.proficiency_bonus) }}
                         </ng-container>
                         <ng-container *ngIf="!(checkProficiency('WIS') && char_data.char_si?.proficiency_bonus !== undefined)">
-                            {{ char_data.char_si?.modifier_scores[2].value >= 0 ? '+' : '' }} {{ char_data.char_si?.modifier_scores[2].value }}
+                            {{ char_data.char_si?.modifier_scores[4].value >= 0 ? '+' : '' }} {{ char_data.char_si?.modifier_scores[4].value }}
                         </ng-container>
                     </ng-container>
                     <ng-container *ngIf="!(char_data.char_si?.modifier_scores !== undefined)">--</ng-container>

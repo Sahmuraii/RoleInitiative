@@ -43,6 +43,13 @@ def get_character_info(request_char_id) -> dict:
     mods = Character_Stats.query.filter_by(char_id=request_char_id).first().__dict__
     char_info.update({'modifier_scores': []})
     mods.pop('_sa_instance_state', None); mods.pop('char_id', None)
+    for mod_order in ["strength", "dexterity", "constitution", "intelligence", "wisdom", "charisma"]:
+        for attribute in mods:
+            if attribute != mod_order: continue
+            char_info['modifier_scores'].append({'modifier_name': attribute, 'score': mods[attribute], 'value': math.floor((mods[attribute] - 10) / 2)})
+            mods.pop(attribute)
+            break
+
     for attribute in mods:
         char_info['modifier_scores'].append({'modifier_name': attribute, 'score': mods[attribute], 'value': math.floor((mods[attribute] - 10) / 2)})
 
