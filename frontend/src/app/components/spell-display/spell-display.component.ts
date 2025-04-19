@@ -21,10 +21,11 @@ export class SpellDisplayComponent {
   @Input() spellsArray: Array<number> = [];
   @Input() buttonFunc: (inputArray: Array<number>, inputID: number) => void = () => {};
 
-  onMouseEnter() {
-    this.hideDesc = false;
-  }
-  onMouseExit() {
-    this.hideDesc = true;
+  toggleDesc() {
+    if(this.hideDesc == false) {
+      this.hideDesc = true
+    } else {
+      this.hideDesc = false
+    }
   }
 }

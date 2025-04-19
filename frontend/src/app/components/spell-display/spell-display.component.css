@@ -14,14 +14,14 @@
 }
 
 .small-display {
-    display: flex;
     min-width: max-content;
+    display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    gap: 1rem;
 }
 
 .description {
+    overflow: hidden;
     white-space: normal;
     word-wrap: break-word;
     margin-top: 0.5rem;
@@ -41,7 +41,7 @@
     font-variant: small-caps;
     letter-spacing: 1px;
     white-space: initial;
-    
+    word-wrap: break-word;
 }
 
 .spell-subtext {
@@ -65,4 +65,12 @@
     vertical-align: middle;
     margin-left: 10px;
     flex-shrink: 0;
+}
+
+.spell-button:hover {
+    background-color: rgb(146, 12, 16);
+}
+
+.spell-button:active {
+    background-color: #58180D;
 }

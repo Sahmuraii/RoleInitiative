@@ -1,4 +1,4 @@
-<div class="spell-display" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseExit()">
+<div class="spell-display" (click)="toggleDesc()">
     <div class="small-display">
         <div class="spell-text">
             <p class="spell-name">{{ spellName }}</p>
@@ -17,10 +17,10 @@
             <p class="spell-subtext">{{ duration }}</p>
         </div>
         <div class="spell-text">
-            <p class="spell-category">Range/Area</p>
+            <p class="spell-category">Range</p>
             <p class="spell-subtext">{{ spellRange }}</p>
         </div>
-        <button class="spell-button" (click)="buttonFunc(spellsArray, spellId)" type="button">{{ buttonText }}</button>
+        <button class="spell-button" (click)="$event.stopPropagation(); buttonFunc(spellsArray, spellId)" type="button">{{ buttonText }}</button>
     </div>
     <div class="description" [hidden]="hideDesc">
         @for (string of spellDesc; track $index) {

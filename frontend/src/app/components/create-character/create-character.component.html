@@ -4,6 +4,7 @@
         <p>Welcome to the character creator! Here you can design your own Dungeons and Dragons character.</p>
         <p>Follow the steps below to build your character:</p>
         <p>{{characterForm.value | json}}</p>
+        <button (click)="getSpellList()">afdsa</button>
         <br>
     </div>
     <div class="tabs">
@@ -318,11 +319,32 @@
                 @if(true) { 
                     <div class="spells-text">
                         <h2>Choose your spells</h2>
+                        <p>Your current spells are listed below:</p>
+                        <div class="spells-list">
+                            @if (spellsKnownArray == []) {
+                                <p>You haven't chosen any spells!</p>
+                            } @else {
+                                @for (spell of getSpellList(); track $index) {
+                                    <spell-display 
+                                    [spellId]="spell.spell_id" 
+                                    [spellName]="spell.spell_name" 
+                                    [spellLevel]="spell.spell_level" 
+                                    [spellSchool]="spell.spell_school" 
+                                    [castingTime]="spell.casting_time" 
+                                    [duration]="spell.duration"
+                                    [spellRange]="spell.range"
+                                    [spellDesc]="spell.description"
+                                    buttonText="Remove"
+                                    [spellsArray]="spellsKnownArray"
+                                    [buttonFunc]="removeFromSpellList"></spell-display>
+                                }
+                            }
+                        </div>
                     </div>
                     
                     <div class="spells-list-div">
                         <h2>List of spells</h2>
-                        <p>Hover over spell cards to see description</p>
+                        <p>Click on the spell cards to see the spell's description</p>
                         <div class="spells-list">
                             @for (spell of dndSpellsSignal(); track $index) {
                                 <spell-display 

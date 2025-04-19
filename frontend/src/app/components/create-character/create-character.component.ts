@@ -100,6 +100,7 @@ export class CreateCharacterComponent implements OnInit {
       wis: this.fb.control(8, {validators: []}),
       cha: this.fb.control(8, {validators: []}),
 
+      //spell selection form elements
       spellsKnown: this.fb.control(this.spellsKnownArray, {validators: []}),
 
       //Character details form elements
@@ -467,7 +468,22 @@ export class CreateCharacterComponent implements OnInit {
   //Spell methods
 
   addToSpellList(inputArray: Array<number>, inputID: number) {
-    inputArray.push(inputID)
+    if(!inputArray.includes(inputID)) {
+      inputArray.push(inputID)
+    }
+  }
+
+  removeFromSpellList(inputArray: Array<number>, inputID: number) {
+    let indexToRemove = inputArray.indexOf(inputID)
+    inputArray.splice(indexToRemove, 1)
+  }
+
+  getSpellList() {
+    let output = []
+    for(let i = 0; i < this.spellsKnownArray.length; i++) {
+      output.push(this.dndSpellsSignal()[this.spellsKnownArray[i] - 1])
+    }
+    return output
   }
 
 
