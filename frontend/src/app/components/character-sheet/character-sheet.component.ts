@@ -88,4 +88,27 @@ export class CharacterSheetComponent {
             })
         ).subscribe();
     }
+
+    hiddenTabs = [false, true, true, true]
+    public showTab(tabId: string) {
+        switch(tabId) {
+          case "inventory": {
+            this.hiddenTabs = [false, true, true, true]
+            break;
+          }
+          case "spells": {
+            this.hiddenTabs = [true, false, true, true]
+            break; 
+          }
+          case "feats": {
+            this.hiddenTabs = [true, true, false, true];
+            break;
+          }
+          case "background": {
+            this.hiddenTabs = [true, true, true, false]
+            break;
+          }
+        }
+        
+      }
 }

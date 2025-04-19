@@ -3,7 +3,29 @@
     <!-- Main Character View-->
     <div class="default_sheet_container character_viewer" id="character_viewer">
         <!-- Multiuse Block. TODO: Add tabs to block-->
-        <div class="char_sheet_block multiuse_character_info_switch_block"></div>
+        <div class="char_sheet_block multiuse_character_info_switch_block">
+            <div class="inventory_tabs">
+                <button #tab class="inventory_tab active" (click)="showTab('inventory')" [ngClass]="{'active' : !hiddenTabs[0]}">Inventory</button>
+                <button #tabtest class="inventory_tab" (click)="showTab('spells')" [ngClass]="{'active' : !hiddenTabs[1]}">Spells</button>
+                <button #tab class="inventory_tab" (click)="showTab('feats')" [ngClass]="{'active' : !hiddenTabs[2]}">Feats</button>
+                <button #tab class="inventory_tab" (click)="showTab('background')" [ngClass]="{'active' : !hiddenTabs[3]}">Background</button>
+                <!-- {% if current_user.is_admin %}
+                    <button class="tab" onclick="showTab('debug')">Admin Tab</button>
+                {% else %}
+                    <p>User is NOT authenticated.</p>
+                {% endif %} -->
+            </div>
+            <div class="tab_sections">
+                <div id="character_inventory" [hidden]="hiddenTabs[0]">
+                </div>
+                <div id="character_spells" [hidden]="hiddenTabs[1]">
+                </div>
+                <div id="character_feats" [hidden]="hiddenTabs[2]">
+                </div>
+                <div id="character_background" [hidden]="hiddenTabs[3]">
+                </div>
+            </div>
+        </div>
 
         <!-- Hit Points-->
         <div class="char_sheet_block character_hit_points_block" id="hit_points_block">
