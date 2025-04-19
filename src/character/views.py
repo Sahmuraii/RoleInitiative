@@ -2,7 +2,7 @@ from flask import render_template, Blueprint, request, redirect, url_for, jsonif
 from flask_login import current_user, login_required
 from sqlalchemy import select
 from src.auth.models import User
-from src.character.models import Character, Character_Class, DND_Class, DND_Race, DND_Background, Character_Details, Character_Stats, Character_Race, Character_Hit_Points, Character_Death_Saves, DND_Skill, DND_Class_Proficiency_Option, DND_Race_Proficiency_Option, Proficiency_List, Proficiencies, Character_Proficiency_Choices, Proficiency_Choice, Proficiency_Types
+from src.character.models import Character, Character_Class, DND_Class, DND_Race, DND_Background, Character_Details, Character_Stats, Character_Race, Character_Hit_Points, Character_Death_Saves, DND_Skill, DND_Class_Proficiency_Option, DND_Race_Proficiency_Option, Proficiency_List, Proficiencies, Character_Proficiency_Choices, Proficiency_Choice, Proficiency_Types, Character_Spells_Known
 from src import db
 import math, json
 
@@ -294,6 +294,8 @@ def create():
         wisdom =  data.get('wis')
         charisma =  data.get('cha')
 
+        spellsKnown = data.get('spellsKnown')
+
 
         #selected_background = data.get('background')
         alignment = data.get('alignment')
@@ -358,6 +360,15 @@ def create():
             race_id = race,
         )
         db.session.add(new_character_race)
+
+        if spellsKnown != []:
+            new_character_spells_known = Character_Spells_Known(
+                char_id = new_character.char_id,
+                spells = spellsKnown
+            )
+            db.session.add(new_character_spells_known)
+
+        
 
         for new_class in classes:
             if new_class['level'] != 0:
