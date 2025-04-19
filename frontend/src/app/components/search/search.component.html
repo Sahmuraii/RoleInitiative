@@ -39,7 +39,17 @@
             <p class="spell-category">Range/Area</p>
             <p class="spell-subtext">{{ item.range }}</p>
           </div>
-          <button class="spell-button" (click)="saveHomebrew('spell', item.user_spell_id)">Save</button>
+          <button
+            class="bookmark-btn"
+            [class.bookmarked]="item.saved"
+            (click)="toggleSave(item, i)"
+            [attr.aria-label]="item.saved ? 'Unsave' : 'Save'">
+            <i
+              class="fa bookmark-icon"
+              [ngClass]="item.saved ? 'fa-bookmark' : 'fa-regular fa-bookmark'">
+            </i>
+          </button>
+
         </div>
         <div class="description" [class.expanded]="hoveredSpellIndex === i">
           {{ item.description }}

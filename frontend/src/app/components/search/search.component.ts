@@ -31,18 +31,69 @@ export class SearchComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.search(); // load initial results
+    this.authService.isLoggedIn$.subscribe((isLoggedIn) => {
+      if (isLoggedIn && this.authService.getCurrentUser()) {
+        this.search();
+      }
+    });
   }
+
 
   search(): void {
     this.homebrewService.searchHomebrew(this.selectedType, this.searchQuery, this.currentPage).subscribe(data => {
       this.results = data.items;
-      //console.log(this.results);
-
       this.hasMoreResults = data.hasMore;
+
+      const user = this.authService.getCurrentUser();
+      if (!user) {
+        console.warn('User not loaded yet');
+        return;
+      }
+
+      const params = new HttpParams().set('userID', user.id);
+
+      this.http.get(`${API_URL}saved-homebrew-ids`, { params }).subscribe((res: any) => {
+        const savedList = res.saved as { content_type: string, content_id: number }[];
+
+        const savedIds = savedList
+          .filter(item => item.content_type === this.selectedType)
+          .map(item => item.content_id);
+
+        this.results = this.results.map(item => ({
+          ...item,
+          saved: savedIds.includes(item.user_spell_id || item.id)
+        }));
+      });
     });
   }
 
+  toggleSave(item: any, index: number): void {
+    const isCurrentlySaved = item.saved;
+
+    const body = {
+      content_type: this.selectedType,
+      content_id: item.user_spell_id || item.id
+    };
+
+    const user = this.authService.getCurrentUser();
+    if (!user) {
+      console.error('User not logged in');
+      return;
+    }
+
+    const params = new HttpParams().set('userID', user.id);
+
+    const url = `${API_URL}save-homebrew`;
+
+    this.http.post(url, body, { params }).subscribe({
+      next: () => {
+        this.results[index].saved = !isCurrentlySaved;
+      },
+      error: (err) => {
+        console.error(`Action failed:`, err);
+      }
+    });
+  }
 
 
   saveHomebrew(contentType: string, contentId: string): void {
@@ -53,10 +104,12 @@ export class SearchComponent implements OnInit {
           content_id: contentId // spell_id for example. NOT userID, 13 for spell_id NOT EQUAL to 13 for monster_id
         };
 
-        const params = new HttpParams().set(
-          'userID',
-          this.authService.getCurrentUser().id
-        );
+        const user = this.authService.getCurrentUser();
+        if (!user) {
+          console.error('User not logged in');
+          return;
+        }
+        const params = new HttpParams().set('userID', user.id);
 
         this.http.post(`${API_URL}save-homebrew`, body, { params }).subscribe(
           (res: any) => {

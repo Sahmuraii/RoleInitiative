@@ -1,18 +1,22 @@
 .search-container {
   padding: 1rem;
-  max-width: 600px;
+  max-width: 80%;
   margin: auto;
 }
+
 input, select, button {
   margin-right: 0.5rem;
 }
+
 ul {
   list-style-type: none;
   padding: 0;
 }
+
 li {
   padding: 0.25rem 0;
 }
+
 .pagination {
   margin-top: 1rem;
 }
@@ -104,4 +108,34 @@ li {
 .description.expanded {
   max-height: 500px; /* Arbitrary large value */
   opacity: 1;
+}
+
+.bookmark-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  outline: none;
+  transition: transform 0.2s;
+}
+
+.bookmark-btn:hover {
+  transform: scale(1.1);
+}
+
+.bookmark-icon {
+  font-size: 1.5rem;
+  color: #666;
+  transition: color 0.3s, transform 0.2s;
+}
+
+.bookmark-btn.bookmarked .bookmark-icon {
+  color: #e3b341;
+  animation: pop 0.3s ease;
+}
+
+@keyframes pop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.4); }
+  100% { transform: scale(1); }
 }

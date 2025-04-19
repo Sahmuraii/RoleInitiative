@@ -5,19 +5,21 @@ from src.character.models import (UserBackground, UserSpell, UserMonster,
                                   UserMonster_Reactions, UserMonster_SpecialAbilitys, UserMonster_Traits)
 from src.homebrew.models import UserMagicItem
 from sqlalchemy.inspection import inspect
-import os 
-import uuid 
+import os
+import uuid
 import json
 
 from src.homebrew.models import SavedHomebrew
 
 homebrew_bp = Blueprint('homebrew_bp', __name__, template_folder='../templates')
 
+
 @homebrew_bp.route('/create_homebrew', methods=['GET', 'POST'])
 def create_homebrew():
     if request.method == 'POST':
         return redirect(url_for('homebrew_bp.create_homebrew'))
     return render_template('homebrew/create_homebrew.html')
+
 
 @homebrew_bp.route('/create_background', methods=['GET', 'POST'])
 def create_background():
@@ -94,9 +96,10 @@ def create_background():
     # Handle GET request (if needed)
     return render_template('homebrew/create_background.html')
 
+
 @homebrew_bp.route('/backgrounds', methods=['GET'])
 def get_backgrounds():
-    user_id = request.args.get('userID')   # Get the user ID from the query parameters
+    user_id = request.args.get('userID')  # Get the user ID from the query parameters
     if not user_id:
         return jsonify({"error": "User ID is required"}), 400
 
@@ -115,6 +118,7 @@ def get_backgrounds():
     except Exception as e:
         print(f"Error fetching backgrounds: {e}")
         return jsonify({"error": "Failed to fetch backgrounds"}), 500
+
 
 @homebrew_bp.route('/create_spell', methods=['GET', 'POST'])
 def create_spell():
@@ -214,6 +218,7 @@ def create_spell():
     # Handle GET request (if needed)
     return render_template('homebrew/create_spell.html')
 
+
 def clean_int(value):
     if value is None:
         return None
@@ -224,25 +229,26 @@ def clean_int(value):
     except (ValueError, TypeError):
         return None
 
+
 @homebrew_bp.route('/create_monster', methods=['GET', 'POST'])
-def create_monster(): 
+def create_monster():
     if request.method == 'POST':
         try:
             # Ensure request is JSON
             if not request.is_json:
                 return jsonify({"error": "Request must be JSON"}), 415
-            
+
             data = request.get_json()
             print("Received monster data:", data)
 
             # Validate required fields
             if not data:
                 return jsonify({"error": "No data provided"}), 400
-            
+
             user_id = data.get('userID')
             if not user_id:
                 return jsonify({"error": "User ID is required"}), 400
-            
+
             if not data.get('name'):
                 return jsonify({"error": "Monster name is required"}), 400
 
@@ -298,7 +304,7 @@ def create_monster():
             )
 
             db.session.add(new_monster)
-            db.session.flush()  
+            db.session.flush()
 
             # Handle damage adjustments
             for adj in data.get('damageAdjustments', []):
@@ -371,7 +377,7 @@ def create_monster():
                 "message": "Failed to create monster",
                 "error": str(e)
             }), 500
-        
+
     return render_template('homebrew/create_monster.html')
 
 
@@ -389,7 +395,7 @@ def get_spells():
                 "level": spell.level,
                 "school": spell.school,
                 "description": spell.description,
-                "casting_time": spell.casting_time, 
+                "casting_time": spell.casting_time,
                 "spell_range": spell.range,
                 "components": spell.components,
                 "components_description": spell.materials_description,
@@ -403,6 +409,7 @@ def get_spells():
         print(f"Error fetching spells: {e}")
         return jsonify({"error": "Failed to fetch spells"}), 500
 
+
 @homebrew_bp.route('/monsters', methods=['GET'])
 def get_monsters():
     user_id = request.args.get('userID')  # Get the user ID from the query parameters
@@ -412,7 +419,7 @@ def get_monsters():
     try:
         # Get all monsters for the user
         monsters = UserMonster.query.filter_by(user_id=user_id).all()
-        
+
         # Prepare the response data
         monsters_data = []
         for monster in monsters:
@@ -492,9 +499,10 @@ def get_monsters():
         print(f"Error fetching monsters: {e}")
         return jsonify({"error": "Failed to fetch monsters"}), 500
 
+
 @homebrew_bp.route('/save-homebrew', methods=['POST'])
 def save_homebrew():
-    user_id = request.args.get('userID')   # Get the user ID from the query parameters
+    user_id = request.args.get('userID')  # Get the user ID from the query parameters
     data = request.json
     content_type = data.get('content_type')
     content_id = data.get('content_id')
@@ -509,7 +517,9 @@ def save_homebrew():
     ).first()
 
     if existing:
-        return jsonify({"message": "Already saved"}), 200
+        db.session.delete(existing)
+        db.session.commit()
+        return jsonify({"message": "Unsaved"}), 200
 
     new_save = SavedHomebrew(
         user_id=user_id,
@@ -521,20 +531,21 @@ def save_homebrew():
 
     return jsonify({"message": "Saved!"}), 201
 
+
 @homebrew_bp.route('/saved-homebrew', methods=['GET'])
 def get_saved_homebrew():
-    user_id = request.args.get('userID')   # Get the user ID from the query parameters
+    user_id = request.args.get('userID')  # Get the user ID from the query parameters
     saved_items = SavedHomebrew.query.filter_by(user_id=user_id).all()
 
     grouped = {"spell": [], "background": [], "monster": []}
 
-    #print(f"User ID: {user_id}")
-    #print(f"Saved items: {[{'type': i.content_type, 'id': i.content_id} for i in saved_items]}")
+    # print(f"User ID: {user_id}")
+    # print(f"Saved items: {[{'type': i.content_type, 'id': i.content_id} for i in saved_items]}")
 
     for item in saved_items:
         model = None
         if item.content_type == "spell":
-            #print(f"Trying to load spell with ID {item.content_id}")
+            # print(f"Trying to load spell with ID {item.content_id}")
             model = UserSpell.query.get(item.content_id)
         elif item.content_type == "background":
             model = UserBackground.query.get(item.content_id)
@@ -545,12 +556,26 @@ def get_saved_homebrew():
             model_dict = model.__dict__.copy()
             model_dict.pop('_sa_instance_state', None)
             grouped[item.content_type].append(model_dict)
-        #print(model) test to see full model
+        # print(model) test to see full model
 
     return jsonify(grouped)
 
+
+@homebrew_bp.route('/saved-homebrew-ids', methods=['GET'])  # More lightweight for search functionality
+def get_saved_homebrew_ids():
+    user_id = request.args.get('userID')
+    if not user_id:
+        return jsonify({"error": "Missing userID"}), 400
+
+    saved_items = SavedHomebrew.query.filter_by(user_id=user_id).all()
+    saved_ids = [{"content_type": item.content_type, "content_id": item.content_id} for item in saved_items]
+
+    return jsonify({"saved": saved_ids})
+
+
 def to_dict(model):
     return {c.key: getattr(model, c.key) for c in inspect(model).mapper.column_attrs}
+
 
 @homebrew_bp.route('/search', methods=['GET'])
 def search_homebrew():
@@ -572,7 +597,7 @@ def search_homebrew():
     base_query = model.query
     if query:
         base_query = base_query.filter(model.spell_name.ilike(f"%{query}%")) if content_type == "spell" else \
-                     base_query.filter(model.name.ilike(f"%{query}%"))
+            base_query.filter(model.name.ilike(f"%{query}%"))
 
     total_items = base_query.count()
     items = base_query.offset((page - 1) * page_size).limit(page_size).all()
@@ -581,6 +606,7 @@ def search_homebrew():
         "items": [to_dict(item) for item in items],
         "totalPages": (total_items + page_size - 1) // page_size
     })
+
 
 @homebrew_bp.route('/create_magic_item', methods=['GET', 'POST'])
 def create_magic_item():
@@ -605,7 +631,7 @@ def create_magic_item():
         name = data.get('name')
         rarity = data.get('rarity')
         item_type = data.get('itemType')
-        
+
         if not all([name, rarity, item_type]):
             return jsonify({"error": "Name, rarity, and item_type are required"}), 400
 
@@ -616,7 +642,7 @@ def create_magic_item():
 
         # Extract weapon details if they exist
         weapon_details = data.get('weaponDetails', {})
-        
+
         # Create new magic item object
         new_item = UserMagicItem(
             user_id=user_id,
@@ -627,13 +653,13 @@ def create_magic_item():
             size=data.get('size'),
             cost_amount=cost_amount,
             cost_currency=cost_currency,
-            
+
             # Armor properties
             armor_class=clean_int(data.get('armorClass')),
             dex_bonus=data.get('dexBonus'),  # This might be a string like "+2" or "yes"
             strength_requirement=clean_int(data.get('strengthRequirement')),
             stealth_check=data.get('stealthCheck'),
-            
+
             # Weapon properties
             weapon_type=data.get('weaponType'),
             weapon_category=weapon_details.get('category'),
@@ -646,30 +672,30 @@ def create_magic_item():
             custom_property_description=weapon_details.get('customProperty', {}).get('description'),
             ammo_type=weapon_details.get('ammo', {}).get('type'),
             ammo_capacity=clean_int(weapon_details.get('ammo', {}).get('capacity')),
-            
+
             # Attunement
             requires_attunement=data.get('requiresAttunement', False),
             attunement_description=data.get('attunementDescription'),
-            
+
             # Modifiers
             modifiers=data.get('modifiers', []),
-            
+
             # Condition immunities
             condition_immunities=data.get('conditionImmunities'),
-            
+
             # Spellcasting
             allows_spellcasting=data.get('allowsSpellcasting', False),
             spellcasting_ability=data.get('spellcastingAbility'),
             spell_save_dc=clean_int(data.get('spellSaveDC')),
             spell_attack_bonus=clean_int(data.get('spellAttackBonus')),
             spells=data.get('spells'),
-            
+
             # Charges
             has_charges=data.get('hasCharges', False),
             max_charges=clean_int(data.get('maxCharges')),
             charge_reset_condition=data.get('chargeResetCondition'),
             charge_reset_description=data.get('chargeResetDescription'),
-            
+
             # Additional info
             weight_category=data.get('weightCategory'),
             notes=data.get('notes'),
@@ -690,8 +716,9 @@ def create_magic_item():
             print(f"Error adding magic item to the database: {e}")
             return jsonify({"error": "Failed to create magic item"}), 500
 
-    # Handle GET request 
+    # Handle GET request
     return render_template('homebrew/create_magic_item.html')
+
 
 @homebrew_bp.route('/magic_items', methods=['GET'])
 def get_magic_items():
@@ -702,7 +729,7 @@ def get_magic_items():
     try:
         # Get all magic items for the user
         magic_items = UserMagicItem.query.filter_by(user_id=user_id).all()
-        
+
         # Prepare the response data
         magic_items_data = []
         for item in magic_items:
