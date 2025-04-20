@@ -109,17 +109,20 @@ textarea {
 }
 
 button[type="submit"] {
-  padding: 8px 16px; 
+  width: 100%;
+  padding: 12px;
   background-color: var(--primaryRed);
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  font-size: 14px; 
+  font-size: 16px;
+  margin-top: 20px;
 }
 
 button[type="submit"]:hover {
   background-color: var(--primaryRed);
+  opacity: 0.9;
 }
 
 .save-or-attack-section {

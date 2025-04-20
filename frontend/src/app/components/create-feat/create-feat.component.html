@@ -1,7 +1,6 @@
 <div class="main-content">
   <h1>Create New Feat</h1>
   <form [formGroup]="featForm" (ngSubmit)="onSubmit()">
-    <!-- Basic Information -->
     <div class="section">
       <h2>Basic Information</h2>
       <div class="row">
@@ -20,19 +19,18 @@
       </div>
     </div>
 
-    <!-- Pre-requisites -->
     <div class="section">
-        <h2>Prerequisite's</h2> 
-        <label>Prerequisite Description</label>
-        <div class="row">
-            <div class="row full-width">
-                <quill-editor 
-                formControlName="prerequisiteDescription"
-                [modules]="quillConfig"
-                placeholder="Add prerequisites to your Feat">
-                </quill-editor>
-            </div>
+      <h2>Prerequisite's</h2> 
+      <label>Prerequisite Description</label>
+      <div class="row">
+        <div class="row full-width">
+          <quill-editor 
+            formControlName="prerequisiteDescription"
+            [modules]="quillConfig"
+            placeholder="Add prerequisites to your Feat">
+          </quill-editor>
         </div>
+      </div>
     </div>
 
     <!-- Options -->
@@ -54,237 +52,545 @@
       </div>
     </div>
 
-    <!-- Modifiers -->
-    <div class="section">
-      <h2>Modifiers</h2>
-      <div class="row">
-        <div>
-          <label for="modifierType">Modifier Type:</label>
-          <select id="modifierType" formControlName="modifierType" (change)="onModifierTypeChange()">
-            <option value="">Select Modifier Type</option>
-            <option *ngFor="let type of modifierTypes" [value]="type">{{ type }}</option>
-          </select>
+    <!-- Modifiers (multiple instances) -->
+    <div formArrayName="modifiers">
+      <div *ngFor="let modifierGroup of modifiers.controls; let i = index" class="section">
+        <div class="section-header-container" (click)="toggleSection('modifiers' + i)">
+          <h2 class="section-header">Modifier {{i + 1}}</h2>
+          <span class="toggle-icon">{{ isSectionOpen('modifiers' + i) ? '−' : '+' }}</span>
         </div>
-        <div *ngIf="currentModifierSubtypes?.length">
-            <label for="modifierSubtype">Subtype:</label>
-            <select id="modifierSubtype" formControlName="modifierSubtype">
-                <option value="">Select Subtype</option>
-                <option *ngFor="let subtype of currentModifierSubtypes" [value]="subtype">{{ subtype }}</option>
-            </select>
-        </div>
-      </div>
-
-      <div class="row">
-        <div>
-          <label for="modifierAbilityScore">Ability Score:</label>
-          <select id="modifierAbilityScore" formControlName="modifierAbilityScore">
-            <option value="">Select Ability</option>
-            <option *ngFor="let ability of abilityScores" [value]="ability">{{ ability }}</option>
-          </select>
-        </div>
-        <div>
-          <label for="modifierDiceCount">Dice Count:</label>
-          <input type="number" id="modifierDiceCount" formControlName="modifierDiceCount" min="0">
-        </div>
-        <div>
-          <label for="modifierDiceType">Dice Type:</label>
-          <select id="modifierDiceType" formControlName="modifierDiceType">
-            <option value="">Select Die</option>
-            <option *ngFor="let die of dieType" [value]="die">{{ die }}</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="row">
-        <div>
-          <label for="modifierFixedValue">Fixed Value:</label>
-          <input type="number" id="modifierFixedValue" formControlName="modifierFixedValue" min="0">
-        </div>
-        <div>
-          <label for="modifierDurationIntervalNum">Duration:</label>
-          <input type="number" id="modifierDurationIntervalNum" formControlName="modifierDurationIntervalNum" min="0" placeholder="Number">
-          <select formControlName="modifierDurationIntervalType">
-            <option value="">Select Unit</option>
-            <option value="rounds">Rounds</option>
-            <option value="minutes">Minutes</option>
-            <option value="hours">Hours</option>
-            <option value="days">Days</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="row full-width">
-        <div>
-          <label for="modifierDetails">Details:</label>
-          <textarea id="modifierDetails" formControlName="modifierDetails" placeholder="Additional details"></textarea>
-        </div>
-      </div>
-
-      <div class="bonus-type-container">
-        <h4>Additional Bonus Types</h4>
-        <div formArrayName="modifierAdditionalBonusTypes">
-            <div *ngFor="let bonus of getBonusTypesControls(); let i = index" class="row">
-            <div>
-                <input type="text" [formControlName]="i" placeholder="Bonus type">
+        <div class="section-content" [class.collapsed]="!isSectionOpen('modifiers' + i)">
+          <div [formGroupName]="i">
+            <div class="row">
+              <div>
+                <label [for]="'modifierType' + i">Modifier Type:</label>
+                <select [id]="'modifierType' + i" formControlName="modifierType" (change)="onModifierTypeChange(modifierGroup)">
+                  <option value="">Select Modifier Type</option>
+                  <option *ngFor="let type of modifierTypes" [value]="type">{{ type }}</option>
+                </select>
+              </div>
+              <div *ngIf="modifierGroup.get('modifierType')?.value && getModifierSubtypes(modifierGroup.get('modifierType')?.value)?.length">
+                <label [for]="'modifierSubtype' + i">Subtype:</label>
+                <select [id]="'modifierSubtype' + i" formControlName="modifierSubtype">
+                  <option value="">Select Subtype</option>
+                  <option *ngFor="let subtype of getModifierSubtypes(modifierGroup.get('modifierType')?.value)" [value]="subtype">{{ subtype }}</option>
+                </select>
+              </div>
             </div>
-            <div>
-                <button type="button" (click)="removeModifierBonusType(i)" class="remove-btn">×</button>
+
+            <div class="row">
+              <div>
+                <label [for]="'modifierAbilityScore' + i">Ability Score:</label>
+                <select [id]="'modifierAbilityScore' + i" formControlName="modifierAbilityScore">
+                  <option value="">Select Ability</option>
+                  <option *ngFor="let ability of abilityScores" [value]="ability">{{ ability }}</option>
+                </select>
+              </div>
+              <div>
+                <label [for]="'modifierDiceCount' + i">Dice Count:</label>
+                <input type="number" [id]="'modifierDiceCount' + i" formControlName="modifierDiceCount" min="0">
+              </div>
+              <div>
+                <label [for]="'modifierDiceType' + i">Dice Type:</label>
+                <select [id]="'modifierDiceType' + i" formControlName="modifierDiceType">
+                  <option value="">Select Die</option>
+                  <option *ngFor="let die of dieType" [value]="die">{{ die }}</option>
+                </select>
+              </div>
             </div>
+
+            <div class="row">
+              <div>
+                <label [for]="'modifierFixedValue' + i">Fixed Value:</label>
+                <input type="number" [id]="'modifierFixedValue' + i" formControlName="modifierFixedValue" min="0">
+              </div>
+              <div>
+                <label [for]="'modifierDurationIntervalNum' + i">Duration:</label>
+                <input type="number" [id]="'modifierDurationIntervalNum' + i" formControlName="modifierDurationIntervalNum" min="0" placeholder="Number">
+                <select formControlName="modifierDurationIntervalType">
+                  <option value="">Select Unit</option>
+                  <option value="rounds">Rounds</option>
+                  <option value="minutes">Minutes</option>
+                  <option value="hours">Hours</option>
+                  <option value="days">Days</option>
+                </select>
+              </div>
             </div>
+
+            <div class="row full-width">
+              <div>
+                <label [for]="'modifierDetails' + i">Details:</label>
+                <textarea [id]="'modifierDetails' + i" formControlName="modifierDetails" placeholder="Additional details"></textarea>
+              </div>
+            </div>
+
+            <div class="bonus-type-container">
+              <h4>Additional Bonus Types</h4>
+              <div formArrayName="modifierAdditionalBonusTypes">
+                <div *ngFor="let bonus of getBonusTypesControls(modifierGroup); let j = index" class="row">
+                  <div>
+                    <input type="text" [formControlName]="j" placeholder="Bonus type">
+                  </div>
+                  <div>
+                    <button type="button" (click)="removeModifierBonusType(i, j)" class="remove-btn">×</button>
+                  </div>
+                </div>
+              </div>
+              <button type="button" (click)="addModifierBonusType(i)" class="add-bonus-btn">
+                <i class="fas fa-plus"></i> Add Bonus Type
+              </button>
+            </div>
+            <button type="button" (click)="removeModifier(i)" class="remove-btn">Remove Modifier</button>
+          </div>
         </div>
-        <button type="button" (click)="addModifierBonusType()" class="add-bonus-btn">
-            <i class="fas fa-plus"></i> Add Bonus Type
-        </button>
-        </div>
+      </div>
+      <button type="button" (click)="addModifier()" class="add-section-btn">+ Add Modifier</button>
     </div>
 
-    <!-- Spell Options -->
-    <div class="section">
-    <h2>Spell Options</h2>
-    <div class="row">
-        <div>
-        <label for="featSpellName">Spell Name:</label>
-        <input type="text" id="featSpellName" formControlName="featSpellName">
+    <!-- Spell Options (multiple instances) -->
+    <div formArrayName="spells">
+      <div *ngFor="let spellGroup of spells.controls; let i = index" class="section">
+        <div class="section-header-container" (click)="toggleSection('spells' + i)">
+          <h2 class="section-header">Spell Options {{i + 1}}</h2>
+          <span class="toggle-icon">{{ isSectionOpen('spells' + i) ? '−' : '+' }}</span>
         </div>
-    </div>
-    
-    <div class="row">
-        <div>
-            <label>Spell Levels:</label>
-            <small class="hint">(Hold Ctrl/Cmd to select multiple)</small>
-            <select formControlName="featSpellLevels" multiple class="multi-select">
-            <option *ngFor="let level of spellLevels" [value]="level">{{ level }}</option>
-            </select>
+        <div class="section-content" [class.collapsed]="!isSectionOpen('spells' + i)">
+          <div [formGroupName]="i">
+            <div class="row">
+              <div>
+                <label [for]="'featSpellName' + i">Spell Name:</label>
+                <input type="text" [id]="'featSpellName' + i" formControlName="featSpellName">
+              </div>
+            </div>
+            
+            <div class="row">
+              <div>
+                <label>Spell Levels:</label>
+                <small class="hint">(Hold Ctrl/Cmd to select multiple)</small>
+                <select formControlName="featSpellLevels" multiple class="multi-select">
+                  <option *ngFor="let level of spellLevels" [value]="level">{{ level }}</option>
+                </select>
+              </div>
+              <div>
+                <label>Spell Classes:</label>
+                <small class="hint">(Hold Ctrl/Cmd to select multiple)</small>
+                <select formControlName="featSpellClass" multiple class="multi-select">
+                  <option *ngFor="let cls of spellClass" [value]="cls">{{ cls }}</option>
+                </select>
+              </div>
+              <div>
+                <label>Spell Schools:</label>
+                <small class="hint">(Hold Ctrl/Cmd to select multiple)</small>
+                <select formControlName="featSpellSchool" multiple class="multi-select">
+                  <option *ngFor="let school of spellSchools" [value]="school">{{ school }}</option>
+                </select>
+              </div>
+            </div>
+            
+            <div class="row">
+              <div>
+                <label [for]="'featSpellAttackType' + i">Attack Type:</label>
+                <select [id]="'featSpellAttackType' + i" formControlName="featSpellAttackType">
+                  <option value="">Select Attack Type</option>
+                  <option value="Melee Attack">Melee Attack</option>
+                  <option value="Ranged Attack">Ranged Attack</option>
+                  <option value="Melee and Ranged Attack">Both</option>
+                </select>
+              </div>
+              <div>
+                <label [for]="'featSpellLevelDivisor' + i">Level Divisor:</label>
+                <select [id]="'featSpellLevelDivisor' + i" formControlName="featSpellLevelDivisor">
+                  <option value="">None</option>
+                  <option value="2">2 Level</option>
+                  <option value="3">3 Level</option>
+                  <option value="4">4 Level</option>
+                  <option value="5">5 Level</option>
+                </select>
+              </div>
+            </div>
+            
+            <div class="row">
+              <div>
+                <label [for]="'featSpellModifierOperator' + i">Stat Modifier Operator:</label>
+                <select [id]="'featSpellModifierOperator' + i" formControlName="featSpellModifierOperator">
+                  <option value="">Select Operator</option>
+                  <option value="+">+ (Addition)</option>
+                  <option value="x">x (Multiplication)</option>
+                  <option value="-">- (Subtraction)</option>
+                  <option value="/">/ (Division)</option>
+                </select>
+              </div>
+              <div>
+                <label [for]="'featSpellAbilityModifier' + i">Uses by Ability Modifier:</label>
+                <select [id]="'featSpellAbilityModifier' + i" formControlName="featSpellAbilityModifier">
+                  <option value="">None</option>
+                  <option *ngFor="let ability of abilityScores" [value]="ability">{{ ability }}</option>
+                </select>
+              </div>
+            </div>
+            
+            <div class="row">
+              <div class="checkbox-item">
+                <input type="checkbox" [id]="'featSpellUseProfBonus' + i" formControlName="featSpellUseProfBonus">
+                <label [for]="'featSpellUseProfBonus' + i">Use Proficiency Bonus</label>
+              </div>
+            </div>
+
+            <div class="row">
+              <div>
+                <label [for]="'featSpellProfBonusOperator' + i">Prof Bonus Operator:</label>
+                <select [id]="'featSpellProfBonusOperator' + i" formControlName="featSpellProfBonusOperator">
+                  <option value="">Select Operator</option>
+                  <option value="+">+ (Addition)</option>
+                  <option value="x">x (Multiplication)</option>
+                  <option value="-">- (Subtraction)</option>
+                  <option value="/">/ (Division)</option>
+                </select>
+              </div>
+            </div>
+            
+            <div class="row">
+              <div>
+                <label [for]="'featSpellResetType' + i">Reset Type:</label>
+                <select [id]="'featSpellResetType' + i" formControlName="featSpellResetType">
+                  <option value="">Select Reset</option>
+                  <option *ngFor="let reset of resetTypes" [value]="reset">{{ reset }}</option>
+                </select>
+              </div>
+              <div>
+                <label [for]="'featSpellCastLevel' + i">Cast at Level:</label>
+                <input type="number" [id]="'featSpellCastLevel' + i" formControlName="featSpellCastLevel" min="0" max="9">
+              </div>
+            </div>
+            
+            <div class="row">
+              <div>
+                <label [for]="'featSpellCastingTime' + i">Casting Time:</label>
+                <input type="text" [id]="'featSpellCastingTime' + i" formControlName="featSpellCastingTime">
+              </div>
+              <div>
+                <label [for]="'featSpellActivationType' + i">Activation Type:</label>
+                <select [id]="'featSpellActivationType' + i" formControlName="featSpellActivationType">
+                  <option value="">Select Type</option>
+                  <option *ngFor="let activation of activationType" [value]="activation">{{ activation }}</option>
+                </select>
+              </div>
+            </div>
+            
+            <div class="row">
+              <div>
+                <label [for]="'featSpellSpellRange' + i">Spell Range Type:</label>
+                <select [id]="'featSpellSpellRange' + i" formControlName="featSpellSpellRange">
+                  <option value="">Select Range Type</option>
+                  <option *ngFor="let range of spellRangeType" [value]="range">{{ range }}</option>
+                </select>
+              </div>
+              <div>
+                <label [for]="'featSpellRangeDistance' + i">Range Distance:</label>
+                <input type="number" [id]="'featSpellRangeDistance' + i" formControlName="featSpellRangeDistance" min="0">
+              </div>
+            </div>
+            
+            <div class="row full-width">
+              <div>
+                <label [for]="'featSpellDescription' + i">Additional Description:</label>
+                <textarea [id]="'featSpellDescription' + i" formControlName="featSpellDescription"></textarea>
+              </div>
+            </div>
+            
+            <div class="row">
+              <div class="checkbox-item">
+                <input type="checkbox" [id]="'featSpellIsInfinite' + i" formControlName="featSpellIsInfinite">
+                <label [for]="'featSpellIsInfinite' + i">Is Infinite</label>
+              </div>
+            </div>
+            <button type="button" (click)="removeSpell(i)" class="remove-btn">Remove Spell</button>
+          </div>
         </div>
-        <div>
-            <label>Spell Classes:</label>
-            <small class="hint">(Hold Ctrl/Cmd to select multiple)</small>
-            <select formControlName="featSpellClass" multiple class="multi-select">
-            <option *ngFor="let cls of spellClass" [value]="cls">{{ cls }}</option>
-            </select>
-        </div>
-        <div>
-            <label>Spell Schools:</label>
-            <small class="hint">(Hold Ctrl/Cmd to select multiple)</small>
-            <select formControlName="featSpellSchool" multiple class="multi-select">
-            <option *ngFor="let school of spellSchools" [value]="school">{{ school }}</option>
-            </select>
-        </div>
-    </div>
-    
-    <div class="row">
-        <div>
-        <label for="featSpellAttackType">Attack Type:</label>
-        <select id="featSpellAttackType" formControlName="featSpellAttackType">
-            <option value="">Select Attack Type</option>
-            <option value="Melee Attack">Melee Attack</option>
-            <option value="Ranged Attack">Ranged Attack</option>
-            <option value="Melee and Ranged Attack">Both</option>
-        </select>
-        </div>
-        <div>
-        <label for="featSpellLevelDivisor">Level Divisor:</label>
-        <select id="featSpellLevelDivisor" formControlName="featSpellLevelDivisor">
-            <option value="">None</option>
-            <option value="2">2 Level</option>
-            <option value="3">3 Level</option>
-            <option value="4">4 Level</option>
-            <option value="5">5 Level</option>
-        </select>
-        </div>
-    </div>
-    
-    <div class="row">
-        <div>
-        <label for="featSpellModifierOperator">Stat Modifier Operator:</label>
-        <select id="featSpellModifierOperator" formControlName="featSpellModifierOperator">
-            <option value="">Select Operator</option>
-            <option value="+">+ (Addition)</option>
-            <option value="x">x (Multiplication)</option>
-            <option value="-">- (Subtraction)</option>
-            <option value="/">/ (Division)</option>
-        </select>
-        </div>
-        <div>
-        <label for="featSpellAbilityModifier">Uses by Ability Modifier:</label>
-        <select id="featSpellAbilityModifier" formControlName="featSpellAbilityModifier">
-            <option value="">None</option>
-            <option *ngFor="let ability of abilityScores" [value]="ability">{{ ability }}</option>
-        </select>
-        </div>
-    </div>
-    
-    <div>
-        <label for="featSpellUseProfBonus">Use Proficiency Bonus:</label>
-        <input type="checkbox" id="featSpellUseProfBonus" formControlName="featSpellUseProfBonus">
+      </div>
+      <button type="button" (click)="addSpell()" class="add-section-btn">+ Add Spell</button>
     </div>
 
-    <div class="row">
-        <div>
-        <label for="featSpellProfBonusOperator">Prof Bonus Operator:</label>
-        <select id="featSpellProfBonusOperator" formControlName="featSpellProfBonusOperator">
-            <option value="">Select Operator</option>
-            <option value="+">+ (Addition)</option>
-            <option value="x">x (Multiplication)</option>
-            <option value="-">- (Subtraction)</option>
-            <option value="/">/ (Division)</option>
-        </select>
+    <!-- Action Section (multiple instances) -->
+    <div formArrayName="actions">
+      <div *ngFor="let actionGroup of actions.controls; let i = index" class="section">
+        <div class="section-header-container" (click)="toggleSection('actions' + i)">
+          <h2 class="section-header">Action Options {{i + 1}}</h2>
+          <span class="toggle-icon">{{ isSectionOpen('actions' + i) ? '−' : '+' }}</span>
         </div>
+        <div class="section-content" [class.collapsed]="!isSectionOpen('actions' + i)">
+          <div [formGroupName]="i">
+            <div class="row">
+              <div>
+                <label [for]="'actionType' + i">Action Type:</label>
+                <select [id]="'actionType' + i" formControlName="actionType">
+                  <option value="">-</option>
+                  <option value="General">General</option>
+                  <option value="Weapon">Weapon</option>
+                  <option value="Spell">Spell</option>
+                </select>
+              </div>
+              <div>
+                <label [for]="'actionName' + i">Action Name:</label>
+                <input type="text" [id]="'actionName' + i" formControlName="actionName">
+              </div>
+            </div>
+
+            <div class="row">
+              <div>
+                <label [for]="'actionAbilityScoreType' + i">Ability Score Type:</label>
+                <select [id]="'actionAbilityScoreType' + i" formControlName="actionAbilityScoreType">
+                  <option value="">Select Ability</option>
+                  <option *ngFor="let ability of abilityScores" [value]="ability">{{ ability }}</option>
+                </select>
+              </div>
+              <div>
+                <label [for]="'actionLevel' + i">Level:</label>
+                <input type="number" [id]="'actionLevel' + i" formControlName="actionLevel" min="0" max="20">
+              </div>
+              <div class="checkbox-row">
+                <input type="checkbox" [id]="'actionIsProficient' + i" formControlName="actionIsProficient">
+                <label [for]="'actionIsProficient' + i">Is Proficient</label>
+              </div>
+            </div>
+
+            <div class="row">
+              <div>
+                <label [for]="'actionAttackRangeType' + i">Attack Range Type:</label>
+                <select [id]="'actionAttackRangeType' + i" formControlName="actionAttackRangeType">
+                  <option value="">Select Range Type</option>
+                  <option *ngFor="let range of attackRangeTypes" [value]="range">{{ range }}</option>
+                </select>
+              </div>
+              <div>
+                <label [for]="'actionSaveType' + i">Save Type:</label>
+                <select [id]="'actionSaveType' + i" formControlName="actionSaveType">
+                  <option value="">Select Save Type</option>
+                  <option *ngFor="let ability of abilityScores" [value]="ability">{{ ability }}</option>
+                </select>
+              </div>
+              <div *ngIf="actionGroup.get('actionSaveType')?.value">
+                <label [for]="'actionSaveDC' + i">Save DC:</label>
+                <input type="number" [id]="'actionSaveDC' + i" formControlName="actionSaveDC" min="0">
+              </div>
+            </div>
+
+            <div class="row">
+              <div>
+                <label [for]="'actionDiceCount' + i">Dice Count:</label>
+                <input type="number" [id]="'actionDiceCount' + i" formControlName="actionDiceCount" min="0">
+              </div>
+              <div>
+                <label [for]="'actionDieType' + i">Die Type:</label>
+                <select [id]="'actionDieType' + i" formControlName="actionDieType">
+                  <option value="">Select Die</option>
+                  <option *ngFor="let die of dieType" [value]="die">{{ die }}</option>
+                </select>
+              </div>
+              <div>
+                <label [for]="'actionFixedValue' + i">Fixed Value:</label>
+                <input type="number" [id]="'actionFixedValue' + i" formControlName="actionFixedValue" min="0">
+              </div>
+            </div>
+
+            <div class="row">
+              <div *ngIf="actionGroup.get('actionType')?.value === 'Weapon'">
+                <label [for]="'actionWeaponAttackSubtype' + i">Weapon Attack Subtype:</label>
+                <select [id]="'actionWeaponAttackSubtype' + i" formControlName="actionWeaponAttackSubtype">
+                  <option value="">Select Subtype</option>
+                  <option *ngFor="let subtype of weaponAttackSubtypes" [value]="subtype">{{ subtype }}</option>
+                </select>
+              </div>
+              <div>
+                <label [for]="'actionDamageType' + i">Damage Type:</label>
+                <select [id]="'actionDamageType' + i" formControlName="actionDamageType">
+                  <option value="">Select Damage Type</option>
+                  <option *ngFor="let type of damageTypes" [value]="type">{{ type }}</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="checkbox-section">
+              <div class="row full-width">
+                <div *ngIf="actionGroup.get('actionWeaponAttackSubtype')?.value">
+                  <label [for]="'actionEffectOnMiss' + i">Effect On Miss:</label>
+                  <textarea [id]="'actionEffectOnMiss' + i" formControlName="actionEffectOnMiss" placeholder="Describe the effect on miss"></textarea>
+                </div>
+                <div *ngIf="actionGroup.get('actionSaveType')?.value">
+                  <div>
+                    <label [for]="'actionEffectOnSaveSuccess' + i">Effect On Save Success:</label>
+                    <textarea [id]="'actionEffectOnSaveSuccess' + i" formControlName="actionEffectOnSaveSuccess" placeholder="Describe the effect on save success"></textarea>
+                  </div>
+                  <div>
+                    <label [for]="'actionEffectOnSaveFail' + i">Effect On Save Fail:</label>
+                    <textarea [id]="'actionEffectOnSaveFail' + i" formControlName="actionEffectOnSaveFail" placeholder="Describe the effect on save fail"></textarea>
+                  </div>
+                </div>
+              </div>
+
+              <div class="checkbox-row">
+                <div class="checkbox-item">
+                  <input type="checkbox" [id]="'actionDisplayAsAttack' + i" formControlName="actionDisplayAsAttack">
+                  <label [for]="'actionDisplayAsAttack' + i">Display As Attack</label>
+                </div>
+                <div class="checkbox-item">
+                  <input type="checkbox" [id]="'actionAffectedbyMartialArts' + i" formControlName="actionAffectedbyMartialArts">
+                  <label [for]="'actionAffectedbyMartialArts' + i">Affected by Martial Arts</label>
+                </div>
+                <div class="checkbox-item">
+                  <input type="checkbox" [id]="'actionSpellAreaofEffectSpecialFlag' + i" formControlName="actionSpellAreaofEffectSpecialFlag">
+                  <label [for]="'actionSpellAreaofEffectSpecialFlag' + i">Special Flag</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div>
+                <label [for]="'actionSpellRangeType' + i">Spell Range Type:</label>
+                <select [id]="'actionSpellRangeType' + i" formControlName="actionSpellRangeType">
+                  <option value="">Select Range Type</option>
+                  <option *ngFor="let range of spellRangeType" [value]="range">{{ range }}</option>
+                </select>
+              </div>
+              <div>
+                <label [for]="'actionSpellRange' + i">Spell Range:</label>
+                <input type="number" [id]="'actionSpellRange' + i" formControlName="actionSpellRange" min="0">
+              </div>
+              <div>
+                <label [for]="'actionSpellLongRange' + i">Spell Long Range:</label>
+                <input type="number" [id]="'actionSpellLongRange' + i" formControlName="actionSpellLongRange" min="0">
+              </div>
+            </div>
+
+            <div class="row">
+              <div>
+                <label [for]="'actionSpellAreaofEffect' + i">Spell Area of Effect:</label>
+                <select [id]="'actionSpellAreaofEffect' + i" formControlName="actionSpellAreaofEffect">
+                  <option value="">Select Area</option>
+                  <option *ngFor="let area of spellAreaofEffect" [value]="area">{{ area }}</option>
+                </select>
+              </div>
+              <div>
+                <label [for]="'actionSpellAreaofEffectSize' + i">Area Size:</label>
+                <input type="number" [id]="'actionSpellAreaofEffectSize' + i" formControlName="actionSpellAreaofEffectSize" min="0">
+              </div>
+              <div class="checkbox-row">
+                <input type="checkbox" [id]="'actionSpellAreaofEffectSpecialFlag' + i" formControlName="actionSpellAreaofEffectSpecialFlag">
+                <label [for]="'actionSpellAreaofEffectSpecialFlag' + i">Special Flag</label>
+              </div>
+            </div>
+
+            <div class="row">
+              <div>
+                <label [for]="'actionActivationType' + i">Activation Type:</label>
+                <select [id]="'actionActivationType' + i" formControlName="actionActivationType">
+                  <option value="">Select Type</option>
+                  <option *ngFor="let activation of activationType" [value]="activation">{{ activation }}</option>
+                </select>
+              </div>
+              <div>
+                <label [for]="'actionActivationTime' + i">Activation Time:</label>
+                <input type="text" [id]="'actionActivationTime' + i" formControlName="actionActivationTime">
+              </div>
+              <div>
+                <label [for]="'actionResetType' + i">Reset Type:</label>
+                <select [id]="'actionResetType' + i" formControlName="actionResetType">
+                  <option value="">Select Reset</option>
+                  <option *ngFor="let reset of resetTypes" [value]="reset">{{ reset }}</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="row full-width">
+              <div>
+                <label [for]="'actionDescription' + i">Description:</label>
+                <textarea [id]="'actionDescription' + i" formControlName="actionDescription"></textarea>
+              </div>
+            </div>
+            <button type="button" (click)="removeAction(i)" class="remove-btn">Remove Action</button>
+          </div>
+        </div>
+      </div>
+      <button type="button" (click)="addAction()" class="add-section-btn">+ Add Action</button>
     </div>
-    
-    <div class="row">
-        <div>
-        <label for="featSpellResetType">Reset Type:</label>
-        <select id="featSpellResetType" formControlName="featSpellResetType">
-            <option value="">Select Reset</option>
-            <option *ngFor="let reset of resetTypes" [value]="reset">{{ reset }}</option>
-        </select>
+
+    <!-- Creature Section (multiple instances) -->
+    <div formArrayName="creatures">
+      <div *ngFor="let creatureGroup of creatures.controls; let i = index" class="section">
+        <div class="section-header-container" (click)="toggleSection('creatures' + i)">
+          <h2 class="section-header">Creature Options {{i + 1}}</h2>
+          <span class="toggle-icon">{{ isSectionOpen('creatures' + i) ? '−' : '+' }}</span>
         </div>
-        <div>
-        <label for="featSpellCastLevel">Cast at Level:</label>
-        <input type="number" id="featSpellCastLevel" formControlName="featSpellCastLevel" min="0">
+        <div class="section-content" [class.collapsed]="!isSectionOpen('creatures' + i)">
+          <div [formGroupName]="i">
+            <div class="row">
+              <div>
+                <label [for]="'creatureRuleType' + i">Rule Type:</label>
+                <select [id]="'creatureRuleType' + i" formControlName="creatureRuleType">
+                  <option value="">Select Rule Type</option>
+                  <option *ngFor="let rule of ruleTypes" [value]="rule">{{ rule }}</option>
+                </select>
+              </div>
+              <div>
+                <label [for]="'creatureGroup' + i">Creature Group:</label>
+                <select [id]="'creatureGroup' + i" formControlName="creatureGroup">
+                  <option value="">Select Group</option>
+                  <option *ngFor="let group of creatureGroups" [value]="group">{{ group }}</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="row">
+              <div>
+                <label [for]="'creatureMonsterType' + i">Monster Type:</label>
+                <select [id]="'creatureMonsterType' + i" formControlName="creatureMonsterType">
+                  <option value="">Select Type</option>
+                  <option *ngFor="let type of monsterType" [value]="type">{{ type }}</option>
+                </select>
+              </div>
+              <div>
+                <label [for]="'creatureMaxChallengeRating' + i">Max Challenge Rating:</label>
+                <select [id]="'creatureMaxChallengeRating' + i" formControlName="creatureMaxChallengeRating">
+                  <option value="">Select Rating</option>
+                  <option *ngFor="let rating of maxChallengeRating" [value]="rating">{{ rating }}</option>
+                </select>
+              </div>
+              <div>
+                <label [for]="'creatureRatingDivisor' + i">Rating Divisor:</label>
+                <select [id]="'creatureRatingDivisor' + i" formControlName="creatureRatingDivisor">
+                  <option value="">Select Divisor</option>
+                  <option *ngFor="let divisor of challengeLevelDivisor" [value]="divisor">{{ divisor !== '-' ? '1/' + divisor : 'None' }}</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="row">
+              <div>
+                <label [for]="'creatureRestrictedMovement' + i">Restricted Movement:</label>
+                <input type="text" [id]="'creatureRestrictedMovement' + i" formControlName="creatureRestrictedMovement">
+              </div>
+              <div>
+                <label>Restricted Movement Types:</label>
+                <select formControlName="creatureRestrictedMovementTypes" multiple class="multi-select">
+                  <option *ngFor="let movement of restrictedMovementTypes" [value]="movement">{{ movement }}</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="row">
+              <div>
+                <label [for]="'creatureSize' + i">Creature Size:</label>
+                <select [id]="'creatureSize' + i" formControlName="creatureSize">
+                  <option value="">Select Size</option>
+                  <option *ngFor="let size of monsterSizes" [value]="size">{{ size }}</option>
+                </select>
+              </div>
+            </div>
+            <button type="button" (click)="removeCreature(i)" class="remove-btn">Remove Creature</button>
+          </div>
         </div>
-    </div>
-    
-    <div class="row">
-        <div>
-        <label for="featSpellCastingTime">Casting Time:</label>
-        <input type="text" id="featSpellCastingTime" formControlName="featSpellCastingTime">
-        </div>
-        <div>
-        <label for="featSpellActivationType">Activation Type:</label>
-        <select id="featSpellActivationType" formControlName="featSpellActivationType">
-            <option value="">Select Type</option>
-            <option *ngFor="let activation of activationType" [value]="activation">{{ activation }}</option>
-        </select>
-        </div>
-    </div>
-    
-    <div class="row">
-        <div>
-        <label for="featSpellSpellRange">Spell Range Type:</label>
-        <select id="featSpellSpellRange" formControlName="featSpellSpellRange">
-            <option value="">Select Range Type</option>
-            <option *ngFor="let range of spellRangeType" [value]="range">{{ range }}</option>
-        </select>
-        </div>
-        <div>
-        <label for="featSpellRangeDistance">Range Distance:</label>
-        <input type="number" id="featSpellRangeDistance" formControlName="featSpellRangeDistance" min="0">
-        </div>
-    </div>
-    
-    <div class="row full-width">
-        <div>
-        <label for="featSpellDescription">Additional Description:</label>
-        <textarea id="featSpellDescription" formControlName="featSpellDescription"></textarea>
-        </div>
-    </div>
-    
-    <div class="checkbox-row">
-        <input type="checkbox" id="featSpellIsInfinite" formControlName="featSpellIsInfinite">
-        <label for="featSpellIsInfinite">Is Infinite</label>
-    </div>
+      </div>
+      <button type="button" (click)="addCreature()" class="add-section-btn">+ Add Creature</button>
     </div>
 
     <!-- Submit Button -->

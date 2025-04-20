@@ -39,7 +39,7 @@ export class CreateFeatComponent {
   attackRangeTypes: string[] = ['Melee', 'Ranged'];
   dieType = ['d4', 'd6', 'd8', 'd10', 'd12', 'd20', 'd100'];
   damageTypes: string[] = ['Acid', 'Bludgeoning', 'Cold', 'Fire', 'Force', 'Lightning', 'Necrotic', 'Piercing', 'Poison', 'Psychic', 'Radiant', 'Slashing', 'Thunder'];
-  weaponAttackSubtypes = ['Melee', 'Ranged'];
+  weaponAttackSubtypes = ['Natural', 'Unarmed'];
   spellRangeType = ['Self', 'Touch', 'Distance', 'Sight', 'Unlimited'];
   spellAreaofEffect = ['Cone', 'Cube', 'Cylinder', 'Emanation', 'Line', 'Sphere', 'Square', 'Square Feet', 'Wall'];
   activationType = ['Action', 'Bonus Action', 'Reaction', 'Minute', 'Hour', 'No Action', 'Reaction', 'Special'];
@@ -50,7 +50,7 @@ export class CreateFeatComponent {
   spellAttackType = ['Melee Attack', 'Ranged Attack', 'Melee and Ranged Attack'];
   levelDivisor = ['-', '2', '3', '4', '5'];
   ruleTypes = ['Create a Rule', 'Choose Monsters'];
-  creatureGroup = ['Wild Shape', 'Familiar', 'Beast Companion', 'Mount', 'Pet', 'Summoned', 'Battle Smith Defender', 'Sidekick', 'Custom'];
+  creatureGroups = ['Wild Shape', 'Familiar', 'Beast Companion', 'Mount', 'Pet', 'Summoned', 'Battle Smith Defender', 'Sidekick', 'Custom'];
   monsterType = ['Aberration', 'Beast', 'Celestial', 'Construct', 'Dragon', 'Elemental', 'Fey', 'Fiend', 'Giant', 'Humanoid', 'Monstrosity', 'Ooze', 'Plant', 'Undead'];
   maxChallengeRating = ['0', '1/8', '1/4', '1/2', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20'];
   challengeLevelDivisor = ['-', '2', '3', '4'];
@@ -74,41 +74,160 @@ export class CreateFeatComponent {
       optionName: [''],
       optionDescription: [''],
       
-      // Modifier section
-      modifierType: [''],
-      modifierSubtype: [''],
-      modifierAbilityScore: [''],
-      modifierDiceCount: [0],
-      modifierDiceType: [''],
-      modifierFixedValue: [0],
-      modifierAdditionalBonusTypes: this.fb.array([]),
-      modifierDetails: [''],
-      modifierDurationIntervalNum: [0],
-      modifierDurationIntervalType: [''],
-      
-      // Spell-related fields
-      featSpellName: [''],
-      featSpellLevels: [[]],
-      featSpellClass: [[]],
-      featSpellSchool: [''],
-      featSpellAttackType: [''],
-      featSpellLevelDivisor: [''],
-      featOnlyRitualSpells: [false],
-      featSpellAbilityScore: [''],
-      featSpellNumberOfUses: [0],
-      featSpellModifierOperator: [''],
-      featSpellAbilityModifier: [''],
-      featSpellUseProfBonus: [false],
-      featSpellProfBonusOperator: [''],
-      featSpellResetType: [''],
-      featSpellCastLevel: [''],
-      featSpellCastingTime: [''],
-      featSpellActivationType: [''],
-      featSpellSpellRange: [''],
-      featSpellRangeDistance: [0],
-      featSpellDescription: [''],
-      featSpellIsInfinite: [false]
+      modifiers: this.fb.array([this.createModifierGroup()]),
+      spells: this.fb.array([this.createSpellGroup()]),
+      actions: this.fb.array([this.createActionGroup()]),
+      creatures: this.fb.array([this.createCreatureGroup()]),
     });
+  }
+
+  get modifiers(): FormArray {
+  return this.featForm.get('modifiers') as FormArray;
+}
+
+addModifier(): void {
+  this.modifiers.push(this.createModifierGroup());
+}
+
+removeModifier(index: number): void {
+  this.modifiers.removeAt(index);
+}
+
+private createModifierGroup(): FormGroup {
+  return this.fb.group({
+    modifierType: [''],
+    modifierSubtype: [''],
+    modifierAbilityScore: [''],
+    modifierDiceCount: [0],
+    modifierDiceType: [''],
+    modifierFixedValue: [0],
+    modifierAdditionalBonusTypes: this.fb.array([]),
+    modifierDetails: [''],
+    modifierDurationIntervalNum: [0],
+    modifierDurationIntervalType: ['']
+  });
+}
+
+// For Spells
+get spells(): FormArray {
+  return this.featForm.get('spells') as FormArray;
+}
+
+addSpell(): void {
+  this.spells.push(this.createSpellGroup());
+}
+
+removeSpell(index: number): void {
+  this.spells.removeAt(index);
+}
+
+private createSpellGroup(): FormGroup {
+  return this.fb.group({
+    featSpellName: [''],
+    featSpellLevels: [[]],
+    featSpellClass: [[]],
+    featSpellSchool: [''],
+    featSpellAttackType: [''],
+    featSpellLevelDivisor: [''],
+    featOnlyRitualSpells: [false],
+    featSpellAbilityScore: [''],
+    featSpellNumberOfUses: [0],
+    featSpellModifierOperator: [''],
+    featSpellAbilityModifier: [''],
+    featSpellUseProfBonus: [false],
+    featSpellProfBonusOperator: [''],
+    featSpellResetType: [''],
+    featSpellCastLevel: [''],
+    featSpellCastingTime: [''],
+    featSpellActivationType: [''],
+    featSpellSpellRange: [''],
+    featSpellRangeDistance: [0],
+    featSpellDescription: [''],
+    featSpellIsInfinite: [false]
+  });
+}
+
+// For Actions
+get actions(): FormArray {
+  return this.featForm.get('actions') as FormArray;
+}
+
+addAction(): void {
+  this.actions.push(this.createActionGroup());
+}
+
+removeAction(index: number): void {
+  this.actions.removeAt(index);
+}
+
+private createActionGroup(): FormGroup {
+  return this.fb.group({
+    actionType: [''],
+    actionName: [''],
+    actionAbilityScoreType: [''],
+    actionLevel: [0],
+    actionIsProficient: [false],
+    actionAttackRangeType: [''],
+    actionSaveType: [''],
+    actionSaveDC: [0],
+    actionDiceCount: [0],
+    actionDieType: [''],
+    actionFixedValue: [0],
+    actionEffectOnMiss: [''],
+    actionEffectOnSaveSuccess: [''],
+    actionEffectOnSaveFail: [''],
+    actionWeaponAttackSubtype: [''],
+    actionDamageType: [''],
+    actionDisplayAsAttack: [false],
+    actionAffectedbyMartialArts: [false],
+    actionSpellRangeType: [''],
+    actionSpellRange: [0],
+    actionSpellLongRange: [0],
+    actionSpellAreaofEffect: [''],
+    actionSpellAreaofEffectSize: [0],
+    actionSpellAreaofEffectSpecialFlag: [false],
+    actionActivationType: [''],
+    actionActivationTime: [''],
+    actionResetType: [''],
+    actionDescription: ['']
+  });
+}
+
+// For Creatures
+get creatures(): FormArray {
+  return this.featForm.get('creatures') as FormArray;
+}
+
+addCreature(): void {
+  this.creatures.push(this.createCreatureGroup());
+}
+
+removeCreature(index: number): void {
+  this.creatures.removeAt(index);
+}
+
+private createCreatureGroup(): FormGroup {
+  return this.fb.group({
+    creatureRuleType: [''],
+    creatureGroup: [''],
+    creatureMonsterType: [''],
+    creatureMaxChallengeRating: [''],
+    creatureRatingDivisor: [''],
+    creatureRestrictedMovement: [''],
+    creatureRestrictedMovementTypes: [[]],
+    creatureSize: ['']
+  });
+}
+
+
+  openSections: {[key: string]: boolean} = {};
+
+  toggleSection(section: string): void {
+    this.openSections[section] = !this.openSections[section];
+  }
+
+  isSectionOpen(section: string): boolean {
+    return this.openSections[section] || false;
   }
 
   getModifierSubtypes(type: ModifierType): string[] {
@@ -119,16 +238,18 @@ export class CreateFeatComponent {
     return this.featForm.get('modifierAdditionalBonusTypes') as FormArray;
   }
 
-  addModifierBonusType(): void {
-    this.modifierAdditionalBonusTypes.push(new FormControl('', Validators.required));
+  addModifierBonusType(modifierIndex: number): void {
+    const bonusTypesArray = (this.modifiers.at(modifierIndex).get('modifierAdditionalBonusTypes') as FormArray);
+    bonusTypesArray.push(new FormControl('', Validators.required));
   }
 
-  removeModifierBonusType(index: number): void {
-    this.modifierAdditionalBonusTypes.removeAt(index);
+  removeModifierBonusType(modifierIndex: number, bonusIndex: number): void {
+    const bonusTypesArray = (this.modifiers.at(modifierIndex).get('modifierAdditionalBonusTypes') as FormArray);
+    bonusTypesArray.removeAt(bonusIndex);
   }
 
-  getBonusTypesControls(): AbstractControl[] {
-    return this.modifierAdditionalBonusTypes.controls;
+  getBonusTypesControls(modifierGroup: AbstractControl): AbstractControl[] {
+    return (modifierGroup.get('modifierAdditionalBonusTypes') as FormArray).controls;
   }
 
   ngOnInit(): void {
@@ -145,15 +266,12 @@ export class CreateFeatComponent {
     }
   }
 
-  onModifierTypeChange(): void {
-  const selectedType = this.featForm.get('modifierType')?.value as ModifierType;
-  if (selectedType) {
-    this.currentModifierSubtypes = this.getModifierSubtypes(selectedType);
-    this.featForm.get('modifierSubtype')?.setValue('');
-  } else {
-    this.currentModifierSubtypes = [];
+  onModifierTypeChange(modifierGroup: AbstractControl): void {
+    const selectedType = modifierGroup.get('modifierType')?.value as ModifierType;
+    if (selectedType) {
+      modifierGroup.get('modifierSubtype')?.setValue('');
+    }
   }
-}
 
   onSubmit(): void {
     if (this.featForm.invalid || !this.currentUserID) {
@@ -192,7 +310,12 @@ export class CreateFeatComponent {
     const formValue = this.featForm.value;
     formValue.userId = this.currentUserID;
     
-    formValue.modifierAdditionalBonusTypes = formValue.modifierAdditionalBonusTypes.filter(Boolean);
+    formValue.modifiers = formValue.modifiers.map((modifier: any) => {
+      return {
+        ...modifier,
+        modifierAdditionalBonusTypes: modifier.modifierAdditionalBonusTypes.filter(Boolean)
+      };
+    });
     
     return formValue;
   }
