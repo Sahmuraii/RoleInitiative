@@ -59,9 +59,200 @@
 
       <!-- Monster display -->
       <div *ngIf="selectedType === 'monster'" class="monster-display">
-        <h3>{{ item.name }}</h3>
-        <p>Type: {{ item.type }}</p>
-        <!-- other monster-specific fields go here. idk what we want really -->
+        <div class="small-display"
+             (mouseenter)="onMouseEnter(i)"
+             (mouseleave)="onMouseExit()">
+          <div class="spell-text">
+            <p class="spell-name">{{ item.name }}</p>
+            <p class="spell-left-subtext">{{ item.size }} {{ item.type }}<span *ngIf="item.subtype"> - {{ item.subtype }}</span><span *ngIf="item.alignment">, {{ item.alignment }}</span></p>
+          </div>
+          <div class="spell-text">
+            <p class="spell-category">Armor Class</p>
+            <p class="spell-subtext">{{ item.armor_class }}<span *ngIf="item.armor_type"> {{ item.armor_type }}</span></p>
+          </div>
+          <div class="spell-text">
+            <p class="spell-category">Hit Points</p>
+            <p class="spell-subtext">{{ item.average_hp }} ({{ item.hit_points_die_count }}{{ item.hit_points_value }}{{ item.hit_points_modifier >= 0 ? ' + ' : ' - ' }}{{ item.hit_points_modifier }})</p>
+          </div>
+          <div class="spell-text">
+            <p class="spell-category">Speed</p>
+            <p class="spell-subtext">{{ item.speed }}</p>
+          </div>
+          <button
+            class="bookmark-btn"
+            [class.bookmarked]="item.saved"
+            (click)="toggleSave(item, i)"
+            [attr.aria-label]="item.saved ? 'Unsave' : 'Save'">
+            <i
+              class="fa bookmark-icon"
+              [ngClass]="item.saved ? 'fa-bookmark' : 'fa-regular fa-bookmark'">
+            </i>
+          </button>
+
+        </div>
+
+        <div class="description" [class.expanded]="hoveredSpellIndex === i">
+              <div class="monster-divider"></div>
+              <div class="monster-abilities">
+                <div class="ability">
+                  <span class="ability-label">STR</span>
+                  <span class="ability-value">
+                    {{ item.strength }} ({{ getModifier(item.strength) }})
+                  </span>
+                </div>
+                <div class="ability">
+                  <span class="ability-label">DEX</span>
+                  <span class="ability-value">
+                    {{ item.dexterity }} ({{ getModifier(item.dexterity) }})
+                  </span>
+                </div>
+                <div class="ability">
+                  <span class="ability-label">CON</span>
+                  <span class="ability-value">
+                    {{ item.constitution }} ({{ getModifier(item.constitution) }})
+                  </span>
+                </div>
+                <div class="ability">
+                  <span class="ability-label">INT</span>
+                  <span class="ability-value">
+                    {{ item.intelligence }} ({{ getModifier(item.intelligence) }})
+                  </span>
+                </div>
+                <div class="ability">
+                  <span class="ability-label">WIS</span>
+                  <span class="ability-value">
+                    {{ item.wisdom }} ({{ getModifier(item.wisdom) }})
+                  </span>
+                </div>
+                <div class="ability">
+                  <span class="ability-label">CHA</span>
+                  <span class="ability-value">
+                    {{ item.charisma }} ({{ getModifier(item.charisma) }})
+                  </span>
+                </div>
+              </div>
+
+              <div class="monster-divider"></div>
+
+              @if (item.saving_throws) {
+                <div class="monster-feature">
+                  <span class="feature-label">Saving Throws</span>
+                  <span class="feature-value">
+                    {{ formatSavingThrows(item.saving_throws) }}
+                  </span>
+                </div>
+              }
+
+              @if (item.skills) {
+                <div class="monster-feature">
+                  <span class="feature-label">Skills</span>
+                  <span class="feature-value">
+                    {{ formatSkills(item.skills) }}
+                  </span>
+                </div>
+              }
+
+              @if (item.damage_vulnerabilities) {
+                <div class="monster-feature">
+                  <span class="feature-label">Damage Vulnerabilities</span>
+                  <span class="feature-value">
+                    {{ formatList(item.damage_vulnerabilities) }}
+                  </span>
+                </div>
+              }
+
+              @if (item.damage_resistances) {
+                <div class="monster-feature">
+                  <span class="feature-label">Damage Resistances</span>
+                  <span class="feature-value">
+                    {{ formatList(item.damage_resistances) }}
+                  </span>
+                </div>
+              }
+
+              @if (item.damage_immunities) {
+                <div class="monster-feature">
+                  <span class="feature-label">Damage Immunities</span>
+                  <span class="feature-value">
+                    {{ formatList(item.damage_immunities) }}
+                  </span>
+                </div>
+              }
+
+              @if (item.condition_immunities) {
+                <div class="monster-feature">
+                  <span class="feature-label">Condition Immunities</span>
+                  <span class="feature-value">
+                    {{ formatList(item.condition_immunities) }}
+                  </span>
+                </div>
+              }
+
+              @if (item.senses) {
+                <div class="monster-feature">
+                  <span class="feature-label">Senses</span>
+                  <span class="feature-value">
+                    {{ formatList(item.senses) }}
+                  </span>
+                </div>
+              }
+
+              @if (item.languages) {
+                <div class="monster-feature">
+                  <span class="feature-label">Languages</span>
+                  <span class="feature-value">
+                    {{ formatList(item.languages) }}
+                  </span>
+                </div>
+              }
+
+              <div class="monster-feature">
+                <span class="feature-label">Challenge</span>
+                <span class="feature-value">
+                  @if (item.challengeRating === '0') {
+                    0 (0 XP)
+                  } @else {
+                    {{ item.challenge_rating }} ({{ calculateXP(item.challenge_rating) }} XP)
+                  }
+                </span>
+              </div>
+
+              @if ((item.traits && item.traits.length > 0) || (item.actions && item.actions.length > 0)) {
+                <div class="monster-divider"></div>
+              }
+
+              @if (item.traits && item.traits.length > 0) {
+                <div class="monster-actions">
+                  <h5 class="action-type">Traits</h5>
+                  <div class="action-list">
+                    @for (trait of item.traits; track $index) {
+                      <div class="action">
+                        <span class="action-name">{{ trait.name }}.</span>
+                        <span class="action-description">{{ trait.description }}</span>
+                      </div>
+                    }
+                  </div>
+                </div>
+              }
+
+              @if (item.actions && item.actions.length > 0) {
+                <div class="monster-actions">
+                  <h5 class="action-type">Actions</h5>
+                  <div class="action-list">
+                    @for (action of item.actions; track $index) {
+                      <div class="action">
+                        <span class="action-name">{{ action.name }}.</span>
+                        <span class="action-description">{{ action.description }}</span>
+                      </div>
+                    }
+                  </div>
+                </div>
+              }
+        </div>
+        @if (item.description && item.description.length > 0) {
+          <div class="monster-divider"></div>
+          {{ item.description }}
+        }
       </div>
 
       <!-- Background display -->
