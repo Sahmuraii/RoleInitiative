@@ -257,8 +257,78 @@
 
       <!-- Background display -->
       <div *ngIf="selectedType === 'background'" class="background-display">
-        <h3>{{ item.title }}</h3>
-        <p>{{ item.description }}</p>
+        <div class="small-display"
+             (mouseenter)="onMouseEnter(i)"
+             (mouseleave)="onMouseExit()">
+          <div class="spell-text">
+            <p class="spell-name">{{ item.background_name }}</p>
+          </div>
+          <div class="spell-text">
+            <p class="spell-category">Skill Proficiencies</p>
+            <p class="spell-subtext">{{ item.skill_proficiencies }}</p>
+          </div>
+          <div class="spell-text">
+            <p class="spell-category">Tool Proficiencies</p>
+            <p class="spell-subtext">{{ item.tool_proficiencies }}</p>
+          </div>
+          <div class="spell-text">
+            <p class="spell-category">Language Proficiencies</p>
+            <p class="spell-subtext">{{ item.language_proficiencies }}</p>
+          </div>
+          <button
+            class="bookmark-btn"
+            [class.bookmarked]="item.saved"
+            (click)="toggleSave(item, i)"
+            [attr.aria-label]="item.saved ? 'Unsave' : 'Save'">
+            <i
+              class="fa bookmark-icon"
+              [ngClass]="item.saved ? 'fa-bookmark' : 'fa-regular fa-bookmark'">
+            </i>
+          </button>
+
+        </div>
+        <div class="description" [class.expanded]="hoveredSpellIndex === i">
+          <div class="monster-divider"></div>
+          @if (item.equipment) {
+            <div class="monster-feature">
+              <span class="feature-label">Equipment</span>
+              <span class="feature-value">
+                {{ item.equipment }}
+              </span>
+            </div>
+          }
+          @if (item.feature_name && item.feature_effect) {
+            <div class="monster-feature">
+              <span class="feature-label">Feature</span>
+              <span class="feature-value">
+                {{ item.feature_name }}: {{ item.feature_effect }}
+              </span>
+            </div>
+          }
+          @if (item.suggested_characteristics && (item.personality_traits || item.ideals || item.bonds || item.flaws)) {
+            <div class="monster-divider"></div>
+            <div class="monster-feature">
+              <span class="feature-label">Suggested Characteristics</span>
+              <span class="feature-value">
+                {{ item.personality_traits }}
+              </span>
+              <span class="feature-value">
+                {{ item.ideals }}
+              </span>
+              <span class="feature-value">
+                {{ item.bonds }}
+              </span>
+              <span class="feature-value">
+                {{ item.flaws }}
+              </span>
+            </div>
+          }
+          @if (item.background_description && item.background_description.length > 0) {
+            <div class="monster-divider"></div>
+            {{ item.background_description }}
+          }
+        </div>
+
       </div>
     </div>
 

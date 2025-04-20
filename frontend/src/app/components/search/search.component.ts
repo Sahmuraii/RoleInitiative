@@ -72,7 +72,7 @@ export class SearchComponent implements OnInit {
 
     const body = {
       content_type: this.selectedType,
-      content_id: item.user_spell_id || item.id
+      content_id: item.user_spell_id || item.id || item.user_background_id
     };
 
     const user = this.authService.getCurrentUser();
@@ -128,7 +128,7 @@ export class SearchComponent implements OnInit {
     return value.split(',').map(item => item.trim()).join(', ');
   }
 
-formatModifier(value: number, noSpace = true): string {
+  formatModifier(value: number, noSpace = true): string {
     if (value === null || value === undefined) return '';
     const space = noSpace ? '' : ' ';
     return value >= 0 ? `${space}+${value}` : `${space}-${Math.abs(value)}`;
