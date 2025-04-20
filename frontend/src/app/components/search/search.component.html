@@ -6,6 +6,7 @@
       <option value="spell">Spells</option>
       <option value="background">Backgrounds</option>
       <option value="monster">Monsters</option>
+      <option value="magic_item">Magic Items</option>
     </select>
 
     <input
@@ -330,6 +331,58 @@
         </div>
 
       </div>
+
+      <!-- Magic Item display -->
+      <div *ngIf="selectedType === 'magic_item'" class="magic-item-display">
+        <div class="small-display"
+             (mouseenter)="onMouseEnter(i)"
+             (mouseleave)="onMouseExit()">
+          <div class="spell-text">
+            <p class="spell-name">{{ item.name }}</p>
+            <p class="spell-left-subtext">{{ item.rarity }} {{ item.magic_item_type }}</p>
+          </div>
+          <div class="spell-text">
+            <p class="spell-category">Size</p>
+            <p class="spell-subtext">{{ item.size }}</p>
+          </div>
+          <div class="spell-text">
+            <p class="spell-category">Price</p>
+            <p class="spell-subtext">{{ item.cost_amount }} {{ item.cost_currency }}</p>
+          </div>
+          <button
+            class="bookmark-btn"
+            [class.bookmarked]="item.saved"
+            (click)="toggleSave(item, i)"
+            [attr.aria-label]="item.saved ? 'Unsave' : 'Save'">
+            <i
+              class="fa bookmark-icon"
+              [ngClass]="item.saved ? 'fa-bookmark' : 'fa-regular fa-bookmark'">
+            </i>
+          </button>
+
+        </div>
+        <div class="description" [class.expanded]="hoveredSpellIndex === i">
+          <div *ngIf="item.modifiers && item.modifiers.length > 0" class="modifiers-section">
+            <h4>Modifiers</h4>
+            <ul class="modifier-list">
+              @for (mod of item.modifiers; track mod) {
+                <li>
+                  @if (mod.type) {
+                    <strong class="feature-value">{{mod.type}}</strong>
+                  }
+                  @if (mod.value) {
+                    <span class="feature-value">{{mod.value}}</span>
+                  }
+                  @if (mod.description) {
+                    <span class="feature-value">{{mod.description}}</span>
+                  }
+                </li>
+              }
+            </ul>
+          </div>
+        </div>
+      </div>
+
     </div>
 
     <div class="pagination">
