@@ -16,12 +16,69 @@
                 {% endif %} -->
             </div>
             <div class="tab_sections">
+                <!-- Inventory Tab -->
                 <div id="character_inventory" [hidden]="hiddenTabs[0]">
                 </div>
+
+                <!-- Spell Tab -->
                 <div id="character_spells" [hidden]="hiddenTabs[1]">
+                    <div class="spell-cards">
+                        @for (spell of char_data.char_si?.spells; track spell.id) {
+                          <div class="spell-stat-block" style="max-width: 47%">
+                            <div class="spell-header">
+                              <h4 class="spell-name">{{ spell.spell_name }}</h4>
+                              <div class="spell-meta">
+                                <span>{{ spell.level }} {{ spell.school }}</span>
+                              </div>
+                            </div>
+                            
+                            <div class="spell-divider"></div>
+                            
+                            <div class="spell-attributes">
+                              @if (spell.casting_time) {
+                                <div class="spell-attribute">
+                                  <span class="attribute-label">Casting Time</span>
+                                  <span>{{ spell.casting_time }}</span>
+                                </div>
+                              }
+                              @if (spell.spell_range) {
+                                <div class="spell-attribute">
+                                  <span class="attribute-label">Range</span>
+                                  <span>{{ spell.spell_range }}</span>
+                                </div>
+                              }
+                              @if (spell.components) {
+                                <div class="spell-attribute">
+                                  <span class="attribute-label">Components</span>
+                                  <span>{{ spell.components }}</span>
+                                </div>
+                              }
+                              @if (spell.duration) {
+                                <div class="spell-attribute">
+                                  <span class="attribute-label">Duration</span>
+                                  <span>{{ spell.duration }}</span>
+                                </div>
+                              }
+                            </div>
+                            
+                            @if (spell.casting_time || spell.spell_range || spell.components || spell.duration) {
+                              <div class="spell-divider"></div>
+                            }
+                            
+                            <div class="spell-description">
+                              <p>{{ spell.description }}</p>
+                            </div>
+                            
+                          </div>
+                        }
+                      </div>
                 </div>
+
+                <!-- Feat Tab -->
                 <div id="character_feats" [hidden]="hiddenTabs[2]">
                 </div>
+
+                <!-- Background Tab -->
                 <div id="character_background" [hidden]="hiddenTabs[3]">
                 </div>
             </div>

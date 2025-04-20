@@ -17,7 +17,7 @@ import { of } from 'rxjs';
     standalone: true,
     imports: [CommonModule, FormsModule, CapitalizePipe, UpperCasePipe],
     templateUrl: './character-sheet.component.html',
-    styleUrl: './character-sheet.component.css'
+    styleUrls: ['./character-sheet.component.css', '../my-homebrew/my-homebrew.component.css']
 })
 export class CharacterSheetComponent {
     

@@ -2,7 +2,7 @@ from flask import render_template, Blueprint, request, redirect, url_for, jsonif
 from flask_login import current_user, login_required
 from sqlalchemy import select
 from src.auth.models import User
-from src.character.models import Character, Character_Class, DND_Class, DND_Race, DND_Background, Character_Details, Character_Stats, Character_Race, Character_Hit_Points, Character_Death_Saves, DND_Skill, DND_Class_Proficiency_Option, DND_Race_Proficiency_Option, Proficiency_List, Proficiencies, Character_Proficiency_Choices, Proficiency_Choice, Proficiency_Types, Character_Spells_Known
+from src.character.models import Character, Character_Class, DND_Class, DND_Race, DND_Background, Character_Details, Character_Stats, Character_Race, Character_Hit_Points, Character_Death_Saves, DND_Skill, DND_Class_Proficiency_Option, DND_Race_Proficiency_Option, Proficiency_List, Proficiencies, Character_Proficiency_Choices, Proficiency_Choice, Proficiency_Types, Character_Spells_Known, DND_Spell
 from src import db
 import math, json
 
@@ -110,6 +110,15 @@ def get_character_info(request_char_id) -> dict:
             if ('skill' in proficiency['type_name'].lower()) and (skill['skill_name'].lower() in proficiency['proficiency_name'].lower()):
                 skill['proficient'] = True
 
+
+    known_spell_ids = [id for sublist in [spell_array.spells for spell_array in Character_Spells_Known.query.filter_by(char_id = request_char_id).all()] for id in sublist]
+    character_spells = []
+    for spell_id in known_spell_ids:
+        spell = DND_Spell.query.filter_by(spell_id = spell_id).first().__dict__
+        spell.pop('_sa_instance_state', None)
+        character_spells.append(spell)
+        pass
+    char_info.update({"spells": character_spells})
 
 
     #print(char_info)
