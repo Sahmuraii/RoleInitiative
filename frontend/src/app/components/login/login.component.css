@@ -196,13 +196,11 @@ label {
 
 .input-container {
   position: relative;
-  display: flex;
   align-items: center;
 }
 
 .input-field {
   width: 100%;
-  padding-right: 40px; /* Space for the icon */
 }
 
 .eye-icon {
@@ -210,8 +208,15 @@ label {
   right: 10px;
   cursor: pointer;
   color: #666;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.2em;
 }
 
 .eye-icon:hover {
   color: #333;
+}
+
+.password-input {
+  padding-right: 40px; /* Space for the icon */
 }

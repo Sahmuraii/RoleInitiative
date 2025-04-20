@@ -26,19 +26,18 @@
           <div class="input-container">
             <input
               formControlName="password"
-              class="input-field"
+              class="input-field password-input"
               [type]="showPassword ? 'text' : 'password'"
               placeholder="YourPasswordHere!"
             />
             <i
-              class="fa"
+              class="fa eye-icon"
               [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"
               (click)="togglePasswordVisibility()"
-              matTooltip="{{ passwordTooltip }}"
-              #tooltip="matTooltip"
-              (mouseenter)="tooltip.show()">
+              matTooltip="{{ passwordTooltip }}">
             </i>
           </div>
+
           <div *ngIf="loginForm.get('password')?.errors && loginForm.get('password')?.touched" class="error-messages">
             <div *ngIf="loginForm.get('password')?.errors?.['required']" class="text-danger">Password is required.</div>
           </div>
