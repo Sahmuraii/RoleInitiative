@@ -12,4 +12,8 @@ export class FeatService {
   createFeat(featData: any): Observable<any> {
     return this.http.post(`${API_URL}/create_feat`, featData);
   }
+
+  getFeatsByUser(userId: number): Observable<any> {
+    return this.http.get(`${API_URL}/feats`, { params: { userID: userId.toString() } });
+  }
 }

@@ -166,7 +166,6 @@ class UserFeat(db.Model):
         return {
             'id': self.id,
             'user_id': self.user_id,
-            'created_at': self.created_at.isoformat() if self.created_at else None,
             'name': self.name,
             'description': self.description,
             'prerequisite_description': self.prerequisite_description,

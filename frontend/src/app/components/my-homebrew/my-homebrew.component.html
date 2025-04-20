@@ -345,4 +345,38 @@
         <p>No backgrounds created yet.</p>
       }
     </div>
+
+    <div class="homebrew-section">
+      <h3>Feats</h3>
+      @if (feats.length > 0) {
+        <div class="feat-cards">
+          @for (feat of feats; track feat.id) {
+            <div class="feat-stat-block">
+              <div class="feat-header">
+                <h4 class="feat-name">{{ feat.name }}</h4>
+              </div>
+              
+              <div class="feat-divider"></div>
+              
+              @if (feat.prerequisiteDescription) {
+                <div class="feat-prerequisite">
+                  <span class="attribute-label">Prerequisite:</span>
+                  <span>{{ feat.prerequisiteDescription }}</span>
+                </div>
+              }
+              
+              <div class="feat-description">
+                <p [innerHTML]="formatDescription(feat.description)"></p>
+              </div>
+              
+              <div class="feat-actions">
+                <button class="edit-button" (click)="navigateToEditFeat(feat.id)">Edit</button>
+              </div>
+            </div>
+          }
+        </div>
+      } @else {
+        <p>No feats created yet.</p>
+      }
+    </div>
 </div>

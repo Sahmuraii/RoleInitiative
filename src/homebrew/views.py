@@ -865,6 +865,7 @@ def create_feat():
 @homebrew_bp.route('/feats', methods=['GET'])
 def get_feats():
     user_id = request.args.get('userID')
+    print("Get Fets user ID:", user_id)
     if not user_id:
         return jsonify({"error": "User ID is required"}), 400
 
