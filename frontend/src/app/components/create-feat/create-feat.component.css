@@ -319,3 +319,19 @@ select[multiple] option {
   cursor: pointer;
   white-space: nowrap;
 }
+
+.bonus-type-container h4 {
+  margin-top: 0;
+  margin-bottom: 12px;
+  color: #333;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 6px;
+}
+
+.bonus-type-container {
+  margin-bottom: 16px;
+  border: 1px solid #ddd;
+  padding: 12px;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+}

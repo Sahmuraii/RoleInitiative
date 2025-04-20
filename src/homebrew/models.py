@@ -137,3 +137,43 @@ class UserMagicItem(db.Model):
             'notes': self.notes,
             'description': self.description
         }
+
+class UserFeat(db.Model):
+    __tablename__ = 'user_feats'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    
+    # Basic Information
+    name = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.Text, nullable=False)
+    prerequisite_description = db.Column(db.Text)
+    
+    # Option fields
+    option_name = db.Column(db.String(100))
+    option_description = db.Column(db.Text)
+    
+    # Arrays of complex data stored as JSON
+    modifiers = db.Column(JSON)
+    spells = db.Column(JSON)
+    actions = db.Column(JSON)
+    creatures = db.Column(JSON)
+    
+    def __repr__(self):
+        return f"<Feat {self.name} (ID: {self.id})>"
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'user_id': self.user_id,
+            'created_at': self.created_at.isoformat() if self.created_at else None,
+            'name': self.name,
+            'description': self.description,
+            'prerequisite_description': self.prerequisite_description,
+            'option_name': self.option_name,
+            'option_description': self.option_description,
+            'modifiers': self.modifiers,
+            'spells': self.spells,
+            'actions': self.actions,
+            'creatures': self.creatures
+        }

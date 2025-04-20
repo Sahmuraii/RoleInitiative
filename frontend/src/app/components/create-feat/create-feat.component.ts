@@ -74,10 +74,10 @@ export class CreateFeatComponent {
       optionName: [''],
       optionDescription: [''],
       
-      modifiers: this.fb.array([this.createModifierGroup()]),
-      spells: this.fb.array([this.createSpellGroup()]),
-      actions: this.fb.array([this.createActionGroup()]),
-      creatures: this.fb.array([this.createCreatureGroup()]),
+      modifiers: this.fb.array([]),
+      spells: this.fb.array([]),
+      actions: this.fb.array([]),
+      creatures: this.fb.array([]),
     });
   }
 
@@ -189,8 +189,38 @@ private createActionGroup(): FormGroup {
     actionActivationType: [''],
     actionActivationTime: [''],
     actionResetType: [''],
-    actionDescription: ['']
+    actionDescription: [''],
+    actionNumberOfUses: [0],
+    actionModifierOperator: [''],
+    actionAbilityModifier: [''],
+    actionUseProfBonus: [false],
+    actionProfBonusOperator: [''],
+    actionLevelDivisor: [''],
+    limitedUses: this.fb.array([])
   });
+}
+
+createLimitedUseGroup(): FormGroup {
+  return this.fb.group({
+    actionNumberOfUses: [0],
+    actionModifierOperator: [''],
+    actionAbilityModifier: [''],
+    actionUseProfBonus: [false],
+    actionProfBonusOperator: [''],
+    actionLevelDivisor: ['']
+  });
+}
+
+getLimitedUses(actionIndex: number): FormArray {
+  return (this.actions.at(actionIndex).get('limitedUses') as FormArray);
+}
+
+addLimitedUse(actionIndex: number): void {
+  this.getLimitedUses(actionIndex).push(this.createLimitedUseGroup());
+}
+
+removeLimitedUse(actionIndex: number, limitedUseIndex: number): void {
+  this.getLimitedUses(actionIndex).removeAt(limitedUseIndex);
 }
 
 // For Creatures

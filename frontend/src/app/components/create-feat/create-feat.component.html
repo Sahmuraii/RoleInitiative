@@ -410,6 +410,71 @@
               </div>
             </div>
 
+            <!-- Limited Use Sections -->
+            <div formArrayName="limitedUses">
+              <div *ngFor="let limitedUseGroup of getLimitedUses(i).controls; let j = index" class="bonus-type-container">
+                <div [formGroupName]="j">
+                  <h4>Limited Use {{j + 1}}</h4>
+                  <div class="row">
+                    <div>
+                      <label [for]="'actionNumberOfUses' + i + '-' + j">Number of Uses:</label>
+                      <input type="number" [id]="'actionNumberOfUses' + i + '-' + j" formControlName="actionNumberOfUses" min="0">
+                    </div>
+                    <div>
+                      <label [for]="'actionModifierOperator' + i + '-' + j">Stat Modifier Operator:</label>
+                      <select [id]="'actionModifierOperator' + i + '-' + j" formControlName="actionModifierOperator">
+                        <option value="">Select Operator</option>
+                        <option value="+">+ (Addition)</option>
+                        <option value="x">x (Multiplication)</option>
+                        <option value="-">- (Subtraction)</option>
+                        <option value="/">/ (Division)</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label [for]="'actionAbilityModifier' + i + '-' + j">Stat Modifier:</label>
+                      <select [id]="'actionAbilityModifier' + i + '-' + j" formControlName="actionAbilityModifier">
+                        <option value="">None</option>
+                        <option *ngFor="let ability of abilityScores" [value]="ability">{{ ability }}</option>
+                      </select>
+                    </div>
+                  </div>
+                  
+                  <div class="row">
+                    <div class="checkbox-item">
+                      <input type="checkbox" [id]="'actionUseProfBonus' + i + '-' + j" formControlName="actionUseProfBonus">
+                      <label [for]="'actionUseProfBonus' + i + '-' + j">Use Proficiency Bonus</label>
+                    </div>
+                    <div>
+                      <label [for]="'actionProfBonusOperator' + i + '-' + j">Proficiency Bonus Operator:</label>
+                      <select [id]="'actionProfBonusOperator' + i + '-' + j" formControlName="actionProfBonusOperator">
+                        <option value="">Select Operator</option>
+                        <option value="+">+ (Addition)</option>
+                        <option value="x">x (Multiplication)</option>
+                        <option value="-">- (Subtraction)</option>
+                        <option value="/">/ (Division)</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label [for]="'actionLevelDivisor' + i + '-' + j">Level Divisor:</label>
+                      <select [id]="'actionLevelDivisor' + i + '-' + j" formControlName="actionLevelDivisor">
+                        <option value="">None</option>
+                        <option value="2">2 Level</option>
+                        <option value="3">3 Level</option>
+                        <option value="4">4 Level</option>
+                        <option value="5">5 Level</option>
+                      </select>
+                    </div>
+                  </div>
+                  <button type="button" (click)="removeLimitedUse(i, j)" class="remove-btn">Remove Limited Use</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Add Limited Use Button -->
+            <button type="button" (click)="addLimitedUse(i)" class="add-bonus-btn">
+              <i class="fas fa-plus"></i> Add Limited Use
+            </button>
+
             <div class="checkbox-section">
               <div class="row full-width">
                 <div *ngIf="actionGroup.get('actionWeaponAttackSubtype')?.value">
@@ -453,7 +518,7 @@
                 </select>
               </div>
               <div>
-                <label [for]="'actionSpellRange' + i">Spell Range:</label>
+                <label [for]="'actionSpellRange' + i">Range:</label>
                 <input type="number" [id]="'actionSpellRange' + i" formControlName="actionSpellRange" min="0">
               </div>
               <div>

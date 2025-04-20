@@ -10,6 +10,6 @@ export class FeatService {
   constructor(private http: HttpClient) {}
 
   createFeat(featData: any): Observable<any> {
-    return this.http.post(`${API_URL}/feats`, featData);
+    return this.http.post(`${API_URL}/create_feat`, featData);
   }
 }

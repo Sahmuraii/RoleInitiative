@@ -3,7 +3,7 @@ from src import db
 from src.character.models import (UserBackground, UserSpell, UserMonster,
                                   UserMonster_Actions, UserMonster_BonusActions, UserMonster_DamageAdjustments,
                                   UserMonster_Reactions, UserMonster_SpecialAbilitys, UserMonster_Traits)
-from src.homebrew.models import UserMagicItem
+from src.homebrew.models import UserMagicItem, UserFeat
 from sqlalchemy.inspection import inspect
 import os
 import uuid
@@ -801,3 +801,87 @@ def get_magic_items():
         db.session.rollback()
         print(f"Error fetching magic items: {e}")
         return jsonify({"error": "Failed to fetch magic items"}), 500
+
+@homebrew_bp.route('/create_feat', methods=['GET', 'POST'])
+def create_feat():
+    if request.method == 'POST':
+        try:
+            # Ensure request is JSON
+            if not request.is_json:
+                return jsonify({"error": "Request must be JSON"}), 415
+
+            data = request.get_json()
+            print("Received feat data:", data)
+
+            # Validate required fields
+            if not data:
+                return jsonify({"error": "No data provided"}), 400
+
+            user_id = data.get('userId')
+            print(user_id)
+            if not user_id:
+                return jsonify({"error": "User ID is required"}), 400
+
+            if not data.get('name'):
+                return jsonify({"error": "Feat name is required"}), 400
+            if not data.get('description'):
+                return jsonify({"error": "Description is required"}), 400
+
+            # Create the feat
+            new_feat = UserFeat(
+                user_id=user_id,
+                name=data.get('name'),
+                description=data.get('description'),
+                prerequisite_description=data.get('prerequisiteDescription'),
+                option_name=data.get('optionName'),
+                option_description=data.get('optionDescription'),
+                modifiers=data.get('modifiers', []),
+                spells=data.get('spells', []),
+                actions=data.get('actions', []),
+                creatures=data.get('creatures', [])
+            )
+
+            db.session.add(new_feat)
+            db.session.commit()
+
+            return jsonify({
+                "status": "success",
+                "message": "Feat created successfully",
+                "feat_id": new_feat.id
+            }), 201
+
+        except Exception as e:
+            db.session.rollback()
+            print(f"Error creating feat: {str(e)}")
+            return jsonify({
+                "status": "error",
+                "message": "Failed to create feat",
+                "error": str(e)
+            }), 500
+
+    # Handle GET request (if needed)
+    return render_template('homebrew/create_feat.html')
+
+@homebrew_bp.route('/feats', methods=['GET'])
+def get_feats():
+    user_id = request.args.get('userID')
+    if not user_id:
+        return jsonify({"error": "User ID is required"}), 400
+
+    try:
+        feats = UserFeat.query.filter_by(user_id=user_id).all()
+        feats_data = [feat.to_dict() for feat in feats]
+        return jsonify(feats_data), 200
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error fetching feats: {e}")
+        return jsonify({"error": "Failed to fetch feats"}), 500
+
+@homebrew_bp.route('/feat/<int:feat_id>', methods=['GET'])
+def get_feat(feat_id):
+    try:
+        feat = UserFeat.query.get_or_404(feat_id)
+        return jsonify(feat.to_dict()), 200
+    except Exception as e:
+        print(f"Error fetching feat: {e}")
+        return jsonify({"error": "Failed to fetch feat"}), 500
