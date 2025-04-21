@@ -7,6 +7,7 @@
       <option value="background">Backgrounds</option>
       <option value="monster">Monsters</option>
       <option value="magic_item">Magic Items</option>
+      <option value="feat">Feats</option>
     </select>
 
     <input
@@ -381,6 +382,30 @@
             </ul>
           </div>
         </div>
+      </div>
+
+      <!-- Feat display -->
+      <div *ngIf="selectedType === 'feat'" class="feat-display">
+        <div class="small-display"
+             (mouseenter)="onMouseEnter(i)"
+             (mouseleave)="onMouseExit()">
+          <div class="spell-text">
+            <p class="spell-name">{{ item.name }}</p>
+            <p class="spell-left-subtext">{{ item.rarity }} {{ item.magic_item_type }}</p>
+          </div>
+          <button
+            class="bookmark-btn"
+            [class.bookmarked]="item.saved"
+            (click)="toggleSave(item, i)"
+            [attr.aria-label]="item.saved ? 'Unsave' : 'Save'">
+            <i
+              class="fa bookmark-icon"
+              [ngClass]="item.saved ? 'fa-bookmark' : 'fa-regular fa-bookmark'">
+            </i>
+          </button>
+
+        </div>
+        <div class="description" [class.expanded]="hoveredSpellIndex === i" [innerHTML]="item.description"></div>
       </div>
 
     </div>

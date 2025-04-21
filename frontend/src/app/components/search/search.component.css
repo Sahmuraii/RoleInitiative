@@ -28,7 +28,7 @@ li {
 }
 
 
-.spell-display, .monster-display, .background-display, .magic-item-display {
+.spell-display, .monster-display, .background-display, .magic-item-display, .feat-display {
     background-color: #f9f2e0;
     border: 1px solid #c9ad6a;
     border-radius: 5px;

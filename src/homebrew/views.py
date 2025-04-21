@@ -537,7 +537,7 @@ def get_saved_homebrew():
     user_id = request.args.get('userID')  # Get the user ID from the query parameters
     saved_items = SavedHomebrew.query.filter_by(user_id=user_id).all()
 
-    grouped = {"spell": [], "background": [], "monster": [], "magic_item": []}
+    grouped = {"spell": [], "background": [], "monster": [], "magic_item": [], "feat": []}
 
     # print(f"User ID: {user_id}")
     # print(f"Saved items: {[{'type': i.content_type, 'id': i.content_id} for i in saved_items]}")
@@ -553,6 +553,8 @@ def get_saved_homebrew():
             model = UserMonster.query.get(item.content_id)
         elif item.content_type == "magic_item":
             model = UserMagicItem.query.get(item.content_id)
+        elif item.content_type == "feat":
+            model = UserFeat.query.get(item.content_id)
 
         if model:
             model_dict = model.__dict__.copy()
@@ -590,7 +592,8 @@ def search_homebrew():
         "spell": UserSpell,
         "background": UserBackground,
         "monster": UserMonster,
-        "magic_item": UserMagicItem
+        "magic_item": UserMagicItem,
+        "feat": UserFeat
     }
 
     model = model_map.get(content_type)
