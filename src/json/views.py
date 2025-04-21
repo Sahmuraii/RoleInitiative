@@ -41,7 +41,6 @@ def returnClassProficiencies():
 def returnDNDSpells():
     spells = []
     for dndspell in DND_Spell.query.order_by(DND_Spell.spell_name).all():
-        print(dndspell.spell_name)
         spells.append(dndspell.serialize())
 
     return jsonify(spells)

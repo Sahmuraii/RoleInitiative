@@ -1,5 +1,4 @@
 import { CommonModule } from '@angular/common';
-
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormBuilder, FormArray, ReactiveFormsModule, Validators, FormsModule, ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
 import { CreateCharacterService } from '../../services/create-character.service';
@@ -8,12 +7,15 @@ import { DND_Race } from '../../models/dnd_race.type';
 import { Class_Proficiency_Option } from '../../models/class_proficiency_option.type';
 import { Proficiency } from '../../models/proficiency.type';
 import { DND_Spell } from '../../models/dnd_spell.type';
+import { User_Spell } from '../../models/user_spell.type';
 import { sourceMapsEnabled } from 'node:process';
 import { MatSnackBar, MatSnackBarModule, MatSnackBarConfig } from '@angular/material/snack-bar';
 import test from 'node:test';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { SpellDisplayComponent } from "../spell-display/spell-display.component";
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { API_URL } from '../../constants';
 
 
 @Component({
@@ -34,6 +36,8 @@ export class CreateCharacterComponent implements OnInit {
   dndClassesSignal = signal<Array<DND_Class>>([])
   classProficiencyOptions = signal<Array<Class_Proficiency_Option>>([])
   dndSpellsSignal = signal<Array<DND_Spell>>([])
+  userSpellsSignal = signal<Array<User_Spell>>([])
+  userSavedSpellSignal = signal<Array<number>>([])
 
   //Class Selection Variables
   minLevel = 0
@@ -69,7 +73,8 @@ export class CreateCharacterComponent implements OnInit {
 
   hiddenArray = [false, true, true, true, true, true, true, true]
   // Cosntructor changed to initalized formGroup
-  constructor(private fb: FormBuilder, private snackbar: MatSnackBar, private router: Router) {
+  constructor(private fb: FormBuilder, private snackbar: MatSnackBar, private router: Router, private http: HttpClient) {
+
     // Initialize the form with a FormArray for class levels
     this.characterForm = this.fb.group({
       //Basic Info form elements
@@ -486,6 +491,28 @@ export class CreateCharacterComponent implements OnInit {
     return output
   }
 
+  getUserSavedHomebrewSpellList() {
+    const user = this.authService.getCurrentUser();
+    if (!user) {
+      console.warn('User not loaded yet');
+      return;
+    }
+
+    const params = new HttpParams().set('userID', user.id);
+
+    this.http.get(`${API_URL}saved-homebrew-ids`, { params }).subscribe((res: any) => {
+      const savedList = res.saved as { content_type: string, content_id: number }[];
+
+      const savedIds = savedList
+        .filter(item => item.content_type === "spell")
+        .map(item => item.content_id);
+      
+      
+      this.userSavedSpellSignal.set(savedIds)
+    });
+  }
+
+
 
 
   //Miscellaneous Methods
@@ -593,6 +620,15 @@ export class CreateCharacterComponent implements OnInit {
       this.dndSpellsSignal.set(spells)
     })
 
+    this.authService.isLoggedIn$.subscribe((isLoggedIn) => {
+      if (isLoggedIn && this.authService.getCurrentUser()) {
+        this.createCharacterService.getUserSpellData().subscribe((userSpells) => {
+          console.log(userSpells)
+          this.userSpellsSignal.set(userSpells)
+        })
+        this.getUserSavedHomebrewSpellList()
+      }
+    });
   }
   
   public showTab(tabId: string) {

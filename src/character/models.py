@@ -265,6 +265,41 @@ class UserSpell(db.Model):
         dict_repr = self.__dict__
         dict_repr.pop("_sa_instance_state", None)  # Remove SQLAlchemy internal state
         return f"<{self.__class__.__name__}({dict_repr})>"
+    
+    def serialize(self):
+        return {
+            "user_spell_id": self.user_spell_id,
+            "user_id": self.user_id,
+            "spell_name": self.spell_name,
+            "version": self.version,
+            "level": self.level,
+            "school": self.school,
+            "casting_time": self.casting_time,
+            "reaction_description": self.reaction_description,
+            "components": self.components,
+            "materials_description": self.materials_description,
+            "spell_range_type": self.spell_range_type,
+            "range": self.range,
+            "area_length": self.area_length,
+            "area_type": self.area_type,
+            "duration_type": self.duration_type,
+            "duration": self.duration,
+            "duration_time": self.duration_time,
+            "description": self.description,
+            "ritual_spell": self.ritual_spell,
+            "higher_level_description": self.higher_level_description,
+            "higher_level_scaling": self.higher_level_scaling,
+            "classes": self.classes,
+            "subclasses": self.subclasses,
+            "isSaveOrAttack": self.isSaveOrAttack,
+            "save_stat": self.save_stat,
+            "attack_type": self.attack_type,
+            "damage": self.damage,
+            "damage_type": self.damage_type,
+            "effect": self.effect,
+            "inflicts_conditions": self.inflicts_conditions,
+            "conditions": self.conditions,
+        }
 
 
 class UserMonster(db.Model):

@@ -381,7 +381,7 @@ def create_monster():
     return render_template('homebrew/create_monster.html')
 
 
-@homebrew_bp.route('/spells', methods=['GET'])
+@homebrew_bp.route('/homebrew-spells', methods=['GET'])
 def get_spells():
     user_id = request.args.get('userID')  # Get the user ID from the query parameters
     if not user_id:
@@ -408,6 +408,14 @@ def get_spells():
     except Exception as e:
         print(f"Error fetching spells: {e}")
         return jsonify({"error": "Failed to fetch spells"}), 500
+    
+@homebrew_bp.route('/all-homebrew-spells', methods=['GET'])
+def get_all_homebrew_spells():
+    homebrew_spells = []
+    for spell in UserSpell.query.all():
+        homebrew_spells.append(spell.serialize())
+    return jsonify(homebrew_spells)
+
 
 
 @homebrew_bp.route('/monsters', methods=['GET'])
