@@ -61,7 +61,7 @@ export class SearchComponent implements OnInit {
 
         this.results = this.results.map(item => ({
           ...item,
-          saved: savedIds.includes(item.user_spell_id || item.id)
+          saved: savedIds.includes(item.user_spell_id || item.id || item.user_background_id)
         }));
       });
     });
