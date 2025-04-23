@@ -1,0 +1,466 @@
+<div class="main-content">
+  <h1>Create Custom Species</h1>
+  <form [formGroup]="speciesForm" (ngSubmit)="onSubmit()">
+    <!-- Basic Information -->
+    <div class="section">
+      <h2>Basic Information</h2>
+      <div class="row">
+        <div>
+          <label for="name">Species Name:</label>
+          <input type="text" id="name" formControlName="name" required>
+        </div>
+      </div>
+      
+      <!-- Size Selection -->
+      <div class="row">
+        <div>
+          <label for="size">Size:</label>
+          <select id="size" formControlName="size" required>
+            <option value="">Select Size</option>
+            <option *ngFor="let size of sizes" [value]="size">{{ size }}</option>
+          </select>
+        </div>
+        <div *ngIf="speciesForm.get('size')?.value === 'Custom'">
+          <label for="customSize">Custom Size:</label>
+          <input type="text" id="customSize" formControlName="customSize" required>
+        </div>
+      </div>
+
+      <!-- Species Group Selection -->
+      <div class="row">
+        <div>
+          <label for="speciesGroup">Species Group:</label>
+          <select id="speciesGroup" formControlName="speciesGroup">
+            <option value="">Select Group</option>
+            <option *ngFor="let group of speciesGroup" [value]="group">{{ group }}</option>
+          </select>
+        </div>
+        <div *ngIf="speciesForm.get('speciesGroup')?.value === 'Custom'">
+          <label for="customSpeciesGroup">Custom Group:</label>
+          <input type="text" id="customSpeciesGroup" formControlName="customSpeciesGroup" required>
+        </div>
+      </div>
+      
+      <div class="row">
+        <div>
+          <label for="speedWalking">Walking Speed:</label>
+          <input type="number" id="speedWalking" formControlName="speedWalking" min="0">
+        </div>
+        <div>
+          <label for="speedFlying">Flying Speed:</label>
+          <input type="number" id="speedFlying" formControlName="speedFlying" min="0">
+        </div>
+        <div>
+          <label for="speedSwimming">Swimming Speed:</label>
+          <input type="number" id="speedSwimming" formControlName="speedSwimming" min="0">
+        </div>
+      </div>
+      
+      <div class="row">
+        <div>
+          <label for="speedClimbing">Climbing Speed:</label>
+          <input type="number" id="speedClimbing" formControlName="speedClimbing" min="0">
+        </div>
+        <div>
+          <label for="speedBurrowing">Burrowing Speed:</label>
+          <input type="number" id="speedBurrowing" formControlName="speedBurrowing" min="0">
+        </div>
+      </div>
+      
+      <div class="row full-width">
+        <div>
+          <label for="shortdescription">Short Description:</label>
+          <textarea id="shortdescription" formControlName="shortdescription"></textarea>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Species Traits -->
+    <div class="section">
+      <h2>Species Traits</h2>
+      <div class="row">
+        <div>
+          <label for="speciesTraitIntroduction">Trait Introduction:</label>
+          <textarea id="speciesTraitIntroduction" formControlName="speciesTraitIntroduction"></textarea>
+        </div>
+      </div>
+      
+      <div formArrayName="speciesTraits">
+        <div *ngFor="let trait of speciesTraits.controls; let i = index" 
+             [formGroupName]="i" 
+             class="modifier-entry speciesTraits-{{i}}">
+          <button type="button" (click)="removeSpeciesTrait(i)" class="remove-btn">×</button>
+          
+          <div class="row">
+            <div>
+              <label for="trait-name-{{i}}">Trait Name:</label>
+              <input type="text" id="trait-name-{{i}}" formControlName="name" required>
+            </div>
+            <div>
+              <label for="trait-snippet-{{i}}">Snippet:</label>
+              <input type="text" id="trait-snippet-{{i}}" formControlName="snippet">
+            </div>
+          </div>
+
+          <div class="row full-width">
+            <div>
+              <label for="trait-description-{{i}}">Description:</label>
+              <quill-editor 
+                id="trait-description-{{i}}"
+                formControlName="description"
+                [modules]="quillConfig"
+                placeholder="Enter trait description">
+              </quill-editor>
+            </div>
+          </div>
+
+          <div class="row">
+            <div>
+              <label for="trait-displayOrder-{{i}}">Display Order:</label>
+              <input type="number" id="trait-displayOrder-{{i}}" formControlName="displayOrder" min="0">
+            </div>
+            <div>
+              <label for="trait-featureType-{{i}}">Feature Type:</label>
+              <select id="trait-featureType-{{i}}" formControlName="featureType">
+                <option value="">Select Type</option>
+                <option *ngFor="let type of featureType" [value]="type">{{ type }}</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="checkbox-row">
+            <input type="checkbox" id="trait-isCalledOutBool-{{i}}" formControlName="isCalledOutBool">
+            <label for="trait-isCalledOutBool-{{i}}">Is Called Out</label>
+            
+            <input type="checkbox" id="trait-hideInBuilderBool-{{i}}" formControlName="hideInBuilderBool">
+            <label for="trait-hideInBuilderBool-{{i}}">Hide in Builder</label>
+            
+            <input type="checkbox" id="trait-hideInSheetBool-{{i}}" formControlName="hideInSheetBool">
+            <label for="trait-hideInSheetBool-{{i}}">Hide in Sheet</label>
+            
+            <input type="checkbox" id="trait-hideInDetailsPageBool-{{i}}" formControlName="hideInDetailsPageBool">
+            <label for="trait-hideInDetailsPageBool-{{i}}">Hide in Details</label>
+          </div>
+
+          <div class="row">
+            <div>
+              <label for="trait-requiredLevel-{{i}}">Required Level:</label>
+              <input type="number" id="trait-requiredLevel-{{i}}" formControlName="requiredLevel" min="0">
+            </div>
+          </div>
+
+          <!-- Additional Information Section (collapsible) -->
+          <div class="section" *ngIf="trait.get('showAdditionalInfo')?.value">
+            <h3>Additional Information</h3>
+            
+            <!-- Modifiers -->
+            <div class="subsection">
+            <h4>Modifiers</h4>
+            <div formArrayName="modifiers">
+                <div *ngFor="let modifier of getTraitModifiers(i).controls; let j = index" 
+                    [formGroupName]="j" 
+                    class="condition-entry modifiers-{{i}}-{{j}}">
+                    <button type="button" (click)="removeTraitModifier(i, j)" class="remove-btn">×</button>
+                    <div class="row">
+                    <div>
+                        <select formControlName="modifierType" (change)="onModifierTypeChange(modifier)">
+                        <option value="">Select Modifier Type</option>
+                        <option *ngFor="let type of modifierTypes" [value]="type">{{ type }}</option>
+                        </select>
+                    </div>
+                    <div *ngIf="modifier.get('modifierType')?.value === 'Custom'">
+                        <input type="text" formControlName="customModifierType" placeholder="Custom Modifier Type" required>
+                    </div>
+                    <div *ngIf="modifier.get('modifierType')?.value && modifier.get('modifierType')?.value !== 'Custom'">
+                        <select formControlName="modifierSubtype">
+                        <option value="">Select Subtype</option>
+                        <option *ngFor="let subtype of getModifierSubtypes(modifier.get('modifierType')?.value)" 
+                                [value]="subtype">{{ subtype }}</option>
+                        </select>
+                    </div>
+                    <div *ngIf="modifier.get('modifierSubtype')?.value === 'Custom'">
+                        <input type="text" formControlName="customModifierSubtype" placeholder="Custom Subtype" required>
+                    </div>
+                    </div>
+                    <div class="row" *ngIf="modifier.get('modifierType')?.value">
+                    <div>
+                        <input type="text" formControlName="modifierDetails" placeholder="Details (enter custom value here)">
+                    </div>
+                    </div>
+                </div>
+            </div>
+            <button type="button" (click)="addTraitModifier(i)">Add Modifier</button>
+            </div>
+
+            <!-- Spells -->
+            <div class="subsection">
+              <h4>Spells</h4>
+              <div formArrayName="spells">
+                <div *ngFor="let spell of getTraitSpells(i).controls; let j = index" 
+                     [formGroupName]="j" 
+                     class="spell-entry spells-{{i}}-{{j}}">
+                  <button type="button" (click)="removeTraitSpell(i, j)" class="remove-btn">×</button>
+                  <div class="row">
+                    <div>
+                      <input type="text" formControlName="spellName" placeholder="Spell Name">
+                    </div>
+                    <div>
+                      <select formControlName="spellLevels" multiple>
+                        <option *ngFor="let level of spellLevels" [value]="level">{{ level }}</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="row full-width">
+                    <div>
+                      <textarea formControlName="spellDescription" placeholder="Spell Description"></textarea>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <button type="button" (click)="addTraitSpell(i)">Add Spell</button>
+            </div>
+
+            <!-- Actions -->
+            <div class="subsection">
+              <h4>Actions</h4>
+              <div formArrayName="actions">
+                <div *ngFor="let action of getTraitActions(i).controls; let j = index" 
+                     [formGroupName]="j" 
+                     class="condition-entry actions-{{i}}-{{j}}">
+                  <button type="button" (click)="removeTraitAction(i, j)" class="remove-btn">×</button>
+                  <div class="row">
+                    <div>
+                      <select formControlName="actionType">
+                        <option value="">Select Action Type</option>
+                        <option *ngFor="let type of actionTypes" [value]="type">{{ type }}</option>
+                      </select>
+                    </div>
+                    <div>
+                      <input type="text" formControlName="actionName" placeholder="Action Name">
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div>
+                      <select formControlName="actionAbilityScoreType">
+                        <option value="">Select Ability Score</option>
+                        <option *ngFor="let ability of abilityScores" [value]="ability">{{ ability }}</option>
+                      </select>
+                    </div>
+                    <div>
+                      <input type="number" formControlName="actionLevel" placeholder="Level" min="0">
+                    </div>
+                  </div>
+                  <div class="row full-width">
+                    <div>
+                      <textarea formControlName="actionDescription" placeholder="Action Description"></textarea>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <button type="button" (click)="addTraitAction(i)">Add Action</button>
+            </div>
+
+            <!-- Creatures -->
+            <div class="subsection">
+              <h4>Creatures</h4>
+              <div formArrayName="creatures">
+                <div *ngFor="let creature of getTraitCreatures(i).controls; let j = index" 
+                     [formGroupName]="j" 
+                     class="condition-entry creatures-{{i}}-{{j}}">
+                  <button type="button" (click)="removeTraitCreature(i, j)" class="remove-btn">×</button>
+                  <div class="row">
+                    <div>
+                      <input type="text" formControlName="creatureName" placeholder="Creature Name">
+                    </div>
+                  </div>
+                  <div class="row full-width">
+                    <div>
+                      <textarea formControlName="creatureDescription" placeholder="Creature Description"></textarea>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <button type="button" (click)="addTraitCreature(i)">Add Creature</button>
+            </div>
+
+            <!-- Additional Spells -->
+            <div class="subsection">
+              <h4>Additional Spells</h4>
+              <div formArrayName="additionalSpells">
+                <div *ngFor="let spell of getTraitAdditionalSpells(i).controls; let j = index" 
+                     [formGroupName]="j" 
+                     class="spell-entry additionalSpells-{{i}}-{{j}}">
+                  <button type="button" (click)="removeTraitAdditionalSpell(i, j)" class="remove-btn">×</button>
+                  <div class="row">
+                    <div>
+                      <input type="text" formControlName="spellName" placeholder="Spell Name">
+                    </div>
+                    <div>
+                      <select formControlName="spellLevels" multiple>
+                        <option *ngFor="let level of spellLevels" [value]="level">{{ level }}</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="row full-width">
+                    <div>
+                      <textarea formControlName="spellDescription" placeholder="Spell Description"></textarea>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <button type="button" (click)="addTraitAdditionalSpell(i)">Add Additional Spell</button>
+            </div>
+          </div>
+
+          <button type="button" (click)="toggleAdditionalInfo(i)" class="toggle-btn">
+            {{ trait.get('showAdditionalInfo')?.value ? 'Hide Additional Information' : 'Show Additional Information' }}
+          </button>
+        </div>
+      </div>
+      <button type="button" (click)="addSpeciesTrait()">Add Species Trait</button>
+    </div>
+    
+    <!-- Species Options -->
+    <div class="section">
+      <h2>Species Options</h2>
+      <div class="checkbox-row">
+        <input type="checkbox" id="SpeciesOptionsBool" formControlName="SpeciesOptionsBool">
+        <label for="SpeciesOptionsBool">Has Options</label>
+      </div>
+      
+      <div *ngIf="speciesForm.get('SpeciesOptionsBool')?.value">
+        <div formArrayName="speciesOptions">
+          <div *ngFor="let option of speciesOptions.controls; let i = index" 
+               [formGroupName]="i" 
+               class="modifier-entry speciesOptions-{{i}}">
+            <button type="button" (click)="removeSpeciesOption(i)" class="remove-btn">×</button>
+            <div class="row">
+              <div>
+                <label for="option-name-{{i}}">Option Name:</label>
+                <input type="text" id="option-name-{{i}}" formControlName="name" required>
+              </div>
+              <div>
+                <label for="option-speciesGroup-{{i}}">Species Group:</label>
+                <select id="option-speciesGroup-{{i}}" formControlName="speciesGroup">
+                  <option value="">Select Group</option>
+                  <option *ngFor="let group of speciesGroup" [value]="group">{{ group }}</option>
+                </select>
+              </div>
+            </div>
+            
+            <div class="row full-width">
+              <div>
+                <label for="option-description-{{i}}">Description:</label>
+                <textarea id="option-description-{{i}}" formControlName="description"></textarea>
+              </div>
+            </div>
+            
+            <div class="checkbox-row">
+              <input type="checkbox" id="option-isVariantBool-{{i}}" formControlName="isVariantBool">
+              <label for="option-isVariantBool-{{i}}">Is Variant</label>
+            </div>
+            
+            <!-- Option Traits -->
+            <div class="section">
+              <h3>Option Traits</h3>
+              <div formArrayName="speciesOptionTraits">
+                <div *ngFor="let trait of getSpeciesOptionTraits(i).controls; let j = index" 
+                     [formGroupName]="j" 
+                     class="condition-entry optionTraits-{{i}}-{{j}}">
+                  <button type="button" (click)="removeSpeciesOptionTrait(i, j)" class="remove-btn">×</button>
+                  <div class="row">
+                    <div>
+                      <input type="text" formControlName="name" placeholder="Trait Name" required>
+                    </div>
+                  </div>
+                  <div class="row full-width">
+                    <div>
+                      <textarea formControlName="description" placeholder="Trait Description"></textarea>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <button type="button" (click)="addSpeciesOptionTrait(i)">Add Option Trait</button>
+            </div>
+          </div>
+        </div>
+        <button type="button" (click)="addSpeciesOption()">Add Species Option</button>
+      </div>
+    </div>
+    
+    <!-- Species Variants -->
+    <div class="section">
+      <h2>Species Variants</h2>
+      <div formArrayName="speciesVariants">
+        <div *ngFor="let variant of speciesVariants.controls; let i = index" 
+             [formGroupName]="i" 
+             class="modifier-entry speciesVariants-{{i}}">
+          <button type="button" (click)="removeSpeciesVariant(i)" class="remove-btn">×</button>
+          <div class="row">
+            <div>
+              <label for="variant-name-{{i}}">Variant Name:</label>
+              <input type="text" id="variant-name-{{i}}" formControlName="name" required>
+            </div>
+            <div>
+              <label for="variant-speciesGroup-{{i}}">Species Group:</label>
+              <select id="variant-speciesGroup-{{i}}" formControlName="speciesGroup">
+                <option value="">Select Group</option>
+                <option *ngFor="let group of speciesGroup" [value]="group">{{ group }}</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="row full-width">
+            <div>
+              <label for="variant-description-{{i}}">Description:</label>
+              <textarea id="variant-description-{{i}}" formControlName="description"></textarea>
+            </div>
+          </div>
+          
+          <!-- Variant Traits -->
+          <div class="section">
+            <h3>Variant Traits</h3>
+            <div formArrayName="speciesVariantTraits">
+              <div *ngFor="let trait of getSpeciesVariantTraits(i).controls; let j = index" 
+                   [formGroupName]="j" 
+                   class="condition-entry variantTraits-{{i}}-{{j}}">
+                <button type="button" (click)="removeSpeciesVariantTrait(i, j)" class="remove-btn">×</button>
+                <div class="row">
+                  <div>
+                    <input type="text" formControlName="name" placeholder="Trait Name" required>
+                  </div>
+                </div>
+                <div class="row full-width">
+                  <div>
+                    <textarea formControlName="description" placeholder="Trait Description"></textarea>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <button type="button" (click)="addSpeciesVariantTrait(i)">Add Variant Trait</button>
+          </div>
+        </div>
+      </div>
+      <button type="button" (click)="addSpeciesVariant()">Add Species Variant</button>
+    </div>
+    
+    <!-- Description -->
+    <div class="section">
+      <h2>Description</h2>
+      <div class="row full-width">
+        <div>
+          <quill-editor 
+            formControlName="description"
+            [modules]="quillConfig"
+            placeholder="Enter detailed description of the species">
+          </quill-editor>
+        </div>
+      </div>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="row full-width">
+      <button type="submit">Create Species</button>
+    </div>
+  </form>
+</div>

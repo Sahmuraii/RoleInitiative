@@ -13,6 +13,7 @@ import { EditBackgroundComponent } from './components/edit-background/edit-backg
 import { CreateMonsterComponent } from './components/create-monster/create-monster.component';
 import { CreateMagicItemComponent } from './components/create-magic-item/create-magic-item.component';
 import { CreateFeatComponent } from './components/create-feat/create-feat.component';
+import { CreateSpeciesComponent } from './components/create-species/create-species.component';
 import { SearchComponent } from './components/search/search.component';
 
 export const routes: Routes = [
@@ -27,6 +28,7 @@ export const routes: Routes = [
   { path: 'create/monster', component: CreateMonsterComponent},
   { path: 'create/magic-item', component: CreateMagicItemComponent},
   { path: 'create/feat', component: CreateFeatComponent },
+  { path: 'create/species', component: CreateSpeciesComponent },
   { path: 'character-sheet', component: CharacterSheetComponent},
   { path: 'character-sheet/:char_id', component: CharacterSheetComponent},
   { path: 'profile/:username', component: ProfileComponent },
