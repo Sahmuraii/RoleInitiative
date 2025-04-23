@@ -67,8 +67,9 @@ export class CreateCharacterComponent implements OnInit {
   spentPoints = 0
   maxBuyStatArray = [15, 15, 15, 15, 15, 15]
 
-  spellsKnownArray: Array<number> = []
 
+  spellsKnownArray: Array<number> = []
+  homebrewSpellsKnownArray: Array<number> = []
   
 
   hiddenArray = [false, true, true, true, true, true, true, true]
@@ -107,6 +108,7 @@ export class CreateCharacterComponent implements OnInit {
 
       //spell selection form elements
       spellsKnown: this.fb.control(this.spellsKnownArray, {validators: []}),
+      homebrewSpellsKnown: this.fb.control(this.homebrewSpellsKnownArray, {validators: []}),
 
       //Character details form elements
       background: this.fb.control("", {validators: []}),
@@ -473,6 +475,7 @@ export class CreateCharacterComponent implements OnInit {
   //Spell methods
 
   addToSpellList(inputArray: Array<number>, inputID: number) {
+    console.log(inputID)
     if(!inputArray.includes(inputID)) {
       inputArray.push(inputID)
     }
@@ -487,6 +490,16 @@ export class CreateCharacterComponent implements OnInit {
     let output = []
     for(let i = 0; i < this.spellsKnownArray.length; i++) {
       output.push(this.dndSpellsSignal()[this.spellsKnownArray[i] - 1])
+    }
+    return output
+  }
+
+  getHomebrewSpellList() {
+    let output = []
+    for(let spell of this.userSpellsSignal()) {
+      if(this.homebrewSpellsKnownArray.includes(spell.user_spell_id)) {
+        output.push(spell)
+      }
     }
     return output
   }
@@ -623,7 +636,6 @@ export class CreateCharacterComponent implements OnInit {
     this.authService.isLoggedIn$.subscribe((isLoggedIn) => {
       if (isLoggedIn && this.authService.getCurrentUser()) {
         this.createCharacterService.getUserSpellData().subscribe((userSpells) => {
-          console.log(userSpells)
           this.userSpellsSignal.set(userSpells)
         })
         this.getUserSavedHomebrewSpellList()

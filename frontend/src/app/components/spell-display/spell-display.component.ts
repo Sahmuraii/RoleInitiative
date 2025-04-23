@@ -11,7 +11,7 @@ export class SpellDisplayComponent {
   hideDesc: boolean = true;
   @Input() spellId: number = 0;
   @Input() spellName: string = "Default Name";
-  @Input() spellLevel: number = 0;
+  @Input() spellLevel: number | string = 0;
   @Input() spellSchool: string = "Default School";
   @Input() castingTime: string = "Default Time";
   @Input() duration: string = "Default Duration";

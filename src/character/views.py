@@ -304,6 +304,7 @@ def create():
         charisma =  data.get('cha')
 
         spellsKnown = data.get('spellsKnown')
+        homebrewSpellsKnown = data.get('homebrewSpellsKnown')
 
 
         #selected_background = data.get('background')
@@ -370,10 +371,11 @@ def create():
         )
         db.session.add(new_character_race)
 
-        if spellsKnown != []:
+        if spellsKnown != [] or homebrewSpellsKnown != []:
             new_character_spells_known = Character_Spells_Known(
                 char_id = new_character.char_id,
-                spells = spellsKnown
+                spells = spellsKnown,
+                homebrew_spells = homebrewSpellsKnown
             )
             db.session.add(new_character_spells_known)
 

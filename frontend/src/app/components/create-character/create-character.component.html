@@ -3,6 +3,7 @@
         <h1 class="titleclass">Character Creator</h1>
         <p>Welcome to the character creator! Here you can design your own Dungeons and Dragons character.</p>
         <p>Follow the steps below to build your character:</p>
+        <p>test:{{ this.userSpellsSignal() | json }}</p>
         <br>
     </div>
     <div class="tabs">
@@ -336,6 +337,20 @@
                                     [spellsArray]="spellsKnownArray"
                                     [buttonFunc]="removeFromSpellList"></spell-display>
                                 }
+                                @for (spell of getHomebrewSpellList(); track $index) {
+                                    <spell-display 
+                                    [spellId]="spell.user_spell_id" 
+                                    [spellName]="spell.spell_name" 
+                                    [spellLevel]="spell.spell_level" 
+                                    [spellSchool]="spell.spell_school" 
+                                    [castingTime]="spell.casting_time" 
+                                    [duration]="spell.duration"
+                                    [spellRange]="spell.range"
+                                    [spellDesc]="spell.description"
+                                    buttonText="Remove"
+                                    [spellsArray]="homebrewSpellsKnownArray"
+                                    [buttonFunc]="removeFromSpellList"></spell-display>
+                                }
                             }
                         </div>
                     </div>
@@ -357,6 +372,23 @@
                                 buttonText="Add"
                                 [spellsArray]="spellsKnownArray"
                                 [buttonFunc]="addToSpellList"></spell-display>
+                            }
+                            @for (spell of userSpellsSignal(); track $index) {
+                                @if (userSavedSpellSignal().includes(spell.user_spell_id)) {
+                                    <spell-display 
+                                    [spellId]="spell.user_spell_id" 
+                                    [spellName]="spell.spell_name" 
+                                    [spellLevel]="spell.spell_level" 
+                                    [spellSchool]="spell.spell_school" 
+                                    [castingTime]="spell.casting_time" 
+                                    [duration]="spell.duration"
+                                    [spellRange]="spell.range"
+                                    [spellDesc]="spell.description"
+                                    buttonText="Add"
+                                    [spellsArray]="homebrewSpellsKnownArray"
+                                    [buttonFunc]="addToSpellList"></spell-display>
+                                }
+                                
                             }
                         </div>
                     </div>

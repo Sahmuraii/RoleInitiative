@@ -717,6 +717,7 @@ class Character_Spells_Known(db.Model):
     __tablename__ = "character_spells_known"
     char_id = db.Column(db.Integer, db.ForeignKey(Character.char_id, ondelete='CASCADE'), primary_key=True, nullable=False)
     spells = db.Column(db.ARRAY(db.Integer), nullable=True)
+    homebrew_spells = db.Column(db.ARRAY(db.Integer), nullable=True)
 
 
 class DND_Class_Feature(db.Model):
