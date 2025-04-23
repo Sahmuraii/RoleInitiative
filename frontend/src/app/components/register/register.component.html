@@ -48,8 +48,7 @@
             <i
                class="fa eye-icon"
                [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"
-               (click)="togglePasswordVisibility()"
-               matTooltip="{{ passwordTooltip }}">
+               (click)="togglePasswordVisibility()">
             </i>
           </div>
           <div *ngIf="registerForm.get('password')?.errors && registerForm.get('password')?.touched" class="error-messages">
@@ -70,8 +69,7 @@
             <i
               class="fa eye-icon"
               [ngClass]="showConfirm ? 'fa-eye-slash' : 'fa-eye'"
-              (click)="toggleConfirmVisibility()"
-              matTooltip="{{ passwordTooltip }}">
+              (click)="toggleConfirmVisibility()">
             </i>
           </div>
           <div *ngIf="registerForm.get('confirm')?.errors && registerForm.get('confirm')?.touched" class="error-messages">

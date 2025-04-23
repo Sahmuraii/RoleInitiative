@@ -29,7 +29,6 @@ export class HomeComponent implements OnInit {
   constructor(private http: HttpClient, public authService: AuthService) {}
 
   ngOnInit(): void {
-    this.fetchCharacters();
     // Subscribe to auth state changes
     this.authService.isLoggedIn$.subscribe((isLoggedIn) => {
       if (isLoggedIn) {
@@ -40,23 +39,6 @@ export class HomeComponent implements OnInit {
         this.char_data = []; // Clear data on logout
       }
     });
-  }
-
-  fetchCharacters() {
-    this.http.get(`${API_URL}all_characters`).subscribe(
-      (res: any) => {
-        if (res.characters) {
-          this.characters = res.characters;
-          this.filteredCharacters = this.characters; // Initialize filtered list with all characters
-          //console.log(this.characters);
-        } else {
-          console.error('No characters found in response');
-        }
-      },
-      (error) => {
-        console.error('Error fetching all character data:', error);
-      }
-    );
   }
 
   filterCharacters() {
@@ -85,6 +67,8 @@ export class HomeComponent implements OnInit {
     this.http.get(`${API_URL}characters/${user_id}`).subscribe(
       (res: any) => {
         if (res.characters) {
+          this.characters = res.characters;
+          this.filteredCharacters = this.characters;
           this.char_data = res.characters;
           //console.log(this.char_data);
         } else {

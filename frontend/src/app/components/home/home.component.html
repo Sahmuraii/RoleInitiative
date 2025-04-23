@@ -31,7 +31,7 @@
     <div class="search-container" (click)="onFocus()" (focusout)="onBlur()">
       <input
         type="text"
-        placeholder="Search Campaigns, Homebrews, Characters, and Users..."
+        placeholder="Search your characters..."
         [(ngModel)]="searchTerm"
         (input)="filterCharacters()"
         (focus)="onFocus()"
@@ -40,21 +40,7 @@
       <i class="fa fa-search search-icon"></i>
 
       <!-- Search results dropdown (Only show if focused and results exist) -->
-      <div *ngIf="isFocused && filteredCharacters.length" class="search-results">
-        <div *ngFor="let character of filteredCharacters" class="search-result-item">
-          <div class="character-info">
-            <div>
-              <a [routerLink]="['/character-sheet', character.character_id]" class="search-result-item">
-                <h4>{{ character.character_name }}</h4>
-              </a>
-              <p>Owner: {{ character.owner_name }}</p>
-              <p>Race: {{ character.race }}</p>
-              <p>Class: {{ character.highest_class }} (Level {{ character.total_level }})</p>
-            </div>
-            <i class="fa fa-bookmark bookmark-icon" (click)="bookmarkCharacter(character)"></i>
-          </div>
-        </div>
-      </div>
+      <div *ngIf="isFocused && filteredCharacters.length" class="search-results"></div>
     </div>
 
     <!-- If user is logged in -->
@@ -62,9 +48,9 @@
 
         <h2>Character List</h2>
 
-        <div *ngIf="char_data.length; else noResults">
+        <div *ngIf="filteredCharacters.length; else noResults">
           <div class="character-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(500px, 1fr)); gap: 16px;">
-            <div *ngFor="let character of char_data" class="character-card">
+            <div *ngFor="let character of filteredCharacters" class="character-card">
 
               <div class="character-card" style="display: flex; border: 1px solid #ddd; overflow: hidden; background: #f5deb3; border-radius: 8px; box-shadow: 0px 4px 6px rgba(0,0,0,0.1);">
                   <!-- Character Image -->
@@ -82,24 +68,14 @@
                               <img
                                 [src]="'assets/images/class_logo/' + character.highest_class + '_Ring2.png'"
                                 [alt]="character.highest_class + ' Class Icon'"
-                                [matTooltip] = "getClassBreakdown(character)"
-                                matTooltipClass="custom-tooltip"
-                                matTooltipPosition="right"
-                                #tooltip="matTooltip"
-                                (mouseenter)="tooltip.show()"
                                 style="width: 40px; height: 40px; object-fit: cover; position: absolute;"
                               >
                               <img
                                 [src]="'assets/images/class_logo/' + character.highest_class + '_Icon.png'"
                                 [alt]="character.highest_class + ' Class Icon'"
-                                [matTooltip] = "getClassBreakdown(character)"
-                                matTooltipClass="custom-tooltip"
-                                matTooltipPosition="right"
-                                #tooltip="matTooltip"
-                                (mouseenter)="tooltip.show()"
                                 style="width: 40px; height: 40px; object-fit: cover; position: absolute;"
                               >
-                              
+
                           </div>
                       </div>
 
