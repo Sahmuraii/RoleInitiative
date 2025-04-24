@@ -546,11 +546,11 @@ class DND_Items(db.Model):
     __tablename__ = "dnd_item"
     item_id = db.Column(db.Integer, primary_key=True, nullable=False)
     item_name = db.Column(db.String(80), nullable=False)
-    item_description = db.Column(db.String(250), nullable=False)
+    item_description = db.Column(db.String(1000), nullable=False)
     worth = db.Column(db.String(50), nullable=False)
-    weight = db.Column(db.Float, nullable=False)
+    weight = db.Column(db.Float, nullable=True)
     item_type = db.Column(db.Integer, db.ForeignKey(Proficiency_Types.type_id), nullable=False)
-    is_equipable = db.Column(db.Boolean)
+    is_equippable = db.Column(db.Boolean)
     is_official = db.Column(db.Boolean)
 
     def __repr__(self):

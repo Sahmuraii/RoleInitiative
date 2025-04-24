@@ -2,7 +2,7 @@ from src import db
 import requests
 
 from src.auth.models import User
-from src.character.models import DND_Class, DND_Race, DND_Condition, DND_Class_Feature, DND_Skill, Proficiency_Types, Proficiencies, DND_Race_Proficiency_Option, DND_Class_Proficiency_Option, Proficiency_List, DND_Spell
+from src.character.models import DND_Class, DND_Race, DND_Condition, DND_Class_Feature, DND_Skill, Proficiency_Types, Proficiencies, DND_Race_Proficiency_Option, DND_Class_Proficiency_Option, Proficiency_List, DND_Spell, DND_Items
 
 DND_BASE_URL = "https://www.dnd5eapi.co"
 API_BASE_URL = "https://www.dnd5eapi.co/api"
@@ -13,6 +13,7 @@ API_CLASS_FEATURE_URL = "https://www.dnd5eapi.co/api/features"
 API_SKILLS_URL = "https://www.dnd5eapi.co/api/skills"
 API_PROFICIENCIES_URL = "https://www.dnd5eapi.co/api/proficiencies"
 API_SPELLS_URL = "https://www.dnd5eapi.co/api/spells"
+API_EQUIPMENT_URL = "https://www.dnd5eapi.co/api/2014/equipment"
 
 #Takes in a URL to an api, as well as any necessary headers
 #Returns the success of the API call, and the returned response (if any)
@@ -238,14 +239,14 @@ def populate_proficiency_types():
     #Note: This function does not populate based on an api...
     proficiency_types = (
         {'id': 0, 'name':'#Unknown-Type'},
-        {'id': 1, 'name':'Skills'},
-        {'id': 2, 'name':'Weapons'},
+        {'id': 1, 'name':'Skill'},
+        {'id': 2, 'name':'Weapon'},
         {'id': 3, 'name':'Tool'},
         {'id': 4, 'name':'Armor'},
         {'id': 5, 'name':'Saving-Throw'},
         {'id': 6, 'name':'Spell'},
         {'id': 7, 'name':'Equipment'},
-        {'id': 8, 'name':'Ability-Scores'}
+        {'id': 8, 'name':'Ability-Score'}
     )
 
     for proficiency_type in proficiency_types:
@@ -648,6 +649,67 @@ def fetch_and_populate_spells():
         print(f"An error occurred: {e}")
         
 
+def fetch_and_populate_dnd_items():
+    success, response = fetch_api_info(API_EQUIPMENT_URL, headers={"Accept": "application/json"})
+    if not success: return
+
+    items = response.json().get("results", [])
+
+    for item in items:
+        # Check if the item already exists in database
+        existing_item = DND_Items.query.filter_by(item_name=item["name"]).first()
+        if existing_item: continue #If exist, continue to next one
+
+        # Fetch detailed information for each item
+        success, api_details_response = fetch_api_info(f"{DND_BASE_URL}{item['url']}", headers={"Accept": "application/json"})
+
+        # Check if the request was successful. Skip to the next item
+        if not success: continue
+        
+        item_details = api_details_response.json() # Extract the item details
+
+        # Prepare the DND_Item object to be added to the database
+        discovered_item_type = 7
+
+        proficiency_types = [{'id': row.type_id, 'name': row.type_name} for row in Proficiency_Types.query.order_by(Proficiency_Types.type_id).all()]
+        for proficiency_type in proficiency_types[1:]:
+            if proficiency_type['name'] in item_details["equipment_category"]["name"].lower():
+                discovered_item_type = proficiency_type['id']
+                break
+        # if "weapon" in item_details["equipment_category"]["name"].lower():
+        #     discovered_item_type = 2
+        # elif "armor" in item_details["equipment_category"]["name"].lower():
+        #     discovered_item_type = 4
+        # elif "tool" in item_details["equipment_category"]["name"].lower():
+        #     discovered_item_type = 3
+        item_weight = None
+        try:
+            item_weight = item_details["weight"]
+        except:
+            pass
+
+        new_item = DND_Items(
+            item_name = item_details["name"],
+            item_description = "\n".join(item_details["desc"]),
+            worth = f'{item_details["cost"]["quantity"]} {item_details["cost"]["unit"]}',
+            weight = item_weight,
+            item_type = discovered_item_type,
+            is_equippable = bool(discovered_item_type != 7),
+            is_official = True
+        )
+        
+        db.session.add(new_item)
+    
+    try:
+        db.session.commit()
+        #db.session.rollback()
+        print("Items successfully populated!")
+    except Exception as e:
+        db.session.rollback()
+        print(f"An error occurred: {e}")
+
+
+
 def repopulate_empty_tables():
     fetch_and_populate_classes()
     fetch_and_populate_races()
@@ -659,3 +721,4 @@ def repopulate_empty_tables():
     fetch_and_populate_class_proficiencies()
     fetch_and_populate_race_proficiencies()
     fetch_and_populate_spells()
+    fetch_and_populate_dnd_items()
