@@ -394,6 +394,7 @@ echo Creating Docker-Compose
 	echo             dockerfile: %dockerfileFrontendPath%
 	echo             args:
 	echo                 - "no-cache=true"
+	echo             network: host
 	echo         image: %frontendImageName%
 	echo         container_name: %frontendContainerName%
 	echo         restart: on-failure
@@ -411,6 +412,7 @@ echo Creating Docker-Compose
 	echo             dockerfile: %dockerfileBackendPath%
 	echo             args:
 	echo                 - "no-cache=true"
+	echo             network: host
 	echo         image: %backendImageName%
 	echo         container_name: %backendContainerName%
 	echo         restart: always
