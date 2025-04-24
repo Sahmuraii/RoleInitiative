@@ -316,10 +316,10 @@
                 <!-- Placeholder for future spellcaster check -->
                 @if(true) { 
                     <div class="spells-text">
-                        <h2>Choose your spells</h2>
+                        <h2>Your Known Spells</h2>
                         <p>Your current spells are listed below:</p>
                         <div class="spells-list">
-                            @if (spellsKnownArray == []) {
+                            @if (spellsKnownArray.length == 0) {
                                 <p>You haven't chosen any spells!</p>
                             } @else {
                                 @for (spell of getSpellList(); track $index) {
@@ -336,6 +336,9 @@
                                     [spellsArray]="spellsKnownArray"
                                     [buttonFunc]="removeFromSpellList"></spell-display>
                                 }
+                            }
+                            @if (homebrewSpellsKnownArray.length != 0) {
+                                <h2>Your Known Homebrew Spells</h2>
                                 @for (spell of getHomebrewSpellList(); track $index) {
                                     <spell-display 
                                     [spellId]="spell.user_spell_id" 
@@ -372,6 +375,7 @@
                                 [spellsArray]="spellsKnownArray"
                                 [buttonFunc]="addToSpellList"></spell-display>
                             }
+                            <h2>List of Homebrew Spells</h2>
                             @for (spell of userSpellsSignal(); track $index) {
                                 @if (userSavedSpellSignal().includes(spell.user_spell_id)) {
                                     <spell-display 
