@@ -103,7 +103,7 @@ h1 {
     transition: color var(--fast-transition);
 }
 
-.profile:hover {
+.profile-name:hover {
     color: var(--secondaryColor);
 }
 
@@ -341,12 +341,12 @@ body { margin: 0; font-family: 'Times New Roman', Times, serif; }
         --mdc-snackbar-container-color: #ffdede;
         --mat-snack-bar-button-color: #ff0000;
         --mdc-snackbar-supporting-text-color: #ff0000;
-      
+
     }
     &.success-notif {
         --mdc-snackbar-container-color: #e2ffde;
         --mat-snack-bar-button-color: #006400;
         --mdc-snackbar-supporting-text-color: #006400;
-      
+
     }
 }

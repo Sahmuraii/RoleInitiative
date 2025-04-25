@@ -12,7 +12,10 @@
     @if (isLoggedIn) {
         <div class="profile">
             <span class="profile-name" (click)="navigateToProfile()">{{ username }}</span>
-            <button (click)="logout()">Log Out</button>
+            <button class="logout-btn" (click)="logout()">
+                <i class="fa fa-door-open"></i>
+                <span class="logout-text">Log Out</span>
+            </button>
         </div>
     } @else {
         <div class="navbar-links">

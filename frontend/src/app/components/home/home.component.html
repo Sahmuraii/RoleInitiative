@@ -30,7 +30,7 @@
     <div class="search-container" (click)="onFocus()" (focusout)="onBlur()">
       <input
         type="text"
-        placeholder="Search your characters..."
+        placeholder="Filter your characters..."
         [(ngModel)]="searchTerm"
         (input)="filterCharacters()"
         (focus)="onFocus()"
