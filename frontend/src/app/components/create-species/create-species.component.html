@@ -399,42 +399,17 @@
 
             <!-- Actions -->
             <div class="subsection">
-            <h4>Actions</h4>
-            <div formArrayName="actions">
-              <!-- Debug: Show actions array info -->
-              <div class="debug-info" style="background: #f0f0f0; padding: 5px; margin-bottom: 10px;">
-                <strong>Debug Info:</strong>
-                Actions count: {{getTraitActions(i).controls.length}} |
-                Action types: 
-                <span *ngFor="let act of getTraitActions(i).controls; let idx = index">
-                  #{{idx}}: {{act.get('actionType')?.value || 'unset'}};
-                </span>
-              </div>
-
+              <h4>Actions</h4>
+              <div formArrayName="actions">
                 <div *ngFor="let action of getTraitActions(i).controls; let j = index" 
-                    [formGroupName]="j" 
-                    class="condition-entry actions-{{i}}-{{j}}">
+                     [formGroupName]="j" 
+                     class="condition-entry actions-{{i}}-{{j}}">
                   <button type="button" (click)="removeTraitAction(i, j)" class="remove-btn">×</button>
-                  
-                  <!-- Debug: Show current action info -->
-                  <div class="debug-info" style="background: #f8f8f8; padding: 3px; margin-bottom: 5px;">
-                    Action #{{j}} type: <strong>{{action.get('actionType')?.value || 'not set'}}</strong> |
-                    FormGroup valid: {{action.valid}} |
-                    Limited uses: {{action.get('limitedUses')?.value?.length || 0}}
-                  </div>
-
-                  <div class="debug-info">
-                    Available action types: {{actionTypes | json}}<br>
-                    actionTypes length: {{actionTypes?.length}}<br>
-                    First action type: {{actionTypes[0]}}
-                  </div>
-
                   <div class="row">
                     <div>
-                      <label>Action Type:</label>
-                      <select formControlName="actionType" class="debug-dropdown">
-                        <option value="">Select Type</option>
-                        <option *ngFor="let type of actionTypes" [value]="type">{{type}}</option>
+                      <select formControlName="actionType">
+                        <option value="">Select Action Type</option>
+                        <option *ngFor="let type of actionTypes" [value]="type">{{ type }}</option>
                       </select>
                     </div>
                     <div>
