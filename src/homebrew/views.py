@@ -3,7 +3,7 @@ from src import db
 from src.character.models import (UserBackground, UserSpell, UserMonster,
                                   UserMonster_Actions, UserMonster_BonusActions, UserMonster_DamageAdjustments,
                                   UserMonster_Reactions, UserMonster_SpecialAbilitys, UserMonster_Traits)
-from src.homebrew.models import UserMagicItem, UserFeat
+from src.homebrew.models import UserMagicItem, UserFeat, UserSpecies
 from sqlalchemy.inspection import inspect
 import os
 import uuid
@@ -897,3 +897,124 @@ def get_feat(feat_id):
     except Exception as e:
         print(f"Error fetching feat: {e}")
         return jsonify({"error": "Failed to fetch feat"}), 500
+    
+@homebrew_bp.route('/create_species', methods=['GET', 'POST'])
+def create_species():
+    if request.method == 'POST':
+        try:
+            if not request.is_json:
+                return jsonify({"error": "Request must be JSON"}), 415
+
+            data = request.get_json()
+            print("Received species data:", data)
+
+            if not data:
+                return jsonify({"error": "No data provided"}), 400
+
+            user_id = data.get('userId')
+            if not user_id:
+                return jsonify({"error": "User ID is required"}), 400
+
+            name = data.get('name')
+            if not name:
+                return jsonify({"error": "Species name is required"}), 400
+
+            description = data.get('description')
+            traits = data.get('traits', [])
+            size = data.get('size')
+            speed_walking = data.get('speedWalking', 0)
+            speed_burrowing = data.get('speedBurrowing', 0)
+            speed_climbing = data.get('speedClimbing', 0)
+            speed_flying = data.get('speedFlying', 0)
+            speed_swimming = data.get('speedSwimming', 0)
+            short_description = data.get('shortDescription')
+            species_group = data.get('speciesGroup')
+            species_trait_introduction = data.get('speciesTraitIntroduction')
+            species_options_bool = data.get('speciesOptionsBool', False)
+            custom_size = data.get('customSize')
+            custom_species_group = data.get('customSpeciesGroup')
+            species_traits = data.get('speciesTraits', [])
+            species_options = data.get('speciesOptions', [])
+            species_variants = data.get('speciesVariants', [])
+
+            new_species = UserSpecies(
+                user_id=user_id,
+                name=name,
+                description=description,
+                traits=traits,
+                size=size,
+                speed_walking=speed_walking,
+                speed_burrowing=speed_burrowing,
+                speed_climbing=speed_climbing,
+                speed_flying=speed_flying,
+                speed_swimming=speed_swimming,
+                short_description=short_description,
+                species_group=species_group,
+                species_trait_introduction=species_trait_introduction,
+                species_options_bool=species_options_bool,
+                custom_size=custom_size,
+                custom_species_group=custom_species_group,
+                species_traits=species_traits,
+                species_options=species_options,
+                species_variants=species_variants
+            )
+
+            db.session.add(new_species)
+            db.session.commit()
+
+            return jsonify({
+                "status": "success",
+                "message": "Species created successfully",
+                "species_id": new_species.id
+            }), 201
+
+        except Exception as e:
+            db.session.rollback()
+            print(f"Error creating species: {str(e)}")
+            return jsonify({
+                "status": "error",
+                "message": "Failed to create species",
+                "error": str(e)
+            }), 500
+
+    return render_template('homebrew/create_species.html')
+
+
+@homebrew_bp.route('/species', methods=['GET'])
+def get_species():
+    user_id = request.args.get('userID')
+    if not user_id:
+        return jsonify({"error": "User ID is required"}), 400
+
+    try:
+        species_list = UserSpecies.query.filter_by(user_id=user_id).all()
+        species_data = []
+        for species in species_list:
+            species_obj = {
+                "id": species.id,
+                "user_id": species.user_id,
+                "name": species.name,
+                "description": species.description,
+                "traits": species.traits,
+                "size": species.size,
+                "speedWalking": species.speed_walking,
+                "speedBurrowing": species.speed_burrowing,
+                "speedClimbing": species.speed_climbing,
+                "speedFlying": species.speed_flying,
+                "speedSwimming": species.speed_swimming,
+                "shortDescription": species.short_description,
+                "speciesGroup": species.species_group,
+                "speciesTraitIntroduction": species.species_trait_introduction,
+                "speciesOptionsBool": species.species_options_bool,
+                "customSize": species.custom_size,
+                "customSpeciesGroup": species.custom_species_group,
+                "speciesTraits": species.species_traits,
+                "speciesOptions": species.species_options,
+                "speciesVariants": species.species_variants
+            }
+            species_data.append(species_obj)
+        return jsonify(species_data), 200
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error fetching species: {e}")
+        return jsonify({"error": "Failed to fetch species"}), 500

@@ -3,6 +3,7 @@ import { SpellService } from '../../services/spell.service';
 import { BackgroundService } from '../../services/background.service';
 import { MonsterService } from '../../services/monster.service';
 import { MagicItemService } from '../../services/magic-item.service';
+import { SpeciesService } from '../../services/species.service';
 import { FeatService } from '../../services/feat.service';
 import { CommonModule } from '@angular/common'; 
 import { Router } from '@angular/router'; 
@@ -21,6 +22,7 @@ export class MyHomebrewComponent implements OnInit {
   monsters: any[] = [];
   magicItems: any[] = [];
   feats: any[] = [];
+  species: any[] = [];
   collapsedDescriptions: {[key: number]: boolean} = {};
 
   constructor(
@@ -29,6 +31,7 @@ export class MyHomebrewComponent implements OnInit {
     private monsterService: MonsterService,
     private magicItemService: MagicItemService,
     private featService: FeatService,
+    private speciesService: SpeciesService,
     private router: Router 
   ) {}
 
@@ -136,6 +139,7 @@ export class MyHomebrewComponent implements OnInit {
       this.fetchMonsters();
       this.fetchMagicItems();
       this.fetchFeats();
+      this.fetchSpecies();
     }
   }
 
@@ -239,6 +243,23 @@ export class MyHomebrewComponent implements OnInit {
         console.error('Error fetching feats:', error);
       }
     });
+  }
+
+  fetchSpecies(): void {
+    if (!this.userId) return;
+    this.speciesService.getSpeciesByUser(this.userId).subscribe({
+      next: (species) => {
+        console.log('Species fetched:', species);
+        this.species = species;
+      },
+      error: (error) => {
+        console.error('Error fetching species:', error);
+      }
+    });
+  }
+
+  navigateToEditSpecies(speciesId: number): void {
+    this.router.navigate(['/edit-species', speciesId]);
   }
 
   navigateToEditFeat(featId: number): void {

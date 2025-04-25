@@ -321,3 +321,88 @@ form {
     margin-bottom: 5px;
   }
 }
+
+.modifier-entry,
+.condition-entry,
+.spell-entry {
+  position: relative;
+  padding-top: 40px; 
+  margin-bottom: 20px;
+  background-color: #fff;
+  border: 1px solid #eee;
+  border-radius: 4px;
+  padding: 15px 15px 15px 15px;
+}
+
+.remove-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ff4444;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 14px;
+  z-index: 100;
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+}
+
+.remove-btn:hover {
+  background-color: #cc0000;
+  transform: scale(1.1);
+}
+
+.section .section {
+  padding-top: 40px;
+}
+
+.ql-container {
+  padding-top: 10px;
+}
+
+.modifier-entry {
+  padding-top: 40px;
+}
+
+.condition-entry {
+  padding-top: 40px;
+}
+
+.spell-entry {
+  padding-top: 40px;
+}
+
+select[multiple] {
+  min-height: 100px;
+}
+
+.creature-rule-section {
+  margin-top: 15px;
+  padding: 15px;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+}
+
+.monster-name-entry {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.monster-name-entry input {
+  flex: 1;
+}
+
+.monster-name-entry .remove-btn {
+  position: relative;
+  top: auto;
+  right: auto;
+}

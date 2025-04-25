@@ -407,6 +407,7 @@
                   <button type="button" (click)="removeTraitAction(i, j)" class="remove-btn">×</button>
                   <div class="row">
                     <div>
+                      <label>Action Type:</label>
                       <select formControlName="actionType">
                         <option value="">Select Action Type</option>
                         <option *ngFor="let type of actionTypes" [value]="type">{{ type }}</option>
@@ -696,16 +697,144 @@
               <h4>Creatures</h4>
               <div formArrayName="creatures">
                 <div *ngFor="let creature of getTraitCreatures(i).controls; let j = index" 
-                     [formGroupName]="j" 
-                     class="condition-entry creatures-{{i}}-{{j}}">
+                    [formGroupName]="j" 
+                    class="condition-entry creatures-{{i}}-{{j}}">
                   <button type="button" (click)="removeTraitCreature(i, j)" class="remove-btn">×</button>
+                  
                   <div class="row">
                     <div>
+                      <label>Creature Name:</label>
                       <input type="text" formControlName="creatureName" placeholder="Creature Name">
                     </div>
                   </div>
+
+                  <div class="row">
+                    <div>
+                      <label>Rule Type:</label>
+                      <select formControlName="ruleType">
+                        <option value="">Select Rule Type</option>
+                        <option *ngFor="let type of creatureRuleTypes" [value]="type">{{ type }}</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label>Creature Group:</label>
+                      <select formControlName="creatureGroup">
+                        <option value="">Select Group</option>
+                        <option *ngFor="let group of creatureGroups" [value]="group">{{ group }}</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="row" *ngIf="creature.get('creatureGroup')?.value === 'Custom'">
+                    <div>
+                      <label>Custom Creature Group:</label>
+                      <input type="text" formControlName="customCreatureGroup" placeholder="Custom Creature Group">
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div>
+                      <label>Creature Type:</label>
+                      <select formControlName="creatureType">
+                        <option value="">Select Type</option>
+                        <option *ngFor="let type of monsterTypes" [value]="type">{{ type }}</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <!-- Create A Rule Fields -->
+                  <div *ngIf="creature.get('ruleType')?.value === 'Create A Rule'">
+                    <div class="row">
+                      <div>
+                        <label>Monster Type:</label>
+                        <select formControlName="monsterType">
+                          <option value="">Select Type</option>
+                          <option *ngFor="let type of monsterTypes" [value]="type">{{ type }}</option>
+                        </select>
+                      </div>
+                      <div *ngIf="creature.get('monsterType')?.value === 'Custom'">
+                        <label>Custom Monster Type:</label>
+                        <input type="text" formControlName="customMonsterType" placeholder="Custom Monster Type">
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div>
+                        <label>Max Challenge Rating:</label>
+                        <select formControlName="maxChallengeRating">
+                          <option value="">Select Challenge Rating</option>
+                          <option *ngFor="let cr of maxChallengeRating" [value]="cr">{{ cr }}</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label>Max Challenge Rating Divisor:</label>
+                        <input type="number" formControlName="maxChallenegeRatingDivisor" min="0">
+                      </div>
+                    </div>
+
+                    <div class="row" *ngIf="creature.get('maxChallengeRating')?.value === 'Custom'">
+                      <div>
+                        <label>Custom Max Challenge Rating:</label>
+                        <input type="number" formControlName="customMaxChallengeRating" min="0" step="0.5">
+                      </div>
+                      <div>
+                        <label>Custom Max Challenge Rating Divisor:</label>
+                        <input type="number" formControlName="customMaxChallengeRatingDivisor" min="0">
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div>
+                        <label>Restricted Movement Types:</label>
+                        <select formControlName="restrictedMovementTypes" multiple>
+                          <option *ngFor="let move of movementTypes" [value]="move">{{ move }}</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label>Monster Sizes:</label>
+                        <select formControlName="monsterSizes" multiple>
+                          <option *ngFor="let size of monsterSizes" [value]="size">{{ size }}</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div *ngIf="creature.get('restrictedMovementTypes')?.value?.includes('Custom')">
+                        <label>Custom Movement Types:</label>
+                        <input type="text" formControlName="customMovementTypes" placeholder="Enter custom movement types">
+                      </div>
+                      <div *ngIf="creature.get('monsterSizes')?.value?.includes('Custom')">
+                        <label>Custom Creature Sizes:</label>
+                        <input type="text" formControlName="customCreatureSizes" placeholder="Enter custom creature sizes">
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Choose Monsters Fields -->
+                  <div *ngIf="creature.get('ruleType')?.value === 'Choose Monsters'">
+                    <div formArrayName="customMonsters">
+                      <div *ngFor="let monster of getCreatureCustomMonsters(i, j).controls; let k = index" 
+                          [formGroupName]="k" 
+                          class="row">
+                        <div>
+                          <label>Monster Name:</label>
+                          <div class="row">
+                            <div>
+                              <input type="text" formControlName="{{k}}" placeholder="Enter monster name">
+                            </div>
+                            <div>
+                              <button type="button" (click)="removeCreatureCustomMonster(i, j, k)" class="remove-btn">×</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <button type="button" (click)="addCreatureCustomMonster(i, j)">Add Monster</button>
+                  </div>
+
                   <div class="row full-width">
                     <div>
+                      <label>Description:</label>
                       <textarea formControlName="creatureDescription" placeholder="Creature Description"></textarea>
                     </div>
                   </div>

@@ -52,6 +52,12 @@ export class CreateSpeciesComponent {
   saveTypes = ['Strength', 'Dexterity', 'Constitution', 'Intelligence', 'Wisdom', 'Charisma'];
   weaponAttackSubtypes = ['Simple', 'Martial', 'Improvised', 'Natural', 'Special'];
   spellAreaOfEffects = ['Cone', 'Cube', 'Cylinder', 'Line', 'Sphere', 'Square', 'Special'];
+  creatureRuleTypes = ['Create A Rule', 'Choose Monsters'];
+  creatureGroups = ['Custom', 'Wild Shape', 'Familiar', 'Beast Companion', 'Pet', 'Summoned', 'Battle Smith Defender', 'Sidekick'];
+  monsterTypes = ['Custom', 'Aberration', 'Beast', 'Celestial', 'Construct', 'Dragon', 'Elemental', 'Fey', 'Fiend', 'Giant', 'Humanoid', 'Monstrosity', 'Ooze', 'Plant', 'Undead'];
+  maxChallengeRating = ['Custom', '0', '1/8', '1/4', '1/2', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30'];
+  movementTypes = ['Custom', 'Walking', 'Flying', 'Swimming', 'Burrowing', 'Climbing'];
+  monsterSizes = ['Custom', 'Tiny', 'Small', 'Medium', 'Large', 'Huge', 'Gargantuan'];
 
   constructor(
     private fb: FormBuilder,
@@ -387,8 +393,42 @@ export class CreateSpeciesComponent {
     return this.fb.group({
       creatureName: [''],
       creatureDescription: [''],
-      creatureType: ['']
+      creatureType: [''],
+      ruleType: [''],
+      creatureGroup: [''],
+      monsterType: [''],
+      maxChallengeRating: [0],
+      maxChallenegeRatingDivisor: [0],
+      restrictedMovementTypes: [[]],
+      monsterSizes: [[]],
+      customMonsters: this.fb.array([]),
+      customCreatureGroup: [''],
+      customMonsterType: [''],
+      customMaxChallengeRating: [0],
+      customMaxChallengeRatingDivisor: [0],
+      customMovementTypes: [[]],
+      customCreatureSizes: [[]]
     });
+  }
+
+  getCreatureCustomMonsters(traitIndex: number, creatureIndex: number): FormArray {
+    return (this.getTraitCreatures(traitIndex).at(creatureIndex).get('customMonsters')) as FormArray;
+  }
+
+  addCreatureCustomMonster(traitIndex: number, creatureIndex: number): void {
+    this.getCreatureCustomMonsters(traitIndex, creatureIndex).push(this.fb.control(''));
+  }
+
+  removeCreatureCustomMonster(traitIndex: number, creatureIndex: number, monsterIndex: number): void {
+    this.getCreatureCustomMonsters(traitIndex, creatureIndex).removeAt(monsterIndex);
+  }
+
+  getFilteredMovementTypes(): string[] {
+    return this.movementTypes.filter(m => m !== 'Custom');
+  }
+
+  getFilteredMonsterSizes(): string[] {
+    return this.monsterSizes.filter(s => s !== 'Custom');
   }
 
   openSections: {[key: string]: boolean} = {};

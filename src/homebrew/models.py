@@ -176,3 +176,48 @@ class UserFeat(db.Model):
             'actions': self.actions,
             'creatures': self.creatures
         }
+
+
+class UserSpecies(db.Model):
+    __tablename__ = 'user_species'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    
+    # Basic Information
+    name = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.Text, nullable=False)
+    
+    # Traits
+    traits = db.Column(JSON)  # JSON field to store various traits
+    size = db.Column(db.String(50), nullable=False)
+    speed_walking = db.Column(db.Integer, default=0)
+    speed_burrowing = db.Column(db.Integer, default=0)
+    speed_climbing = db.Column(db.Integer, default=0)
+    speed_flying = db.Column(db.Integer, default=0)
+    speed_swimming = db.Column(db.Integer, default=0)
+    short_description = db.Column(db.Text)
+    species_group = db.Column(db.String(100))
+    species_trait_introduction = db.Column(db.Text)
+    species_options_bool = db.Column(db.Boolean, default=False)
+    custom_size = db.Column(db.String(100))
+    custom_species_group = db.Column(db.String(100))
+    species_traits = db.Column(JSON)
+    species_options = db.Column(JSON)
+    species_variants = db.Column(JSON)
+    
+    def __repr__(self):
+        return f"<Species {self.name} (ID: {self.id})>"
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'user_id': self.user_id,
+            'name': self.name,
+            'description': self.description,
+            'traits': self.traits,
+            'option_name': self.option_name,
+            'option_description': self.option_description,
+            'modifiers': self.modifiers,
+            'spells': self.spells
+        }

@@ -379,4 +379,40 @@
         <p>No feats created yet.</p>
       }
     </div>
+
+    <div class="homebrew-section">
+      <h3>Species</h3>
+      @if (species.length > 0) {
+        <div class="species-cards">
+          @for (specie of species; track specie.id) {
+            <div class="species-stat-block">
+              <div class="species-header">
+                <h4 class="species-name">{{ specie.name }}</h4>
+              </div>
+              
+              <div class="species-divider"></div>
+              
+              <div class="magic-item-description-container">
+                <div class="magic-item-description" [class.collapsed]="isDescriptionCollapsed(specie.id)">
+                  <p [innerHTML]="formatDescription(specie.description)"></p>
+                </div>
+                @if (shouldShowToggle(specie.description)) {
+                  <button class="toggle-description" 
+                          (click)="toggleDescription(specie.id)"
+                          [attr.aria-expanded]="!isDescriptionCollapsed(specie.id)">
+                    {{ isDescriptionCollapsed(specie.id) ? 'Show More' : 'Show Less' }}
+                  </button>
+                }
+              </div>
+              
+              <div class="species-actions">
+                <button class="edit-button" (click)="navigateToEditSpecies(specie.id)">Edit</button>
+              </div>
+            </div>
+          }
+        </div>
+      } @else {
+        <p>No species created yet.</p>
+      }
+    </div>
 </div>
