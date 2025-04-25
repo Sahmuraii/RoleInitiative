@@ -16,7 +16,7 @@
       [(ngModel)]="searchQuery"
       (keyup.enter)="search()"
     />
-    <button (click)="search()">Search</button>
+    <button (click)="search()" class = searchButton>Search</button>
 
     <div *ngIf="results.length === 0">No results found.</div>
     <div *ngFor="let item of results; let i = index">
@@ -412,7 +412,7 @@
 
     <div class="pagination">
       <button (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 1">Previous</button>
-      <span>Page {{ currentPage }}</span>
+      <span>Page {{ currentPage }} </span>
       <button (click)="onPageChange(currentPage + 1)" [disabled]="!hasMoreResults">Next</button>
     </div>
   </div>
