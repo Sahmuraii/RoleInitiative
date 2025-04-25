@@ -82,23 +82,16 @@ export class CreateSpeciesComponent {
     });
   }
 
-    logActionChange(traitIndex: number, actionIndex: number, event: Event): void {
-      const newValue = (event.target as HTMLSelectElement).value;
-      console.log(`Action type changed in trait ${traitIndex}, action ${actionIndex}:`, newValue);
-      console.log('Full action object:', this.getTraitActions(traitIndex).at(actionIndex).value);
-    }
+  logActionChange(traitIndex: number, actionIndex: number, event: Event): void {
+    const newValue = (event.target as HTMLSelectElement).value;
+    console.log(`Action type changed in trait ${traitIndex}, action ${actionIndex}:`, newValue);
+    console.log('Full action object:', this.getTraitActions(traitIndex).at(actionIndex).value);
+  }
 
-    logBeforeAddAction(traitIndex: number): void {
-      console.log('Before adding new action to trait', traitIndex);
-      console.log('Current actions:', this.getTraitActions(traitIndex).value);
-    }
-
-    logBeforeAddLimitedUse(actionIndex: number): void {
-      console.log('Before adding limited use to action', actionIndex);
-      const limitedUses = this.getLimitedUses(actionIndex);
-      console.log('Current limited uses:', limitedUses.value);
-      console.log('Limited uses controls:', limitedUses.controls);
-    }
+  logBeforeAddAction(traitIndex: number): void {
+    console.log('Before adding new action to trait', traitIndex);
+    console.log('Current actions:', this.getTraitActions(traitIndex).value);
+  }
 
   onModifierTypeChange(modifierGroup: AbstractControl): void {
     const selectedType = modifierGroup.get('modifierType')?.value as ModifierType;
@@ -378,16 +371,16 @@ export class CreateSpeciesComponent {
     });
   }
 
-  getLimitedUses(actionIndex: number): FormArray {
-    return (this.getTraitActions(actionIndex).get('limitedUses')) as FormArray;
+  getLimitedUses(traitIndex: number, actionIndex: number): FormArray {
+    return (this.getTraitActions(traitIndex).at(actionIndex).get('limitedUses')) as FormArray;
   }
 
-  addLimitedUse(actionIndex: number): void {
-    this.getLimitedUses(actionIndex).push(this.createLimitedUseGroup());
+  addLimitedUse(traitIndex: number, actionIndex: number): void {
+    this.getLimitedUses(traitIndex, actionIndex).push(this.createLimitedUseGroup());
   }
 
-  removeLimitedUse(actionIndex: number, limitedUseIndex: number): void {
-    this.getLimitedUses(actionIndex).removeAt(limitedUseIndex);
+  removeLimitedUse(traitIndex: number, actionIndex: number, limitedUseIndex: number): void {
+    this.getLimitedUses(traitIndex, actionIndex).removeAt(limitedUseIndex);
   }
 
   private createCreatureGroup(): FormGroup {

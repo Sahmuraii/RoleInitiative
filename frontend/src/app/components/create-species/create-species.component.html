@@ -625,14 +625,13 @@
                     <label for="actionSpellAreaofEffectSpecialFlag-{{i}}-{{j}}">Special Area Flag</label>
                   </div>
 
-                  <!-- Limited Uses 
                   <div class="section">
                     <h5>Limited Uses</h5>
                     <div formArrayName="limitedUses">
-                      <div *ngFor="let limitedUse of getLimitedUses(j).controls; let k = index" 
+                      <div *ngFor="let limitedUse of getLimitedUses(i, j).controls; let k = index" 
                           [formGroupName]="k" 
                           class="condition-entry limitedUses-{{i}}-{{j}}-{{k}}">
-                        <button type="button" (click)="removeLimitedUse(j, k)" class="remove-btn">×</button>
+                        <button type="button" (click)="removeLimitedUse(i, j, k)" class="remove-btn">×</button>
                         
                         <div class="row">
                           <div>
@@ -678,9 +677,8 @@
                         </div>
                       </div>
                     </div>
-                    <button type="button" (click)="addLimitedUse(j)">Add Limited Use</button>
+                    <button type="button" (click)="addLimitedUse(i, j)">Add Limited Use</button>
                   </div>
-                -->
 
                   <div class="row full-width">
                     <div>
