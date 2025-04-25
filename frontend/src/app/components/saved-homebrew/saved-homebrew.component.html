@@ -21,18 +21,18 @@
                 <div class="attribute">
                   <span class="attribute-label">Armor Class</span>
                   <span class="attribute-value">
-                    {{ monster.armorClass }}
-                    @if (monster.armorType && monster.armorType !== 'None') {
-                      ({{ monster.armorType }})
+                    {{ monster.armor_class }}
+                    @if (monster.armor_type && monster.armor_type !== 'None') {
+                      ({{ monster.armor_type }})
                     }
                   </span>
                 </div>
                 <div class="attribute">
                   <span class="attribute-label">Hit Points</span>
                   <span class="attribute-value">
-                    {{ monster.averageHP }}
-                    @if (monster.hitPointsDieCount && monster.hitPointsValue) {
-                        ({{ monster.hitPointsDieCount }}{{ monster.hitPointsValue }}{{ monster.hitPointsModifier >= 0 ? '+' : '' }}{{ monster.hitPointsModifier }})
+                    {{ monster.average_hp }}
+                    @if (monster.hit_points_die_count && monster.hit_points_value) {
+                        ({{ monster.hit_points_die_count }}{{ monster.hit_points_value }}{{ monster.hit_points_modifier >= 0 ? '+' : '' }}{{ monster.hit_points_modifier }})
                     }
                   </span>
                 </div>
@@ -89,11 +89,11 @@
 
               <div class="monster-divider"></div>
 
-              @if (monster.savingThrows) {
+              @if (monster.saving_throws) {
                 <div class="monster-feature">
                   <span class="feature-label">Saving Throws</span>
                   <span class="feature-value">
-                    {{ formatSavingThrows(monster.savingThrows) }}
+                    {{ formatSavingThrows(monster.saving_throws) }}
                   </span>
                 </div>
               }
@@ -107,38 +107,38 @@
                 </div>
               }
 
-              @if (monster.damageVulnerabilities) {
+              @if (monster.damage_vulnerabilities) {
                 <div class="monster-feature">
                   <span class="feature-label">Damage Vulnerabilities</span>
                   <span class="feature-value">
-                    {{ formatList(monster.damageVulnerabilities) }}
+                    {{ formatList(monster.damage_vulnerabilities) }}
                   </span>
                 </div>
               }
 
-              @if (monster.damageResistances) {
+              @if (monster.damage_resistances) {
                 <div class="monster-feature">
                   <span class="feature-label">Damage Resistances</span>
                   <span class="feature-value">
-                    {{ formatList(monster.damageResistances) }}
+                    {{ formatList(monster.damage_resistances) }}
                   </span>
                 </div>
               }
 
-              @if (monster.damageImmunities) {
+              @if (monster.damage_immunities) {
                 <div class="monster-feature">
                   <span class="feature-label">Damage Immunities</span>
                   <span class="feature-value">
-                    {{ formatList(monster.damageImmunities) }}
+                    {{ formatList(monster.damage_immunities) }}
                   </span>
                 </div>
               }
 
-              @if (monster.conditionImmunities) {
+              @if (monster.condition_immunities) {
                 <div class="monster-feature">
                   <span class="feature-label">Condition Immunities</span>
                   <span class="feature-value">
-                    {{ formatList(monster.conditionImmunities) }}
+                    {{ formatList(monster.condition_immunities) }}
                   </span>
                 </div>
               }
@@ -164,10 +164,10 @@
               <div class="monster-feature">
                 <span class="feature-label">Challenge</span>
                 <span class="feature-value">
-                  @if (monster.challengeRating === '0') {
+                  @if (monster.challenge_rating === '0') {
                     0 (0 XP)
                   } @else {
-                    {{ monster.challengeRating }} ({{ calculateXP(monster.challengeRating) }} XP)
+                    {{ monster.challenge_rating }} ({{ calculateXP(monster.challenge_rating) }} XP)
                   }
                 </span>
               </div>
