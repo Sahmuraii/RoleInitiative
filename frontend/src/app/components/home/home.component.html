@@ -1,15 +1,112 @@
 <div class="main-content">
-    <p>Temporary Default Home Page</p>
-    <ul>
-        <li [routerLink]="['/create/background']">Create Background Page Link</li>
-        <li [routerLink]="['/create/character']">Create Character Page Link</li>
-    </ul>
+<div class="homebrew-grid">
+    <a [routerLink]="['/create/background']" class="container">
+        <div class="left">
+            <img src="../../assets/images/homebrew/background.jpg" alt="Background Feature" class="image">
+        </div>
+        <div class="right">
+            <div class="overlay">
+                <div class="text">
+                    <h4>Create a Background</h4>
+                    <p>Create a unique background for your character, define their history and motivations.</p>
+                </div>
+            </div>
+        </div>
+    </a>
+
+    <a [routerLink]="['/create/character']" class="container">
+        <div class="left">
+            <img src="../../assets/images/homebrew/character.jpg" alt="Character Feature" class="image">
+        </div>
+        <div class="right">
+            <div class="overlay">
+                <div class="text">
+                    <h4>Create a Character</h4>
+                    <p>Build a character from scratch, select their race, class, and abilities.</p>
+                </div>
+            </div>
+        </div>
+    </a>
+
+    <a [routerLink]="['/create/spell']" class="container">
+        <div class="left">
+            <img src="../../assets/images/homebrew/spell.jpg" alt="Spell Feature" class="image">
+        </div>
+        <div class="right">
+            <div class="overlay">
+                <div class="text">
+                    <h4>Create a Spell</h4>
+                    <p>Design a custom spell with unique effects and lore.</p>
+                </div>
+            </div>
+        </div>
+    </a>
+
+    <a [routerLink]="['/create/monster']" class="container">
+        <div class="left">
+            <img src="../../assets/images/homebrew/monster.jpg" alt="Monster Feature" class="image">
+        </div>
+        <div class="right">
+            <div class="overlay">
+                <div class="text">
+                    <h4>Create a Monster</h4>
+                    <p>Create a custom monster to challenge your players, complete with abilities and lore.</p>
+                </div>
+            </div>
+        </div>
+    </a>
+
+    <a [routerLink]="['/create/magic-item']" class="container">
+        <div class="left">
+            <img src="../../assets/images/homebrew/magic-item.jpg" alt="Magic Item Feature" class="image">
+        </div>
+        <div class="right">
+            <div class="overlay">
+                <div class="text">
+                    <h4>Create a Magic Item</h4>
+                    <p>Design a magical item with unique properties and lore to enhance your adventure.</p>
+                </div>
+            </div>
+        </div>
+    </a>
+    <a [routerLink]="['/create/feat']" class="container">
+        <div class="left">
+            <img src="../../assets/images/homebrew/feat.jpg" alt="Feat Feature" class="image">
+        </div>
+        <div class="right">
+            <div class="overlay">
+                <div class="text">
+                    <h4>Create a Feat</h4>
+                    <p>Define a custom feat to give your character new abilities or enhancements.</p>
+                </div>
+            </div>
+        </div>
+    </a>
+    <a [routerLink]="['/create/species']" class="container">
+        <div class="left">
+            <img src="../../assets/images/homebrew/species.jpg" alt="Species Feature" class="image">
+        </div>
+        <div class="right">
+            <div class="overlay">
+                <div class="text">
+                    <h4>Create a Species</h4>
+                    <p>Design a unique species with custom traits, abilities, and lore to bring your world to life.</p>
+                </div>
+            </div>
+        </div>
+    </a>
+
+
+
+</div>
+
+
 
     <!-- Search Bar -->
     <div class="search-container" (click)="onFocus()" (focusout)="onBlur()">
       <input
         type="text"
-        placeholder="Search Campaigns, Homebrews, Characters, and Users..."
+        placeholder="Filter your characters..."
         [(ngModel)]="searchTerm"
         (input)="filterCharacters()"
         (focus)="onFocus()"
@@ -18,21 +115,7 @@
       <i class="fa fa-search search-icon"></i>
 
       <!-- Search results dropdown (Only show if focused and results exist) -->
-      <div *ngIf="isFocused && filteredCharacters.length" class="search-results">
-        <div *ngFor="let character of filteredCharacters" class="search-result-item">
-          <div class="character-info">
-            <div>
-              <a [routerLink]="['/character-sheet', character.character_id]" class="search-result-item">
-                <h4>{{ character.character_name }}</h4>
-              </a>
-              <p>Owner: {{ character.owner_name }}</p>
-              <p>Race: {{ character.race }}</p>
-              <p>Class: {{ character.highest_class }} (Level {{ character.total_level }})</p>
-            </div>
-            <i class="fa fa-bookmark bookmark-icon" (click)="bookmarkCharacter(character)"></i>
-          </div>
-        </div>
-      </div>
+      <div *ngIf="isFocused && filteredCharacters.length" class="search-results"></div>
     </div>
 
     <!-- If user is logged in -->
@@ -40,9 +123,9 @@
 
         <h2>Character List</h2>
 
-        <div *ngIf="char_data.length; else noResults">
+        <div *ngIf="filteredCharacters.length; else noResults">
           <div class="character-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(500px, 1fr)); gap: 16px;">
-            <div *ngFor="let character of char_data" class="character-card">
+            <div *ngFor="let character of filteredCharacters" class="character-card">
 
               <div class="character-card" style="display: flex; border: 1px solid #ddd; overflow: hidden; background: #f5deb3; border-radius: 8px; box-shadow: 0px 4px 6px rgba(0,0,0,0.1);">
                   <!-- Character Image -->
@@ -55,10 +138,19 @@
                                style="width: 100%; height: 100%; object-fit: cover; transition: .3s;">
 
                           <!-- Class Icon -->
-                          <div class="class-icon" style="position: absolute; top: 8px; left: 8px; width: 40px; height: 40px; background: #fff; border-radius: 50%; overflow: hidden; display: flex; justify-content: center; align-items: center; box-shadow: 0px 2px 4px rgba(0,0,0,0.2);">
-                              <img [src]="'assets/images/class_logo/' + character.classes[0] + 'Logo.png'"
-                                   [alt]="character.classes[0] + ' Class Icon'"
-                                   style="width: 50px; height: 50px; object-fit: cover;">
+                          <!-- <div class="class-icon" style="position: absolute; top: 8px; left: 8px; width: 40px; height: 40px; background: #fff; border-radius: 50%; overflow: hidden; display: flex; justify-content: center; align-items: center; box-shadow: 0px 2px 4px rgba(0,0,0,0.2);"> -->
+                          <div class="class-icon" style="position: absolute; top: 8px; left: 8px; width: 40px; height: 40px; background: #ffffff00; border-radius: 50%; overflow: hidden; justify-content: center; align-items: center; box-shadow: 0px 2px 4px rgba(0,0,0,0.2);">
+                              <img
+                                [src]="'assets/images/class_logo/' + character.highest_class + '_Ring2.png'"
+                                [alt]="character.highest_class + ' Class Icon'"
+                                style="width: 40px; height: 40px; object-fit: cover; position: absolute;"
+                              >
+                              <img
+                                [src]="'assets/images/class_logo/' + character.highest_class + '_Icon.png'"
+                                [alt]="character.highest_class + ' Class Icon'"
+                                style="width: 40px; height: 40px; object-fit: cover; position: absolute;"
+                              >
+
                           </div>
                       </div>
 

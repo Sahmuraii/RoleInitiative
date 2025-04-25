@@ -1,0 +1,390 @@
+/* Search Container */
+.search-container {
+  padding: 1rem;
+  max-width: 80%;
+  margin: auto;
+}
+
+/* Dropdown Select */
+.search-container select {
+  padding: 0.5rem 1rem;
+  border: 1px solid lightgray;
+  border-radius: 0.375rem;
+  background-color: white;
+  color: black;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  appearance: none;
+  width: auto;
+  min-width: 150px;
+}
+
+/* Focus state */
+.search-container select:focus {
+  border-color: black;
+  outline: none;
+}
+
+.search-container select::-ms-expand {
+  display: none; /* Removes default dropdown arrow */
+}
+
+/* Add custom arrow using background image */
+.search-container select {
+  background: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 6"%3E%3Cpath fill="none" stroke="%23800000" stroke-width="1.5" d="M1 1l4 4 4-4" /%3E%3C/svg%3E') no-repeat right 0.75rem center;
+  background-size: 10px 6px;
+  padding-right: 2.5rem;
+}
+
+/* Search Bar */
+.search-container input {
+  padding: 0.5rem 1rem;
+  border: 1px solid lightgray;
+  border-radius: 0.375rem;
+  background-color: white;
+  color: black;
+  font-size: 1rem;
+  font-weight: 500;
+  width: 100%;
+  max-width: 300px;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.search-container input:focus {
+  border-color: maroon;
+}
+
+.search-container input::placeholder {
+  color: gray;
+  font-style: italic;
+}
+
+/* Search Button */
+.searchButton {
+  padding: 0.5rem 1.5rem;
+  background-color: maroon;
+  color: white;
+  border: none;
+  border-radius: 0.375rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline: none;
+  display: inline-block;
+}
+
+.searchButton:hover {
+  background-color: maroon;
+}
+
+.searchButton:focus {
+  border: 2px solid maroon;
+}
+
+.searchButton:disabled {
+  background-color: lightgray;
+  cursor: not-allowed;
+}
+
+input, select, button {
+  margin-right: 0.5rem;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  padding: 0.25rem 0;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.pagination button {
+  padding: 0.5rem 1rem;
+  background-color: maroon;
+  color: white;
+  border: none;
+  border-radius: 0.375rem; /* Rounded-md */
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.pagination button:hover:not(:disabled) {
+  background-color: maroon;
+  transform: scale(1.05);
+}
+
+.pagination button:disabled {
+  background-color: lightgray;
+  color: gray;
+  cursor: not-allowed;
+}
+
+.pagination span {
+  font-weight: 500;
+  color: gray;
+}
+
+
+/* Main Content Styling */
+.main-content {
+    padding: calc(var(--navbar-height) + 1rem) 2rem 2rem;
+    margin: 3rem;
+}
+
+
+.spell-display, .monster-display, .background-display, .magic-item-display, .feat-display {
+    background-color: #f9f2e0;
+    border: 1px solid #c9ad6a;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    margin-top: 5px;
+    font-family: 'Times New Roman', serif;
+    color: #3a3a3a;
+    width: 100%;
+    position: relative;
+    display: inline-block;
+}
+
+.small-display {
+    display: flex;
+    min-width: max-content;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: nowrap;
+    gap: 1rem;
+}
+
+.description {
+    white-space: normal;
+    word-wrap: break-word;
+    margin-top: 0.5rem;
+}
+
+.spell-text {
+    flex: 0 1 auto;
+    min-width: 0;
+}
+
+.spell-name {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #58180D;
+    margin: 0;
+    font-variant: small-caps;
+    letter-spacing: 1px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.spell-subtext {
+    font-size: 0.8rem;
+    color: rgb(92, 92, 92);
+    text-align: center;
+}
+
+.spell-left-subtext {
+    font-size: 0.8rem;
+    color: rgb(92, 92, 92);
+    text-align: left;
+}
+
+.spell-category {
+    font-size: 0.9rem;
+    color: #58180D;
+    font-weight: bold;
+}
+
+.spell-button {
+    padding: 6px 12px;
+    border: 0;
+    background-color: #58180D;
+    color: white;
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 10px;
+    flex-shrink: 0;
+}
+
+.description {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height 0.5s ease, opacity 0.3s ease;
+  margin-top: 0.5rem;
+}
+
+.description.expanded {
+  max-height: 500px; /* Arbitrary large value */
+  opacity: 1;
+}
+
+.bookmark-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  outline: none;
+  transition: transform 0.2s;
+}
+
+.bookmark-btn:hover {
+  transform: scale(1.1);
+}
+
+.bookmark-icon {
+  font-size: 1.5rem;
+  color: #666;
+  transition: color 0.3s, transform 0.2s;
+}
+
+.bookmark-btn.bookmarked .bookmark-icon {
+  color: #e3b341;
+  animation: pop 0.3s ease;
+}
+
+@keyframes pop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.4); }
+  100% { transform: scale(1); }
+}
+
+.monster-stat-block {
+  background-color: #f9f2e0;
+  border: 1px solid #c9ad6a;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  width: 320px;
+  font-family: 'Times New Roman', serif;
+  color: #3a3a3a;
+  position: relative;
+}
+
+.monster-stat-block::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 10px;
+  background: linear-gradient(to right, #8b5a2b, #c9ad6a, #8b5a2b);
+  border-radius: 5px 5px 0 0;
+}
+
+.monster-header {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.monster-name {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #58180D;
+  margin: 0;
+  font-variant: small-caps;
+  letter-spacing: 1px;
+}
+
+.monster-meta {
+  font-style: italic;
+  margin: 5px 0;
+}
+
+.monster-divider {
+  height: 2px;
+  background: linear-gradient(to right, transparent, #c9ad6a, transparent);
+  margin: 10px 0;
+}
+
+.monster-attributes {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.attribute {
+  display: flex;
+  justify-content: space-between;
+}
+
+.attribute-label {
+  font-weight: bold;
+}
+
+.monster-abilities {
+  display: flex;
+  justify-content: space-between;
+  text-align: center;
+  margin: 10px 0;
+}
+
+.ability {
+  display: flex;
+  flex-direction: column;
+}
+
+.ability-label {
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+.ability-value {
+  font-size: 0.9rem;
+}
+
+.monster-feature {
+  margin: 8px 0;
+}
+
+.feature-label {
+  font-weight: bold;
+  font-style: italic;
+}
+
+.feature-value {
+  margin-left: 5px;
+}
+
+.monster-actions {
+  margin-top: 15px;
+}
+
+.action-type {
+  font-size: 1.2rem;
+  font-variant: small-caps;
+  color: #58180D;
+  border-bottom: 2px solid #c9ad6a;
+  margin: 15px 0 5px 0;
+  padding-bottom: 3px;
+}
+
+.action {
+  margin: 8px 0;
+}
+
+.action-name {
+  font-weight: bold;
+  font-style: italic;
+}
+
+.action-description {
+  display: block;
+  margin-left: 15px;
+}

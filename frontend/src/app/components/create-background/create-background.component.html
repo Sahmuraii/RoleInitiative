@@ -1,147 +1,200 @@
 <div class="main-content">
-  <h1>Create a New Background</h1>
+  <h1>Create Custom Background</h1>
   <form [formGroup]="backgroundForm" (ngSubmit)="onSubmit()">
-    <!-- Background Name and Description -->
-    <div class="form-group">
-      <label for="name">Background Name:</label>
-      <input type="text" id="name" formControlName="name" placeholder="Enter background name" required>
-    </div>
-    <div class="form-group">
-      <label for="description">Description:</label>
-      <textarea id="description" formControlName="description" placeholder="Enter background description" rows="4" required></textarea>
+    <!-- Basic Information -->
+    <div class="section">
+      <h2>Basic Information</h2>
+      <div class="row">
+        <div>
+          <label for="name">Background Name:</label>
+          <input type="text" id="name" formControlName="name" required>
+        </div>
+      </div>
+      <div class="row full-width">
+        <div>
+          <label for="description">Description:</label>
+          <textarea id="description" formControlName="description" required></textarea>
+        </div>
+      </div>
     </div>
 
-    <!-- Skill Proficiencies -->
-    <div class="form-group">
-      <label>Skill Proficiencies:</label>
-      <div class="dropdown-container">
-        <select #skillSelect>
-          <option *ngFor="let skill of skillProficiencies" [value]="skill">{{ skill }}</option>
-        </select>
-        <button type="button" (click)="addProficiency('skill', skillSelect.value)">Add</button>
+    <!-- Proficiencies -->
+    <div class="section">
+      <h2>Proficiencies</h2>
+      
+      <!-- Skill Proficiencies -->
+      <div class="row">
+        <div>
+          <label>Skill Proficiencies:</label>
+          <div formArrayName="skillProficiencies">
+            <div *ngFor="let skill of skillProficienciesArray.controls; let i = index" class="proficiency-entry">
+              <div class="row">
+                <div>
+                  <select [formControlName]="i">
+                    <option value="">Select Skill</option>
+                    <option *ngFor="let skill of skillProficiencies" [value]="skill">{{ skill }}</option>
+                  </select>
+                </div>
+                <div>
+                  <button type="button" (click)="removeProficiency('skill', i)" class="remove-btn">×</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <button type="button" (click)="addProficiency('skill')">Add Skill Proficiency</button>
+        </div>
+        
+        <!-- Tool Proficiencies -->
+        <div>
+          <label>Tool Proficiencies:</label>
+          <div formArrayName="toolProficiencies">
+            <div *ngFor="let tool of toolProficienciesArray.controls; let i = index" class="proficiency-entry">
+              <div class="row">
+                <div>
+                  <select [formControlName]="i">
+                    <option value="">Select Tool</option>
+                    <option *ngFor="let tool of toolProficiencies" [value]="tool">{{ tool }}</option>
+                  </select>
+                </div>
+                <div>
+                  <button type="button" (click)="removeProficiency('tool', i)" class="remove-btn">×</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <button type="button" (click)="addProficiency('tool')">Add Tool Proficiency</button>
+        </div>
+        
+        <!-- Language Proficiencies -->
+        <div>
+          <label>Language Proficiencies:</label>
+          <div formArrayName="languageProficiencies">
+            <div *ngFor="let language of languageProficienciesArray.controls; let i = index" class="proficiency-entry">
+              <div class="row">
+                <div>
+                  <select [formControlName]="i">
+                    <option value="">Select Language</option>
+                    <option *ngFor="let language of languageProficiencies" [value]="language">{{ language }}</option>
+                  </select>
+                </div>
+                <div>
+                  <button type="button" (click)="removeProficiency('language', i)" class="remove-btn">×</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <button type="button" (click)="addProficiency('language')">Add Language Proficiency</button>
+        </div>
       </div>
-      <ul>
-        <li *ngFor="let skill of skillProficienciesArray.controls">{{ skill.value }}</li>
-      </ul>
-    </div>
-
-    <!-- Tool Proficiencies -->
-    <div class="form-group">
-      <label>Tool Proficiencies:</label>
-      <div class="dropdown-container">
-        <select #toolSelect>
-          <option *ngFor="let tool of toolProficiencies" [value]="tool">{{ tool }}</option>
-        </select>
-        <button type="button" (click)="addProficiency('tool', toolSelect.value)">Add</button>
-      </div>
-      <ul>
-        <li *ngFor="let tool of toolProficienciesArray.controls">{{ tool.value }}</li>
-      </ul>
-    </div>
-
-    <!-- Language Proficiencies -->
-    <div class="form-group">
-      <label>Language Proficiencies:</label>
-      <div class="dropdown-container">
-        <select #languageSelect>
-          <option *ngFor="let language of languageProficiencies" [value]="language">{{ language }}</option>
-        </select>
-        <button type="button" (click)="addProficiency('language', languageSelect.value)">Add</button>
-      </div>
-      <ul>
-        <li *ngFor="let language of languageProficienciesArray.controls">{{ language.value }}</li>
-      </ul>
     </div>
 
     <!-- Equipment -->
-    <div class="form-group">
-      <label>Equipment:</label>
-      <div class="dropdown-container">
-        <input type="text" #equipmentInput placeholder="Enter equipment">
-        <button type="button" (click)="addEquipment(equipmentInput.value); equipmentInput.value=''">Add</button>
+    <div class="section">
+      <h2>Equipment</h2>
+      <div formArrayName="equipment">
+        <div *ngFor="let item of equipmentArray.controls; let i = index" class="proficiency-entry">
+          <div class="row">
+            <div>
+              <input type="text" [formControlName]="i" placeholder="Equipment item">
+            </div>
+            <div>
+              <button type="button" (click)="removeEquipment(i)" class="remove-btn">×</button>
+            </div>
+          </div>
+        </div>
       </div>
-      <ul>
-        <li *ngFor="let item of equipmentArray.controls">{{ item.value }}</li>
-      </ul>
+      <button type="button" (click)="addEquipment()">Add Equipment</button>
     </div>
 
-    <!-- Feature Name and Description -->
-    <div class="form-group">
-      <label for="feature_name">Feature Name:</label>
-      <input type="text" id="feature_name" formControlName="featureName" placeholder="Enter feature name" required>
-    </div>
-    <div class="form-group">
-      <label for="feature_description">Feature Description:</label>
-      <textarea id="feature_description" formControlName="featureDescription" placeholder="Enter feature description" rows="4" required></textarea>
+    <!-- Feature -->
+    <div class="section">
+      <h2>Background Feature</h2>
+      <div class="row">
+        <div>
+          <label for="featureName">Feature Name:</label>
+          <input type="text" id="featureName" formControlName="featureName" required>
+        </div>
+      </div>
+      <div class="row full-width">
+        <div>
+          <label for="featureDescription">Feature Description:</label>
+          <textarea id="featureDescription" formControlName="featureDescription" required></textarea>
+        </div>
+      </div>
     </div>
 
     <!-- Suggested Characteristics -->
-    <div class="form-group">
-      <label>Suggested Characteristics:</label>
-
+    <div class="section">
+      <h2>Suggested Characteristics</h2>
+      
       <!-- Personality Traits -->
-  <table>
-      <thead>
-        <tr>
-          <th>Personality Traits (d8)</th>
-        </tr>
-      </thead>
-      <tbody formArrayName="personalityTraits">
-        <tr *ngFor="let trait of personalityTraitsArray.controls; let i = index">
-          <td>
-            <input type="text" [formControlName]="i" placeholder="Trait {{ i + 1 }}">
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    
-    <!-- Ideals -->
-    <table>
-      <thead>
-        <tr>
-          <th>Ideals (d6)</th>
-        </tr>
-      </thead>
-      <tbody formArrayName="ideals">
-        <tr *ngFor="let ideal of idealsArray.controls; let i = index">
-          <td>
-            <input type="text" [formControlName]="i" placeholder="Ideal {{ i + 1 }}">
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    
-    <!-- Bonds -->
-    <table>
-      <thead>
-        <tr>
-          <th>Bonds (d6)</th>
-        </tr>
-      </thead>
-      <tbody formArrayName="bonds">
-        <tr *ngFor="let bond of bondsArray.controls; let i = index">
-          <td>
-            <input type="text" [formControlName]="i" placeholder="Bond {{ i + 1 }}">
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    
-    <!-- Flaws -->
-    <table>
-      <thead>
-        <tr>
-          <th>Flaws (d6)</th>
-        </tr>
-      </thead>
-      <tbody formArrayName="flaws">
-        <tr *ngFor="let flaw of flawsArray.controls; let i = index">
-          <td>
-            <input type="text" [formControlName]="i" placeholder="Flaw {{ i + 1 }}">
-          </td>
-        </tr>
-      </tbody>
-    </table>
+      <div class="row full-width">
+        <div>
+          <label>Personality Traits (d8):</label>
+          <table>
+            <tbody formArrayName="personalityTraits">
+              <tr *ngFor="let trait of personalityTraitsArray.controls; let i = index">
+                <td>
+                  <input type="text" [formControlName]="i" placeholder="Trait {{ i + 1 }}">
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
+      <!-- Ideals -->
+      <div class="row full-width">
+        <div>
+          <label>Ideals (d6):</label>
+          <table>
+            <tbody formArrayName="ideals">
+              <tr *ngFor="let ideal of idealsArray.controls; let i = index">
+                <td>
+                  <input type="text" [formControlName]="i" placeholder="Ideal {{ i + 1 }}">
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
+      <!-- Bonds -->
+      <div class="row full-width">
+        <div>
+          <label>Bonds (d6):</label>
+          <table>
+            <tbody formArrayName="bonds">
+              <tr *ngFor="let bond of bondsArray.controls; let i = index">
+                <td>
+                  <input type="text" [formControlName]="i" placeholder="Bond {{ i + 1 }}">
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
+      <!-- Flaws -->
+      <div class="row full-width">
+        <div>
+          <label>Flaws (d6):</label>
+          <table>
+            <tbody formArrayName="flaws">
+              <tr *ngFor="let flaw of flawsArray.controls; let i = index">
+                <td>
+                  <input type="text" [formControlName]="i" placeholder="Flaw {{ i + 1 }}">
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
 
-  <button type="submit">Save Background</button>
+    <!-- Submit Button -->
+    <div class="row full-width">
+      <button type="submit">Create Background</button>
+    </div>
+  </form>
 </div>

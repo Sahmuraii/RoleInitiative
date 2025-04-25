@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify
-from src.character.models import DND_Class, DND_Race, Proficiencies, Proficiency_List, DND_Class_Proficiency_Option
+from src.character.models import DND_Class, DND_Race, Proficiencies, Proficiency_List, DND_Class_Proficiency_Option, DND_Spell
 from src import db
 from sqlalchemy import select
 
@@ -36,3 +36,11 @@ def returnClassProficiencies():
                 select("*").select_from(DND_Class_Proficiency_Option).join(DND_Class, DND_Class.class_id == DND_Class_Proficiency_Option.given_by_class)
             )]
     return jsonify(class_proficiency_lists)
+
+@json_bp.route("/json/dnd_spells")
+def returnDNDSpells():
+    spells = []
+    for dndspell in DND_Spell.query.order_by(DND_Spell.spell_name).all():
+        spells.append(dndspell.serialize())
+
+    return jsonify(spells)

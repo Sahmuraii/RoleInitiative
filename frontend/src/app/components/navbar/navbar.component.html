@@ -3,7 +3,7 @@
         <img src="/assets/images/RILogoWithTextNoBorder.png" alt="Logo" class="nav-logo">
     </a>
     <div class="navbar-links">
-        <a href="#">Search (WIP)</a>
+        <a href="/search">Search</a>
         <a href="#">Campaigns (WIP)</a>
         <a href="#">News (WIP)</a>
         <a href="#">Collection (WIP)</a>
@@ -12,7 +12,10 @@
     @if (isLoggedIn) {
         <div class="profile">
             <span class="profile-name" (click)="navigateToProfile()">{{ username }}</span>
-            <button (click)="logout()">Log Out</button>
+            <button class="logout-btn" (click)="logout()">
+                <i class="fa fa-door-open"></i>
+                <span class="logout-text">Log Out</span>
+            </button>
         </div>
     } @else {
         <div class="navbar-links">

@@ -3,7 +3,6 @@
         <h1 class="titleclass">Character Creator</h1>
         <p>Welcome to the character creator! Here you can design your own Dungeons and Dragons character.</p>
         <p>Follow the steps below to build your character:</p>
-        <p>Value: {{ characterForm.value | json }}</p>
         <br>
     </div>
     <div class="tabs">
@@ -12,8 +11,9 @@
         <button #tab class="tab" (click)="showTab('class')" [ngClass]="{'active' : !hiddenArray[2]}">Class</button>
         <button #tab class="tab" (click)="showTab('class_proficiencies')" [ngClass]="{'active' : !hiddenArray[3]}">Class Proficiencies</button>
         <button #tab class="tab" (click)="showTab('attributes')" [ngClass]="{'active' : !hiddenArray[4]}">Attributes</button>
-        <button #tab class="tab" (click)="showTab('details')" [ngClass]="{'active' : !hiddenArray[5]}">Character Details</button>
-        <button #tab class="tab" (click)="showTab('equipment')" [ngClass]="{'active' : !hiddenArray[6]}">Equipment</button>
+        <button #tab class="tab" (click)="showTab('spells')" [ngClass]="{'active' : !hiddenArray[5]}">Spells</button>
+        <button #tab class="tab" (click)="showTab('details')" [ngClass]="{'active' : !hiddenArray[6]}">Character Details</button>
+        <button #tab class="tab" (click)="showTab('equipment')" [ngClass]="{'active' : !hiddenArray[7]}">Equipment</button>
         <!-- {% if current_user.is_admin %}
             <button class="tab" onclick="showTab('debug')">Admin Tab</button>
         {% else %}
@@ -21,7 +21,7 @@
         {% endif %} -->
     </div>
     <div class="everything-not-tabs">
-        <form [formGroup]="characterForm">
+        <form [formGroup]="characterForm" (ngSubmit)="onSubmit()">
 
             <!-- Basic Info -->
             <div id="basicInfo" [hidden]="hiddenArray[0]">
@@ -69,17 +69,15 @@
                 <label for="selectFirstClass">Choose your primary class (affects character HP):</label>
                 <select id="selectFirstClass" name="selectFirstClass" formControlName="primaryClass" (change)="initializeClassProficiencies(this.primaryClass)">
                     @if (chosenClasses.length > 0) {
-                        <option ngValue="None" selected>Select a Class!</option>
-                        @for (class of chosenClasses; track $index) {
-                            <option [ngValue]="class">{{ dndClassesSignal()[class-1].name }}</option>
-                            
-                        }
+                      <option ngValue="None" selected>Select a Class!</option>
+                      @for (class of chosenClasses; track $index) {
+                        <option [ngValue]="class">{{ dndClassesSignal()[class-1].name }}</option>
+                      }
                     } @else {
-                        <option ngValue="None">No Classes Selected</option>
+                      <option ngValue="None">No Classes Selected</option>
                     }
-                    
-                    
-                </select><br>
+                  </select>
+                <br>
                 <div *ngFor="let dndClass of dndClassesSignal(); let i = index" formArrayName="classLevels">
                     <div class="level-control">
                         <label>{{ dndClass.name }}:</label>
@@ -133,7 +131,7 @@
             <!-- Attributes -->
             <div id="attributes" [hidden]="hiddenArray[4]">
                 <h2>Set Your Attributes</h2>
-                <p>Choose a method to determine your stats:</p>
+                <p>Choose a method to determine your stats</p>
                 <label for="stat_method">Stat Allocation Method:</label>
                 <select id="stat_method" name="stat_method" formControlName="statRuleset" (change)="showAttributeRuleset(this.statRuleset)">
                     <option value="roll">Roll</option>
@@ -145,18 +143,20 @@
                 <!-- Roll -->
                 <div id="roll" [hidden]="attrRulesHiddenArray[0]">
                     <br>
+                    <strong>NOTE: Only change these values with permission from your dungeon master!</strong><br>
+                    <strong>D&D typically doesn't allow players to roll for stats over 18.</strong>
                     <div style="display: flex; align-items: center; gap: 4px;">
                         <span>Roll </span>
-                        <input type="number" id="numDice" style="width: 40px;" value=4 min="0" max="100" placeholder="e.g., 4" formControlName="rollDiceAmt"> <!-- 40 px is to allow for 3 digits -->
+                        <input type="number" id="numDice" style="width: 40px;" value=4 min="1" max="100" placeholder="e.g., 4" formControlName="rollDiceAmt"> <!-- 40 px is to allow for 3 digits -->
                         <span>d</span>
-                        <input type="number" id="typeDice" style="width: 40px;" value=6 min="0" max="100" placeholder="e.g., 6" formControlName="rollDiceType">
+                        <input type="number" id="typeDice" style="width: 40px;" value=6 min="1" max="100" placeholder="e.g., 6" formControlName="rollDiceType">
                         <span> dice, then the drop lowest </span>
                         <input type="number" id="dropDice" style="width: 40px;" value=1 min="0" max="100" placeholder="e.g., 1" formControlName="rollDropAmt">
-                        <span> for each stat.</span>
+                        <span> for each stat.</span> <button type="button" (click)="rollDiceReset()">Return to Default</button>
                     </div>
                     <br>
                     <button type="button" id="rollStatsButton" (click)="rollStats()">Roll Stats</button><br>
-                    <br><p>Assign values from the rolled values: [ {{rolledStats}} ]</p>
+                    <br><p>Assign values from the rolled values: [{{rolledStats}}] (No reusing stats, fill in all fields!)</p>
                     <label>Strength: </label>
                     <select formControlName="str">
                         @for (stat of rolledStats; track $index) {
@@ -203,7 +203,7 @@
 
                 <!-- Standard Array -->
                 <div id="standard_array" [hidden]="attrRulesHiddenArray[1]">
-                    <p><br>Assign values from the standard array: [15, 14, 13, 12, 10, 8]<br></p>
+                    <p><br>Assign values from the standard array: [15, 14, 13, 12, 10, 8] (No reusing stats, fill in all fields!)<br></p>
                     <label>Strength: </label>
                     <select formControlName="str">
                         @for (stat of standardArray; track $index) {
@@ -251,7 +251,7 @@
                 <!-- Point Buy -->
                 <div id="point_buy" [hidden]="attrRulesHiddenArray[2]">
                     <p>Allocate points</p>
-                    <p><br>You have a max of 27 points to spend, and higher stats cost more points.<br></p>
+                    <p><br>You have a max of 27 points to spend. Higher stats cost more points, with a maximum stat of 15 and a minimum stat of 8.<br></p>
                     <p class="tooltip">Hover here to see the cost of each stat 
                         <span class="tooltiptext">
                             8 = 0 points<br>
@@ -291,27 +291,119 @@
                     <input type="number" min="1" max="20" formControlName="str">
                     <br>
                     <label>Dexterity: </label>
-                    <input type="number" min="1" max="20" formControlName="str">
+                    <input type="number" min="1" max="20" formControlName="dex">
                     <br>
                     <label>Constitution: </label>
-                    <input type="number" min="1" max="20" formControlName="str">
+                    <input type="number" min="1" max="20" formControlName="con">
                     <br>
                     <label>Intelligence: </label>
-                    <input type="number" min="1" max="20" formControlName="str">
+                    <input type="number" min="1" max="20" formControlName="int">
                     <br>
                     <label>Wisdom: </label>
-                    <input type="number" min="1" max="20" formControlName="str">
+                    <input type="number" min="1" max="20" formControlName="wis">
                     <br>
                     <label>Charisma: </label>
-                    <input type="number" min="1" max="20" formControlName="str">
+                    <input type="number" min="1" max="20" formControlName="cha">
                     <br>
                 </div>
 
                 
             </div>
 
+
+            <!-- Spells -->
+             <div id="spells" [hidden]="hiddenArray[5]">
+                <!-- Placeholder for future spellcaster check -->
+                @if(true) { 
+                    <div class="spells-text">
+                        <h2>Your Known Spells</h2>
+                        <p>Your current spells are listed below:</p>
+                        <div class="spells-list">
+                            @if (spellsKnownArray.length == 0) {
+                                <p>You haven't chosen any spells!</p>
+                            } @else {
+                                @for (spell of getSpellList(); track $index) {
+                                    <spell-display 
+                                    [spellId]="spell.spell_id" 
+                                    [spellName]="spell.spell_name" 
+                                    [spellLevel]="spell.spell_level" 
+                                    [spellSchool]="spell.spell_school" 
+                                    [castingTime]="spell.casting_time" 
+                                    [duration]="spell.duration"
+                                    [spellRange]="spell.range"
+                                    [spellDesc]="spell.description"
+                                    buttonText="Remove"
+                                    [spellsArray]="spellsKnownArray"
+                                    [buttonFunc]="removeFromSpellList"></spell-display>
+                                }
+                            }
+                            @if (homebrewSpellsKnownArray.length != 0) {
+                                <h2>Your Known Homebrew Spells</h2>
+                                @for (spell of getHomebrewSpellList(); track $index) {
+                                    <spell-display 
+                                    [spellId]="spell.user_spell_id" 
+                                    [spellName]="spell.spell_name" 
+                                    [spellLevel]="spell.spell_level" 
+                                    [spellSchool]="spell.spell_school" 
+                                    [castingTime]="spell.casting_time" 
+                                    [duration]="spell.duration"
+                                    [spellRange]="spell.range"
+                                    [spellDesc]="spell.description"
+                                    buttonText="Remove"
+                                    [spellsArray]="homebrewSpellsKnownArray"
+                                    [buttonFunc]="removeFromSpellList"></spell-display>
+                                }
+                            }
+                        </div>
+                    </div>
+                    
+                    <div class="spells-list-div">
+                        <h2>List of spells</h2>
+                        <p>Click on the spell cards to see the spell's description</p>
+                        <div class="spells-list">
+                            @for (spell of dndSpellsSignal(); track $index) {
+                                <spell-display 
+                                [spellId]="spell.spell_id" 
+                                [spellName]="spell.spell_name" 
+                                [spellLevel]="spell.spell_level" 
+                                [spellSchool]="spell.spell_school" 
+                                [castingTime]="spell.casting_time" 
+                                [duration]="spell.duration"
+                                [spellRange]="spell.range"
+                                [spellDesc]="spell.description"
+                                buttonText="Add"
+                                [spellsArray]="spellsKnownArray"
+                                [buttonFunc]="addToSpellList"></spell-display>
+                            }
+                            <h2>List of Homebrew Spells</h2>
+                            @for (spell of userSpellsSignal(); track $index) {
+                                @if (userSavedSpellSignal().includes(spell.user_spell_id)) {
+                                    <spell-display 
+                                    [spellId]="spell.user_spell_id" 
+                                    [spellName]="spell.spell_name" 
+                                    [spellLevel]="spell.spell_level" 
+                                    [spellSchool]="spell.spell_school" 
+                                    [castingTime]="spell.casting_time" 
+                                    [duration]="spell.duration"
+                                    [spellRange]="spell.range"
+                                    [spellDesc]="spell.description"
+                                    buttonText="Add"
+                                    [spellsArray]="homebrewSpellsKnownArray"
+                                    [buttonFunc]="addToSpellList"></spell-display>
+                                }
+                                
+                            }
+                        </div>
+                    </div>
+                } @else {
+                    <h2>You don't currently have a spellcasting class.</h2>
+                }
+                
+                
+             </div>
+
             <!-- Character Details -->
-            <div id="details" [hidden]="hiddenArray[5]">
+            <div id="details" [hidden]="hiddenArray[6]">
                 <h2>Character Details</h2><br>
                 <p>All fields on this page are optional.</p>
                 <h3>Personality Traits:</h3>
@@ -364,7 +456,7 @@
             </div>
 
             <!-- Equipment -->
-            <div id="equipment" [hidden]="hiddenArray[6]">
+            <div id="equipment" [hidden]="hiddenArray[7]">
                 <h2>Starting Equipment</h2>
                 <p>Select starting equipment based on your background, class, and race:</p>
                 <!-- Generate dynamically based on above-mentioned -->
@@ -398,7 +490,7 @@
                 </p> -->
             </div>
             <div class="button-group">
-                <br><button type="submit" onclick="prepFormSubmission()">Save Character</button>
+                <br><button type="submit">Save Character</button>
             </div>
             <div style="display:none">
                 <input type="number" id="final-str" name="final-str" value="8" min="1" max="20" readonly><br>
@@ -409,21 +501,24 @@
                 <input type="number" id="final-cha" name="final-cha" value="8" min="1" max="20" readonly><br>
             </div>
             <!-- Right Panel -->
-            <div class="character-summary">
-                <h2>Character Summary</h2>
-                <p><strong>Name:</strong> <span id="summary-name">{{this.name ? this.name : "None"}}</span></p>
-                <p><strong>Race:</strong> <span id="summary-race">{{this.race ? dndRaces()[this.race-1].name : "None"}}</span></p>
-                <p><strong>Class:</strong> <span id="summary-class">{{getClassString() ? getClassString() : "None"}}</span></p>
-                <p><strong>Stats:</strong></p>
-                <ul>
-                    <li>Strength: {{this.str}} ({{calculateStatModifier(this.str)}})</li>
-                    <li>Dexterity: {{this.dex}} ({{calculateStatModifier(this.dex)}})</li>
-                    <li>Constitution: {{this.con}} ({{calculateStatModifier(this.con)}})</li>
-                    <li>Intelligence: {{this.int}} ({{calculateStatModifier(this.int)}})</li>
-                    <li>Wisdom: {{this.wis}} ({{calculateStatModifier(this.wis)}})</li>
-                    <li>Charisma: {{this.cha}} ({{calculateStatModifier(this.cha)}})</li>
-                </ul>
-            </div>
+            <br>
+            
         </form>
     </div>
+</div>
+
+<div class="character-summary">
+    <h2>Character Summary</h2>
+    <p><strong>Name:</strong> <span id="summary-name">{{this.name ? this.name : "None"}}</span></p><br>
+    <p><strong>Race:</strong> <span id="summary-race">{{this.race ? dndRaces()[this.race-1].name : "None"}}</span></p><br>
+    <p><strong>Class:</strong> <span id="summary-class">{{getClassString() ? getClassString() : "None"}}</span></p><br>
+    <p><strong>Stats:</strong></p>
+    <ul>
+        <li>Strength: {{this.str}} ({{calculateStatModifier(this.str)}})</li>
+        <li>Dexterity: {{this.dex}} ({{calculateStatModifier(this.dex)}})</li>
+        <li>Constitution: {{this.con}} ({{calculateStatModifier(this.con)}})</li>
+        <li>Intelligence: {{this.int}} ({{calculateStatModifier(this.int)}})</li>
+        <li>Wisdom: {{this.wis}} ({{calculateStatModifier(this.wis)}})</li>
+        <li>Charisma: {{this.cha}} ({{calculateStatModifier(this.cha)}})</li>
+    </ul>
 </div>

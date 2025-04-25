@@ -16,27 +16,27 @@ export class SpellService {
 
   // Fetch all spells
   getSpells(): Observable<any> {
-    return this.http.get(`${API_URL}/spells`);
+    return this.http.get(`${API_URL}/homebrew-spells`);
   }
 
   // Fetch spells by user ID
   getSpellsByUser(userId: number): Observable<any> {
-    return this.http.get(`${API_URL}/spells`, { params: { userID: userId.toString() } });
+    return this.http.get(`${API_URL}/homebrew-spells`, { params: { userID: userId.toString() } });
   }
   
   // Fetch a single spell by ID
   getSpellById(spellId: number): Observable<any> {
-    return this.http.get(`${API_URL}/spells/${spellId}`);
+    return this.http.get(`${API_URL}/homebrew-spells/${spellId}`);
   }
 
   // Update a spell
   updateSpell(spellId: number, spellData: any): Observable<any> {
-    return this.http.put(`${API_URL}/spells/${spellId}`, spellData);
+    return this.http.put(`${API_URL}/homebrew-spells/${spellId}`, spellData);
   }
 
   // Delete a spell
   deleteSpell(spellId: number): Observable<any> {
-    return this.http.delete(`${API_URL}/spells/${spellId}`);
+    return this.http.delete(`${API_URL}/homebrew-spells/${spellId}`);
   }
 
   // Search spells by name or other criteria

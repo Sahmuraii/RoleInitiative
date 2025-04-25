@@ -1,0 +1,1026 @@
+<div class="main-content">
+  <h1>Create Custom Species</h1>
+  <!-- Temporary debug style -->
+  <form [formGroup]="speciesForm" (ngSubmit)="onSubmit()">
+    <!-- Basic Information -->
+    <div class="section">
+      <h2>Basic Information</h2>
+      <div class="row">
+        <div>
+          <label for="name">Species Name:</label>
+          <input type="text" id="name" formControlName="name" required>
+        </div>
+      </div>
+      
+      <!-- Size Selection -->
+      <div class="row">
+        <div>
+          <label for="size">Size:</label>
+          <select id="size" formControlName="size" required>
+            <option value="">Select Size</option>
+            <option *ngFor="let size of sizes" [value]="size">{{ size }}</option>
+          </select>
+        </div>
+        <div *ngIf="speciesForm.get('size')?.value === 'Custom'">
+          <label for="customSize">Custom Size:</label>
+          <input type="text" id="customSize" formControlName="customSize" required>
+        </div>
+      </div>
+
+      <!-- Species Group Selection -->
+      <div class="row">
+        <div>
+          <label for="speciesGroup">Species Group:</label>
+          <select id="speciesGroup" formControlName="speciesGroup">
+            <option value="">Select Group</option>
+            <option *ngFor="let group of speciesGroup" [value]="group">{{ group }}</option>
+          </select>
+        </div>
+        <div *ngIf="speciesForm.get('speciesGroup')?.value === 'Custom'">
+          <label for="customSpeciesGroup">Custom Group:</label>
+          <input type="text" id="customSpeciesGroup" formControlName="customSpeciesGroup" required>
+        </div>
+      </div>
+      
+      <div class="row">
+        <div>
+          <label for="speedWalking">Walking Speed:</label>
+          <input type="number" id="speedWalking" formControlName="speedWalking" min="0">
+        </div>
+        <div>
+          <label for="speedFlying">Flying Speed:</label>
+          <input type="number" id="speedFlying" formControlName="speedFlying" min="0">
+        </div>
+        <div>
+          <label for="speedSwimming">Swimming Speed:</label>
+          <input type="number" id="speedSwimming" formControlName="speedSwimming" min="0">
+        </div>
+      </div>
+      
+      <div class="row">
+        <div>
+          <label for="speedClimbing">Climbing Speed:</label>
+          <input type="number" id="speedClimbing" formControlName="speedClimbing" min="0">
+        </div>
+        <div>
+          <label for="speedBurrowing">Burrowing Speed:</label>
+          <input type="number" id="speedBurrowing" formControlName="speedBurrowing" min="0">
+        </div>
+      </div>
+      
+      <div class="row full-width">
+        <div>
+          <label for="shortdescription">Short Description:</label>
+          <textarea id="shortdescription" formControlName="shortdescription"></textarea>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Species Traits -->
+    <div class="section">
+      <h2>Species Traits</h2>
+      <div class="row">
+        <div>
+          <label for="speciesTraitIntroduction">Trait Introduction:</label>
+          <textarea id="speciesTraitIntroduction" formControlName="speciesTraitIntroduction"></textarea>
+        </div>
+      </div>
+      
+      <div formArrayName="speciesTraits">
+        <div *ngFor="let trait of speciesTraits.controls; let i = index" 
+             [formGroupName]="i" 
+             class="modifier-entry speciesTraits-{{i}}">
+          <button type="button" (click)="removeSpeciesTrait(i)" class="remove-btn">×</button>
+          
+          <div class="row">
+            <div>
+              <label for="trait-name-{{i}}">Trait Name:</label>
+              <input type="text" id="trait-name-{{i}}" formControlName="name" required>
+            </div>
+            <div>
+              <label for="trait-snippet-{{i}}">Snippet:</label>
+              <input type="text" id="trait-snippet-{{i}}" formControlName="snippet">
+            </div>
+          </div>
+
+          <div class="row full-width">
+            <div>
+              <label for="trait-description-{{i}}">Description:</label>
+              <quill-editor 
+                id="trait-description-{{i}}"
+                formControlName="description"
+                [modules]="quillConfig"
+                placeholder="Enter trait description">
+              </quill-editor>
+            </div>
+          </div>
+
+          <div class="row">
+            <div>
+              <label for="trait-displayOrder-{{i}}">Display Order:</label>
+              <input type="number" id="trait-displayOrder-{{i}}" formControlName="displayOrder" min="0">
+            </div>
+            <div>
+              <label for="trait-featureType-{{i}}">Feature Type:</label>
+              <select id="trait-featureType-{{i}}" formControlName="featureType">
+                <option value="">Select Type</option>
+                <option *ngFor="let type of featureType" [value]="type">{{ type }}</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="checkbox-row">
+            <input type="checkbox" id="trait-isCalledOutBool-{{i}}" formControlName="isCalledOutBool">
+            <label for="trait-isCalledOutBool-{{i}}">Is Called Out</label>
+            
+            <input type="checkbox" id="trait-hideInBuilderBool-{{i}}" formControlName="hideInBuilderBool">
+            <label for="trait-hideInBuilderBool-{{i}}">Hide in Builder</label>
+            
+            <input type="checkbox" id="trait-hideInSheetBool-{{i}}" formControlName="hideInSheetBool">
+            <label for="trait-hideInSheetBool-{{i}}">Hide in Sheet</label>
+            
+            <input type="checkbox" id="trait-hideInDetailsPageBool-{{i}}" formControlName="hideInDetailsPageBool">
+            <label for="trait-hideInDetailsPageBool-{{i}}">Hide in Details</label>
+          </div>
+
+          <div class="row">
+            <div>
+              <label for="trait-requiredLevel-{{i}}">Required Level:</label>
+              <input type="number" id="trait-requiredLevel-{{i}}" formControlName="requiredLevel" min="0">
+            </div>
+          </div>
+
+          <!-- Additional Information Section (collapsible) -->
+          <div class="section" *ngIf="trait.get('showAdditionalInfo')?.value">
+            <h3>Additional Information</h3>
+            
+            <!-- Modifiers -->
+            <div class="subsection">
+              <h4>Modifiers</h4>
+              <div formArrayName="modifiers">
+                <div *ngFor="let modifier of getTraitModifiers(i).controls; let j = index" 
+                    [formGroupName]="j" 
+                    class="condition-entry modifiers-{{i}}-{{j}}">
+                  <button type="button" (click)="removeTraitModifier(i, j)" class="remove-btn">×</button>
+                  <div class="row">
+                    <div>
+                      <select formControlName="modifierType" (change)="onModifierTypeChange(modifier)">
+                        <option value="">Select Modifier Type</option>
+                        <option *ngFor="let type of modifierTypes" [value]="type">{{ type }}</option>
+                      </select>
+                    </div>
+                  </div>
+                  
+                  <div class="row" *ngIf="modifier.get('modifierType')?.value === 'Custom'">
+                    <div>
+                      <input type="text" formControlName="customModifierName" placeholder="Custom Modifier Name" required>
+                    </div>
+                    <div>
+                      <input type="text" formControlName="customModifierValue" placeholder="Custom Modifier Value" required>
+                    </div>
+                  </div>
+                  
+                  <div class="row" *ngIf="modifier.get('modifierType')?.value && modifier.get('modifierType')?.value !== 'Custom'">
+                    <div *ngIf="getModifierSubtypes(modifier.get('modifierType')?.value).length > 0">
+                      <select formControlName="modifierSubtype">
+                        <option value="">Select Subtype</option>
+                        <option *ngFor="let subtype of getModifierSubtypes(modifier.get('modifierType')?.value)" 
+                                [value]="subtype">{{ subtype }}</option>
+                      </select>
+                    </div>
+                  </div>
+                  
+                  <div class="row" *ngIf="modifier.get('modifierType')?.value">
+                    <div>
+                      <input type="text" formControlName="modifierDetails" placeholder="Details">
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <button type="button" (click)="addTraitModifier(i)">Add Modifier</button>
+            </div>
+            <!-- Spells -->
+            <div class="subsection">
+              <h4>Spells</h4>
+              <div formArrayName="spells">
+                <div *ngFor="let spell of getTraitSpells(i).controls; let j = index" 
+                    [formGroupName]="j" 
+                    class="spell-entry spells-{{i}}-{{j}}">
+                  <button type="button" (click)="removeTraitSpell(i, j)" class="remove-btn">×</button>
+                  
+                  <div class="row">
+                    <div>
+                      <label>Spell Name:</label>
+                      <input type="text" formControlName="spellName" placeholder="Spell Name">
+                    </div>
+                    <div>
+                      <label>Spell Levels:</label>
+                      <select formControlName="spellLevels" multiple>
+                        <option *ngFor="let level of spellLevels" [value]="level">{{ level }}</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div>
+                      <label>Classes:</label>
+                      <select formControlName="spellClass" multiple>
+                        <option *ngFor="let cls of spellClasses" [value]="cls">{{ cls }}</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label>School:</label>
+                      <select formControlName="spellSchool">
+                        <option value="">Select School</option>
+                        <option *ngFor="let school of spellSchools" [value]="school">{{ school }}</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div>
+                      <label>Attack Type:</label>
+                      <select formControlName="spellAttackType">
+                        <option value="">Select Attack Type</option>
+                        <option *ngFor="let type of spellAttackTypes" [value]="type">{{ type }}</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label>Level Divisor:</label>
+                      <input type="text" formControlName="spellLevelDivisor" placeholder="e.g. 2">
+                    </div>
+                  </div>
+
+                  <div class="checkbox-row">
+                    <input type="checkbox" formControlName="onlyRitualSpells" id="onlyRitualSpells-{{i}}-{{j}}">
+                    <label for="onlyRitualSpells-{{i}}-{{j}}">Only Ritual Spells</label>
+                    
+                    <input type="checkbox" formControlName="consumesSpellSlot" id="consumesSpellSlot-{{i}}-{{j}}">
+                    <label for="consumesSpellSlot-{{i}}-{{j}}">Consumes Spell Slot</label>
+                    
+                    <input type="checkbox" formControlName="countsAsKnownSpell" id="countsAsKnownSpell-{{i}}-{{j}}">
+                    <label for="countsAsKnownSpell-{{i}}-{{j}}">Counts as Known Spell</label>
+                    
+                    <input type="checkbox" formControlName="alwaysPrepared" id="alwaysPrepared-{{i}}-{{j}}">
+                    <label for="alwaysPrepared-{{i}}-{{j}}">Always Prepared</label>
+                    
+                    <input type="checkbox" formControlName="spellUseProfBonus" id="spellUseProfBonus-{{i}}-{{j}}">
+                    <label for="spellUseProfBonus-{{i}}-{{j}}">Use Proficiency Bonus</label>
+                    
+                    <input type="checkbox" formControlName="spellIsInfinite" id="spellIsInfinite-{{i}}-{{j}}">
+                    <label for="spellIsInfinite-{{i}}-{{j}}">Is Infinite</label>
+                  </div>
+
+                  <div class="row">
+                    <div>
+                      <label>Ability Score:</label>
+                      <select formControlName="spellAbilityScore">
+                        <option value="">Select Ability</option>
+                        <option *ngFor="let ability of abilityScores" [value]="ability">{{ ability }}</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label>Number of Uses:</label>
+                      <input type="number" formControlName="spellNumberOfUses" min="0">
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div>
+                      <label>Modifier Operator:</label>
+                      <select formControlName="spellModifierOperator">
+                        <option value="">Select Operator</option>
+                        <option *ngFor="let op of modifierOperators" [value]="op">{{ op }}</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label>Ability Modifier:</label>
+                      <select formControlName="spellAbilityModifier">
+                        <option value="">Select Modifier</option>
+                        <option *ngFor="let ability of abilityScores" [value]="ability">{{ ability }}</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div>
+                      <label>Prof Bonus Operator:</label>
+                      <select formControlName="spellProfBonusOperator">
+                        <option value="">Select Operator</option>
+                        <option *ngFor="let op of modifierOperators" [value]="op">{{ op }}</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label>Reset Type:</label>
+                      <select formControlName="spellResetType">
+                        <option value="">Select Reset</option>
+                        <option *ngFor="let reset of spellResetTypes" [value]="reset">{{ reset }}</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div>
+                      <label>Cast Level:</label>
+                      <select formControlName="spellCastLevel">
+                        <option value="">Select Level</option>
+                        <option *ngFor="let level of spellLevels" [value]="level">{{ level }}</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label>Casting Time:</label>
+                      <input type="text" formControlName="spellCastingTime" placeholder="e.g. 1 action">
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div>
+                      <label>Activation Type:</label>
+                      <select formControlName="spellActivationType">
+                        <option value="">Select Activation</option>
+                        <option *ngFor="let activation of activationType" [value]="activation">{{ activation }}</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label>Range Type:</label>
+                      <select formControlName="spellRange">
+                        <option value="">Select Range</option>
+                        <option *ngFor="let range of spellRangeTypes" [value]="range">{{ range }}</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="row" *ngIf="spell.get('spellRange')?.value === 'Feet' || spell.get('spellRange')?.value === 'Miles'">
+                    <div>
+                      <label>Range Distance:</label>
+                      <input type="number" formControlName="spellRangeDistance" min="0">
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div>
+                      <label>Available At Level:</label>
+                      <input type="number" formControlName="availableAtCharacterLevel" min="1" max="20">
+                    </div>
+                    <div>
+                      <label>Save DC:</label>
+                      <input type="text" formControlName="saveDC" placeholder="e.g. 8 + proficiency + CHA">
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div>
+                      <label>Min Charges Expended:</label>
+                      <input type="number" formControlName="minSpellChargesExpended" min="0">
+                    </div>
+                    <div>
+                      <label>Max Charges Expended:</label>
+                      <input type="number" formControlName="maxSpellChargesExpended" min="0">
+                    </div>
+                  </div>
+
+                  <div class="row full-width">
+                    <div>
+                      <label>Restriction:</label>
+                      <textarea formControlName="restriction" placeholder="Any restrictions on spell use"></textarea>
+                    </div>
+                  </div>
+
+                  <div class="row full-width">
+                    <div>
+                      <label>Description:</label>
+                      <textarea formControlName="spellDescription" placeholder="Spell description"></textarea>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <button type="button" (click)="addTraitSpell(i)">Add Spell</button>
+            </div>
+
+            <!-- Actions -->
+            <div class="subsection">
+              <h4>Actions</h4>
+              <div formArrayName="actions">
+                <div *ngFor="let action of getTraitActions(i).controls; let j = index" 
+                     [formGroupName]="j" 
+                     class="condition-entry actions-{{i}}-{{j}}">
+                  <button type="button" (click)="removeTraitAction(i, j)" class="remove-btn">×</button>
+                  <div class="row">
+                    <div>
+                      <label>Action Type:</label>
+                      <select formControlName="actionType">
+                        <option value="">Select Action Type</option>
+                        <option *ngFor="let type of actionTypes" [value]="type">{{ type }}</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label>Action Name:</label>
+                      <input type="text" formControlName="actionName" placeholder="Action Name">
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div>
+                      <label>Ability Score:</label>
+                      <select formControlName="actionAbilityScoreType">
+                        <option value="">Select Ability</option>
+                        <option *ngFor="let ability of abilityScores" [value]="ability">{{ ability }}</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label>Level:</label>
+                      <input type="number" formControlName="actionLevel" min="0">
+                    </div>
+                  </div>
+
+                  <div class="checkbox-row">
+                    <input type="checkbox" formControlName="actionIsProficient" id="actionIsProficient-{{i}}-{{j}}">
+                    <label for="actionIsProficient-{{i}}-{{j}}">Is Proficient</label>
+                    
+                    <input type="checkbox" formControlName="actionDisplayAsAttack" id="actionDisplayAsAttack-{{i}}-{{j}}">
+                    <label for="actionDisplayAsAttack-{{i}}-{{j}}">Display as Attack</label>
+                    
+                    <input type="checkbox" formControlName="actionAffectedbyMartialArts" id="actionAffectedbyMartialArts-{{i}}-{{j}}">
+                    <label for="actionAffectedbyMartialArts-{{i}}-{{j}}">Affected by Martial Arts</label>
+                  </div>
+
+                  <div class="row">
+                    <div>
+                      <label>Attack Range Type:</label>
+                      <select formControlName="actionAttackRangeType">
+                        <option value="">Select Range Type</option>
+                        <option *ngFor="let range of attackRangeTypes" [value]="range">{{ range }}</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label>Save Type:</label>
+                      <select formControlName="actionSaveType">
+                        <option value="">Select Save</option>
+                        <option *ngFor="let save of saveTypes" [value]="save">{{ save }}</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="row" *ngIf="action.get('actionSaveType')?.value">
+                    <div>
+                      <label>Save DC:</label>
+                      <input type="number" formControlName="actionSaveDC" min="0">
+                    </div>
+                    <div>
+                      <label>Effect on Save Success:</label>
+                      <input type="text" formControlName="actionEffectOnSaveSuccess" placeholder="Effect description">
+                    </div>
+                  </div>
+
+                  <div class="row" *ngIf="action.get('actionSaveType')?.value">
+                    <div>
+                      <label>Effect on Save Fail:</label>
+                      <input type="text" formControlName="actionEffectOnSaveFail" placeholder="Effect description">
+                    </div>
+                    <div>
+                      <label>Effect on Miss:</label>
+                      <input type="text" formControlName="actionEffectOnMiss" placeholder="Effect description">
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div>
+                      <label>Weapon Attack Subtype:</label>
+                      <select formControlName="actionWeaponAttackSubtype">
+                        <option value="">Select Subtype</option>
+                        <option *ngFor="let subtype of weaponAttackSubtypes" [value]="subtype">{{ subtype }}</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label>Damage Type:</label>
+                      <select formControlName="actionDamageType">
+                        <option value="">Select Damage Type</option>
+                        <option *ngFor="let damage of damageTypes" [value]="damage">{{ damage }}</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div>
+                      <label>Dice Count:</label>
+                      <input type="number" formControlName="actionDiceCount" min="0">
+                    </div>
+                    <div>
+                      <label>Die Type:</label>
+                      <select formControlName="actionDieType">
+                        <option value="">Select Die</option>
+                        <option *ngFor="let die of dieType" [value]="die">{{ die }}</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div>
+                      <label>Fixed Value:</label>
+                      <input type="number" formControlName="actionFixedValue" min="0">
+                    </div>
+                    <div>
+                      <label>Level Divisor:</label>
+                      <input type="text" formControlName="actionLevelDivisor" placeholder="e.g. 2">
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div>
+                      <label>Activation Type:</label>
+                      <select formControlName="actionActivationType">
+                        <option value="">Select Activation</option>
+                        <option *ngFor="let activation of activationType" [value]="activation">{{ activation }}</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label>Activation Time:</label>
+                      <input type="text" formControlName="actionActivationTime" placeholder="e.g. 1 action">
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div>
+                      <label>Reset Type:</label>
+                      <select formControlName="actionResetType">
+                        <option value="">Select Reset</option>
+                        <option *ngFor="let reset of resetTypes" [value]="reset">{{ reset }}</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label>Number of Uses:</label>
+                      <input type="number" formControlName="actionNumberOfUses" min="0">
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div>
+                      <label>Modifier Operator:</label>
+                      <select formControlName="actionModifierOperator">
+                        <option value="">Select Operator</option>
+                        <option *ngFor="let op of modifierOperators" [value]="op">{{ op }}</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label>Ability Modifier:</label>
+                      <select formControlName="actionAbilityModifier">
+                        <option value="">Select Modifier</option>
+                        <option *ngFor="let ability of abilityScores" [value]="ability">{{ ability }}</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="checkbox-row">
+                    <input type="checkbox" formControlName="actionUseProfBonus" id="actionUseProfBonus-{{i}}-{{j}}">
+                    <label for="actionUseProfBonus-{{i}}-{{j}}">Use Proficiency Bonus</label>
+                  </div>
+
+                  <div class="row" *ngIf="action.get('actionUseProfBonus')?.value">
+                    <div>
+                      <label>Prof Bonus Operator:</label>
+                      <select formControlName="actionProfBonusOperator">
+                        <option value="">Select Operator</option>
+                        <option *ngFor="let op of modifierOperators" [value]="op">{{ op }}</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <!-- Spell-specific fields (shown when actionType is 'Spell') -->
+                  <div class="row" *ngIf="action.get('actionType')?.value === 'Spell'">
+                    <div>
+                      <label>Spell Range Type:</label>
+                      <select formControlName="actionSpellRangeType">
+                        <option value="">Select Range Type</option>
+                        <option *ngFor="let range of spellRangeTypes" [value]="range">{{ range }}</option>
+                      </select>
+                    </div>
+                    <div *ngIf="action.get('actionSpellRangeType')?.value === 'Feet' || action.get('actionSpellRangeType')?.value === 'Miles'">
+                      <label>Spell Range:</label>
+                      <input type="number" formControlName="actionSpellRange" min="0">
+                    </div>
+                  </div>
+
+                  <div class="row" *ngIf="action.get('actionType')?.value === 'Spell' && action.get('actionSpellRangeType')?.value === 'Feet'">
+                    <div>
+                      <label>Spell Long Range:</label>
+                      <input type="number" formControlName="actionSpellLongRange" min="0">
+                    </div>
+                  </div>
+
+                  <div class="row" *ngIf="action.get('actionType')?.value === 'Spell'">
+                    <div>
+                      <label>Spell Area of Effect:</label>
+                      <select formControlName="actionSpellAreaofEffect">
+                        <option value="">Select Area</option>
+                        <option *ngFor="let area of spellAreaOfEffects" [value]="area">{{ area }}</option>
+                      </select>
+                    </div>
+                    <div *ngIf="action.get('actionSpellAreaofEffect')?.value">
+                      <label>Area Size:</label>
+                      <input type="number" formControlName="actionSpellAreaofEffectSize" min="0">
+                    </div>
+                  </div>
+
+                  <div class="checkbox-row" *ngIf="action.get('actionType')?.value === 'Spell' && action.get('actionSpellAreaofEffect')?.value">
+                    <input type="checkbox" formControlName="actionSpellAreaofEffectSpecialFlag" id="actionSpellAreaofEffectSpecialFlag-{{i}}-{{j}}">
+                    <label for="actionSpellAreaofEffectSpecialFlag-{{i}}-{{j}}">Special Area Flag</label>
+                  </div>
+
+                  <div class="section">
+                    <h5>Limited Uses</h5>
+                    <div formArrayName="limitedUses">
+                      <div *ngFor="let limitedUse of getLimitedUses(i, j).controls; let k = index" 
+                          [formGroupName]="k" 
+                          class="condition-entry limitedUses-{{i}}-{{j}}-{{k}}">
+                        <button type="button" (click)="removeLimitedUse(i, j, k)" class="remove-btn">×</button>
+                        
+                        <div class="row">
+                          <div>
+                            <label>Number of Uses:</label>
+                            <input type="number" formControlName="actionNumberOfUses" min="0">
+                          </div>
+                          <div>
+                            <label>Modifier Operator:</label>
+                            <select formControlName="actionModifierOperator">
+                              <option value="">Select Operator</option>
+                              <option *ngFor="let op of modifierOperators" [value]="op">{{ op }}</option>
+                            </select>
+                          </div>
+                        </div>
+
+                        <div class="row">
+                          <div>
+                            <label>Ability Modifier:</label>
+                            <select formControlName="actionAbilityModifier">
+                              <option value="">Select Modifier</option>
+                              <option *ngFor="let ability of abilityScores" [value]="ability">{{ ability }}</option>
+                            </select>
+                          </div>
+                          <div>
+                            <label>Level Divisor:</label>
+                            <input type="text" formControlName="actionLevelDivisor" placeholder="e.g. 2">
+                          </div>
+                        </div>
+
+                        <div class="checkbox-row">
+                          <input type="checkbox" formControlName="actionUseProfBonus" id="limitedUseProfBonus-{{i}}-{{j}}-{{k}}">
+                          <label for="limitedUseProfBonus-{{i}}-{{j}}-{{k}}">Use Proficiency Bonus</label>
+                        </div>
+
+                        <div class="row" *ngIf="limitedUse.get('actionUseProfBonus')?.value">
+                          <div>
+                            <label>Prof Bonus Operator:</label>
+                            <select formControlName="actionProfBonusOperator">
+                              <option value="">Select Operator</option>
+                              <option *ngFor="let op of modifierOperators" [value]="op">{{ op }}</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <button type="button" (click)="addLimitedUse(i, j)">Add Limited Use</button>
+                  </div>
+
+                  <div class="row full-width">
+                    <div>
+                      <label>Description:</label>
+                      <textarea formControlName="actionDescription" placeholder="Action description"></textarea>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <button type="button" (click)="addTraitAction(i)">Add Action</button>
+            </div>
+
+            <!-- Creatures -->
+            <div class="subsection">
+              <h4>Creatures</h4>
+              <div formArrayName="creatures">
+                <div *ngFor="let creature of getTraitCreatures(i).controls; let j = index" 
+                    [formGroupName]="j" 
+                    class="condition-entry creatures-{{i}}-{{j}}">
+                  <button type="button" (click)="removeTraitCreature(i, j)" class="remove-btn">×</button>
+                  
+                  <div class="row">
+                    <div>
+                      <label>Creature Name:</label>
+                      <input type="text" formControlName="creatureName" placeholder="Creature Name">
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div>
+                      <label>Rule Type:</label>
+                      <select formControlName="ruleType">
+                        <option value="">Select Rule Type</option>
+                        <option *ngFor="let type of creatureRuleTypes" [value]="type">{{ type }}</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label>Creature Group:</label>
+                      <select formControlName="creatureGroup">
+                        <option value="">Select Group</option>
+                        <option *ngFor="let group of creatureGroups" [value]="group">{{ group }}</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="row" *ngIf="creature.get('creatureGroup')?.value === 'Custom'">
+                    <div>
+                      <label>Custom Creature Group:</label>
+                      <input type="text" formControlName="customCreatureGroup" placeholder="Custom Creature Group">
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div>
+                      <label>Creature Type:</label>
+                      <select formControlName="creatureType">
+                        <option value="">Select Type</option>
+                        <option *ngFor="let type of monsterTypes" [value]="type">{{ type }}</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <!-- Create A Rule Fields -->
+                  <div *ngIf="creature.get('ruleType')?.value === 'Create A Rule'">
+                    <div class="row">
+                      <div>
+                        <label>Monster Type:</label>
+                        <select formControlName="monsterType">
+                          <option value="">Select Type</option>
+                          <option *ngFor="let type of monsterTypes" [value]="type">{{ type }}</option>
+                        </select>
+                      </div>
+                      <div *ngIf="creature.get('monsterType')?.value === 'Custom'">
+                        <label>Custom Monster Type:</label>
+                        <input type="text" formControlName="customMonsterType" placeholder="Custom Monster Type">
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div>
+                        <label>Max Challenge Rating:</label>
+                        <select formControlName="maxChallengeRating">
+                          <option value="">Select Challenge Rating</option>
+                          <option *ngFor="let cr of maxChallengeRating" [value]="cr">{{ cr }}</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label>Max Challenge Rating Divisor:</label>
+                        <input type="number" formControlName="maxChallenegeRatingDivisor" min="0">
+                      </div>
+                    </div>
+
+                    <div class="row" *ngIf="creature.get('maxChallengeRating')?.value === 'Custom'">
+                      <div>
+                        <label>Custom Max Challenge Rating:</label>
+                        <input type="number" formControlName="customMaxChallengeRating" min="0" step="0.5">
+                      </div>
+                      <div>
+                        <label>Custom Max Challenge Rating Divisor:</label>
+                        <input type="number" formControlName="customMaxChallengeRatingDivisor" min="0">
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div>
+                        <label>Restricted Movement Types:</label>
+                        <select formControlName="restrictedMovementTypes" multiple>
+                          <option *ngFor="let move of movementTypes" [value]="move">{{ move }}</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label>Monster Sizes:</label>
+                        <select formControlName="monsterSizes" multiple>
+                          <option *ngFor="let size of monsterSizes" [value]="size">{{ size }}</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div *ngIf="creature.get('restrictedMovementTypes')?.value?.includes('Custom')">
+                        <label>Custom Movement Types:</label>
+                        <input type="text" formControlName="customMovementTypes" placeholder="Enter custom movement types">
+                      </div>
+                      <div *ngIf="creature.get('monsterSizes')?.value?.includes('Custom')">
+                        <label>Custom Creature Sizes:</label>
+                        <input type="text" formControlName="customCreatureSizes" placeholder="Enter custom creature sizes">
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Choose Monsters Fields -->
+                  <div *ngIf="creature.get('ruleType')?.value === 'Choose Monsters'">
+                    <div formArrayName="customMonsters">
+                      <div *ngFor="let monster of getCreatureCustomMonsters(i, j).controls; let k = index" 
+                          [formGroupName]="k" 
+                          class="row">
+                        <div>
+                          <label>Monster Name:</label>
+                          <div class="row">
+                            <div>
+                              <input type="text" formControlName="{{k}}" placeholder="Enter monster name">
+                            </div>
+                            <div>
+                              <button type="button" (click)="removeCreatureCustomMonster(i, j, k)" class="remove-btn">×</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <button type="button" (click)="addCreatureCustomMonster(i, j)">Add Monster</button>
+                  </div>
+
+                  <div class="row full-width">
+                    <div>
+                      <label>Description:</label>
+                      <textarea formControlName="creatureDescription" placeholder="Creature Description"></textarea>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <button type="button" (click)="addTraitCreature(i)">Add Creature</button>
+            </div>
+
+            <!-- Additional Spells -->
+            <div class="subsection">
+              <h4>Additional Spells</h4>
+              <div formArrayName="additionalSpells">
+                <div *ngFor="let spell of getTraitAdditionalSpells(i).controls; let j = index" 
+                     [formGroupName]="j" 
+                     class="spell-entry additionalSpells-{{i}}-{{j}}">
+                  <button type="button" (click)="removeTraitAdditionalSpell(i, j)" class="remove-btn">×</button>
+                  <div class="row">
+                    <div>
+                      <input type="text" formControlName="spellName" placeholder="Spell Name">
+                    </div>
+                    <div>
+                      <select formControlName="spellLevels" multiple>
+                        <option *ngFor="let level of spellLevels" [value]="level">{{ level }}</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="row full-width">
+                    <div>
+                      <textarea formControlName="spellDescription" placeholder="Spell Description"></textarea>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <button type="button" (click)="addTraitAdditionalSpell(i)">Add Additional Spell</button>
+            </div>
+          </div>
+
+          <button type="button" (click)="toggleAdditionalInfo(i)" class="toggle-btn">
+            {{ trait.get('showAdditionalInfo')?.value ? 'Hide Additional Information' : 'Show Additional Information' }}
+          </button>
+        </div>
+      </div>
+      <button type="button" (click)="addSpeciesTrait()">Add Species Trait</button>
+    </div>
+    
+    <!-- Species Options -->
+    <div class="section">
+      <h2>Species Options</h2>
+      <div class="checkbox-row">
+        <input type="checkbox" id="SpeciesOptionsBool" formControlName="SpeciesOptionsBool">
+        <label for="SpeciesOptionsBool">Has Options</label>
+      </div>
+      
+      <div *ngIf="speciesForm.get('SpeciesOptionsBool')?.value">
+        <div formArrayName="speciesOptions">
+          <div *ngFor="let option of speciesOptions.controls; let i = index" 
+               [formGroupName]="i" 
+               class="modifier-entry speciesOptions-{{i}}">
+            <button type="button" (click)="removeSpeciesOption(i)" class="remove-btn">×</button>
+            <div class="row">
+              <div>
+                <label for="option-name-{{i}}">Option Name:</label>
+                <input type="text" id="option-name-{{i}}" formControlName="name" required>
+              </div>
+              <div>
+                <label for="option-speciesGroup-{{i}}">Species Group:</label>
+                <select id="option-speciesGroup-{{i}}" formControlName="speciesGroup">
+                  <option value="">Select Group</option>
+                  <option *ngFor="let group of speciesGroup" [value]="group">{{ group }}</option>
+                </select>
+              </div>
+            </div>
+            
+            <div class="row full-width">
+              <div>
+                <label for="option-description-{{i}}">Description:</label>
+                <textarea id="option-description-{{i}}" formControlName="description"></textarea>
+              </div>
+            </div>
+            
+            <div class="checkbox-row">
+              <input type="checkbox" id="option-isVariantBool-{{i}}" formControlName="isVariantBool">
+              <label for="option-isVariantBool-{{i}}">Is Variant</label>
+            </div>
+            
+            <!-- Option Traits -->
+            <div class="section">
+              <h3>Option Traits</h3>
+              <div formArrayName="speciesOptionTraits">
+                <div *ngFor="let trait of getSpeciesOptionTraits(i).controls; let j = index" 
+                     [formGroupName]="j" 
+                     class="condition-entry optionTraits-{{i}}-{{j}}">
+                  <button type="button" (click)="removeSpeciesOptionTrait(i, j)" class="remove-btn">×</button>
+                  <div class="row">
+                    <div>
+                      <input type="text" formControlName="name" placeholder="Trait Name" required>
+                    </div>
+                  </div>
+                  <div class="row full-width">
+                    <div>
+                      <textarea formControlName="description" placeholder="Trait Description"></textarea>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <button type="button" (click)="addSpeciesOptionTrait(i)">Add Option Trait</button>
+            </div>
+          </div>
+        </div>
+        <button type="button" (click)="addSpeciesOption()">Add Species Option</button>
+      </div>
+    </div>
+    
+    <!-- Species Variants -->
+    <div class="section">
+      <h2>Species Variants</h2>
+      <div formArrayName="speciesVariants">
+        <div *ngFor="let variant of speciesVariants.controls; let i = index" 
+             [formGroupName]="i" 
+             class="modifier-entry speciesVariants-{{i}}">
+          <button type="button" (click)="removeSpeciesVariant(i)" class="remove-btn">×</button>
+          <div class="row">
+            <div>
+              <label for="variant-name-{{i}}">Variant Name:</label>
+              <input type="text" id="variant-name-{{i}}" formControlName="name" required>
+            </div>
+            <div>
+              <label for="variant-speciesGroup-{{i}}">Species Group:</label>
+              <select id="variant-speciesGroup-{{i}}" formControlName="speciesGroup">
+                <option value="">Select Group</option>
+                <option *ngFor="let group of speciesGroup" [value]="group">{{ group }}</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="row full-width">
+            <div>
+              <label for="variant-description-{{i}}">Description:</label>
+              <textarea id="variant-description-{{i}}" formControlName="description"></textarea>
+            </div>
+          </div>
+          
+          <!-- Variant Traits -->
+          <div class="section">
+            <h3>Variant Traits</h3>
+            <div formArrayName="speciesVariantTraits">
+              <div *ngFor="let trait of getSpeciesVariantTraits(i).controls; let j = index" 
+                   [formGroupName]="j" 
+                   class="condition-entry variantTraits-{{i}}-{{j}}">
+                <button type="button" (click)="removeSpeciesVariantTrait(i, j)" class="remove-btn">×</button>
+                <div class="row">
+                  <div>
+                    <input type="text" formControlName="name" placeholder="Trait Name" required>
+                  </div>
+                </div>
+                <div class="row full-width">
+                  <div>
+                    <textarea formControlName="description" placeholder="Trait Description"></textarea>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <button type="button" (click)="addSpeciesVariantTrait(i)">Add Variant Trait</button>
+          </div>
+        </div>
+      </div>
+      <button type="button" (click)="addSpeciesVariant()">Add Species Variant</button>
+    </div>
+    
+    <!-- Description -->
+    <div class="section">
+      <h2>Description</h2>
+      <div class="row full-width">
+        <div>
+          <quill-editor 
+            formControlName="description"
+            [modules]="quillConfig"
+            placeholder="Enter detailed description of the species">
+          </quill-editor>
+        </div>
+      </div>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="row full-width">
+      <button type="submit">Create Species</button>
+    </div>
+  </form>
+</div>

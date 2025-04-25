@@ -1,5 +1,7 @@
 .profile-container {
     padding: 20px;
+    margin-left: 10%;
+    margin-right: 20%;
   }
   
   .profile-tabs {
@@ -15,4 +17,39 @@
   .profile-content {
     border: 1px solid #ccc;
     padding: 20px;
+  }
+
+  mat-sidenav-container {
+    margin-top: 80px;
+    height: 100vh;
+  }
+
+  mat-sidenav {
+    display: flex;
+    flex-direction: column;
+    background-color: #ccc;
+    text-align: center;
+    
+  }
+
+  .sidenav-button {
+    border: 5px;
+    flex:1;
+    background-color: #eee;
+    width: 90%;
+    height: 50px;
+    padding: 0;
+
+  }
+
+  .sidenav-button:hover {
+    background-color: #bbb;
+  }
+
+  .sidenav-button:active {
+    background-color: #aaa;
+  }
+
+  .heading {
+    font-size:50px;
   }

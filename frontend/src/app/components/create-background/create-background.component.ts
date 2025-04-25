@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, FormArray, FormControl } from '@angular/forms';
+import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { BackgroundService } from '../../services/background.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -34,26 +34,26 @@ export class CreateBackgroundComponent {
     'Navigator\'s Tools', 'Poisoner\'s Kit'
   ];
   languageProficiencies = [
-  'Common', 'Dwarvish', 'Elvish', 'Giant', 'Gnomish', 'Goblin', 
-  'Halfling', 'Orc', 'Abyssal', 'Celestial', 'Draconic', 'Deep Speech', 
-  'Infernal', 'Primordial', 'Sylvan', 'Undercommon'
+    'Common', 'Dwarvish', 'Elvish', 'Giant', 'Gnomish', 'Goblin', 
+    'Halfling', 'Orc', 'Abyssal', 'Celestial', 'Draconic', 'Deep Speech', 
+    'Infernal', 'Primordial', 'Sylvan', 'Undercommon'
   ];
 
   constructor(
     private fb: FormBuilder,
     private backgroundService: BackgroundService,
     private router: Router,
-    private AuthService: AuthService
+    private authService: AuthService
   ) {
     this.backgroundForm = this.fb.group({
-      name: [''],
-      description: [''],
+      name: ['', Validators.required],
+      description: ['', Validators.required],
       skillProficiencies: this.fb.array([]),
       toolProficiencies: this.fb.array([]),
       languageProficiencies: this.fb.array([]),
       equipment: this.fb.array([]),
-      featureName: [''],
-      featureDescription: [''],
+      featureName: ['', Validators.required],
+      featureDescription: ['', Validators.required],
       personalityTraits: this.fb.array(Array(8).fill(this.fb.control(''))),
       ideals: this.fb.array(Array(6).fill(this.fb.control(''))),
       bonds: this.fb.array(Array(6).fill(this.fb.control(''))),
@@ -62,12 +62,11 @@ export class CreateBackgroundComponent {
   }
 
   ngOnInit(): void {
-    const currentUser = this.AuthService.getCurrentUser();
+    const currentUser = this.authService.getCurrentUser();
     if (currentUser && currentUser.id) {
       this.currentUserID = currentUser.id; 
     } else {
       console.error('No user is logged in for Background.');
-      // alert('You must be logged in to create a background.');
       this.router.navigate(['/login']); 
     }
   }
@@ -104,39 +103,53 @@ export class CreateBackgroundComponent {
     return this.backgroundForm.get('flaws') as FormArray;
   }
 
-  addProficiency(type: string, value: string) {
-    const control = new FormControl(value);
-    if (type === 'skill') {
-      this.skillProficienciesArray.push(control);
-      this.skillProficiencies = this.skillProficiencies.filter(item => item !== value);
-    } else if (type === 'tool') {
-      this.toolProficienciesArray.push(control);
-      this.toolProficiencies = this.toolProficiencies.filter(item => item !== value);
-    } else if (type === 'language') {
-      this.languageProficienciesArray.push(control);
-      this.languageProficiencies = this.languageProficiencies.filter(item => item !== value);
-    }
+  addProficiency(type: 'skill' | 'tool' | 'language') {
+    const array = type === 'skill' 
+      ? this.skillProficienciesArray 
+      : type === 'tool' 
+        ? this.toolProficienciesArray 
+        : this.languageProficienciesArray;
+    
+    array.push(this.fb.control(''));
   }
 
-  addEquipment(value: string) {
-    const control = new FormControl(value);
-    this.equipmentArray.push(control);
+  removeProficiency(type: 'skill' | 'tool' | 'language', index: number) {
+    const array = type === 'skill' 
+      ? this.skillProficienciesArray 
+      : type === 'tool' 
+        ? this.toolProficienciesArray 
+        : this.languageProficienciesArray;
+    
+    array.removeAt(index);
+  }
+
+  addEquipment() {
+    this.equipmentArray.push(this.fb.control(''));
+  }
+
+  removeEquipment(index: number) {
+    this.equipmentArray.removeAt(index);
   }
 
   onSubmit() {
+    if (this.backgroundForm.invalid) {
+      alert('Please fill in all required fields');
+      return;
+    }
+
     const formData = this.backgroundForm.value;
-    console.log('Form Data:', formData); 
     formData.user_id = this.currentUserID;
-    this.backgroundService.createBackground(formData).subscribe(
-      response => {
+    
+    this.backgroundService.createBackground(formData).subscribe({
+      next: (response) => {
         console.log('Background created successfully!', response);
         alert('Background saved!');
-        this.router.navigate(['/create_background']);
+        this.router.navigate(['/backgrounds']);
       },
-      error => {
+      error: (error) => {
         console.error('Error creating background:', error);
-        alert('Error saving background.');
+        alert('Error saving background. Please try again.');
       }
-    );
+    });
   }
 }

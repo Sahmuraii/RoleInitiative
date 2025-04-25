@@ -1,3 +1,7 @@
+@import 'quill/dist/quill.core.css';
+@import 'quill/dist/quill.bubble.css';
+@import 'quill/dist/quill.snow.css';
+
 /* Basic Reset */
 * {
     margin: 0;
@@ -99,7 +103,7 @@ h1 {
     transition: color var(--fast-transition);
 }
 
-.profile:hover {
+.profile-name:hover {
     color: var(--secondaryColor);
 }
 
@@ -140,7 +144,7 @@ h1 {
 
 /* Main Content Styling */
 .main-content {
-    padding: calc(var(--navbar-height) + 1rem) 2rem 2rem;
+    padding: calc(var(--navbar-height) + 1rem) 2rem;
     margin: 3rem;
 }
 
@@ -213,11 +217,13 @@ h1 {
 }
 
 .character-summary {
-    width: 25%;
+    position: fixed;
+    width: 15%;
     border: 1px solid black;
     padding: 15px;
     border-radius: 5px;
-    top: 10px; /* Sticks as you scroll */
+    top: 33%; /* Sticks as you scroll */
+    left: 50px;
     height: fit-content;
 }
 
@@ -328,3 +334,19 @@ h1 {
 }
 html, body { height: 100%; }
 body { margin: 0; font-family: 'Times New Roman', Times, serif; }
+
+
+.mat-mdc-snack-bar-container {
+    &.error-notif {
+        --mdc-snackbar-container-color: #ffdede;
+        --mat-snack-bar-button-color: #ff0000;
+        --mdc-snackbar-supporting-text-color: #ff0000;
+
+    }
+    &.success-notif {
+        --mdc-snackbar-container-color: #e2ffde;
+        --mat-snack-bar-button-color: #006400;
+        --mdc-snackbar-supporting-text-color: #006400;
+
+    }
+}

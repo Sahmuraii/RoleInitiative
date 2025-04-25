@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { RouterOutlet } from '@angular/router';
-import { HttpClientModule } from '@angular/common/http'; 
-import { CommonModule } from '@angular/common'; 
+import { HttpClientModule } from '@angular/common/http';
+import { CommonModule } from '@angular/common';
 import { NavbarComponent } from './components/navbar/navbar.component';
 
 @Component({
@@ -9,7 +10,7 @@ import { NavbarComponent } from './components/navbar/navbar.component';
   standalone: true,
   imports: [
     RouterOutlet,
-    HttpClientModule, 
+    HttpClientModule,
     CommonModule,
     NavbarComponent
   ],
@@ -18,4 +19,12 @@ import { NavbarComponent } from './components/navbar/navbar.component';
 })
 export class AppComponent {
   title = 'frontend';
+
+  showNavbar = true;
+
+  constructor(private router: Router) {
+    this.router.events.subscribe(() => {
+      this.showNavbar = !['/login', '/register', '/inactive'].includes(this.router.url); // DO NOT show the navbar on auth pages
+    });
+  }
 }

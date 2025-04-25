@@ -1,19 +1,130 @@
-<div class="profile-container">
-    <div class="profile-header">
-      <h1>{{ username }}'s Profile</h1>
-    </div>
-    <div class="profile-tabs">
-      <button (click)="selectedTab = 'overview'">Overview</button>
-      <button (click)="selectedTab = 'homebrew'">My Homebrew</button>
-    </div>
-    <div class="profile-content">
-      @if (selectedTab === 'overview') {
-        <div class="overview">
-          <p>Welcome to your profile! Here you can manage your homebrew content.</p>
+<mat-sidenav-container>
+  <mat-sidenav mode="side" opened [style.width]="'250px'">
+    <mat-nav-list>
+      <img src="../../../assets/images/brightLogo6.png" height="225" width="225">
+      <button class="sidenav-button" (click)="showTab('myProfile')">My Profile</button>
+      <button class="sidenav-button" (click)="showTab('myCharacters')">My Characters</button>
+      <button class="sidenav-button" (click)="showTab('myHomebrew')">My Homebrew Content</button>
+      <button class="sidenav-button" (click)="showTab('savedCommunity')">Saved Community Homebrew</button>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content class="main-content">
+      <div class="profile-container">
+        <div class="profile-header">
+          <h1 class="heading">{{ username }}'s Profile</h1>
+          <hr>
+
+          <div [hidden]="hiddenArray[0]">
+            <p><strong>This is your profile page. Here, you can view and change your profile information.</strong></p>
+            <br>
+            <p><strong>Username:</strong> {{username}}</p>
+            <br>
+            <p><strong>Email Address:</strong> {{email}}</p>
+          </div>
+
+          <div [hidden]="hiddenArray[1]">
+            <div *ngIf="(authService.isLoggedIn$ | async)">
+
+              <h2>Character List</h2>
+
+              <div *ngIf="char_data.length; else noResults">
+                <div class="character-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(500px, 1fr)); gap: 16px;">
+                  <div *ngFor="let character of char_data" class="character-card">
+
+                    <div class="character-card" style="display: flex; border: 1px solid #ddd; overflow: hidden; background: #f5deb3; border-radius: 8px; box-shadow: 0px 4px 6px rgba(0,0,0,0.1);">
+                        <!-- Character Image -->
+                        <a [routerLink]="['/character-sheet', character.character_id]" class="character-card-link"
+                           style="text-decoration: none; color: inherit; display: flex; width: 100%;">
+
+                            <div class="character-image" style="width: 50%; height: auto; aspect-ratio: 1/1; overflow: hidden; position: relative;">
+                                <img [src]="'assets/images/race_profile/' + character.race + 'CharacterImage.jpg'"
+                                     [alt]="character.race + ' Character Image'"
+                                     style="width: 100%; height: 100%; object-fit: cover; transition: .3s;">
+
+                                <!-- Class Icon -->
+                                <div class="class-icon" style="position: absolute; top: 8px; left: 8px; width: 40px; height: 40px; background: #ffffff00; border-radius: 50%; overflow: hidden; justify-content: center; align-items: center; box-shadow: 0px 2px 4px rgba(0,0,0,0.2);">
+                                  <img
+                                    [src]="'assets/images/class_logo/' + character.highest_class + '_Ring2.png'"
+                                    [alt]="character.highest_class + ' Class Icon'"
+                                    [matTooltip] = "getClassBreakdown(character)"
+                                    matTooltipClass="custom-tooltip"
+                                    matTooltipPosition="right"
+                                    #tooltip="matTooltip"
+                                    (mouseenter)="tooltip.show()"
+                                    style="width: 40px; height: 40px; object-fit: cover; position: absolute;"
+                                  >
+                                  <img
+                                    [src]="'assets/images/class_logo/' + character.highest_class + '_Icon.png'"
+                                    [alt]="character.highest_class + ' Class Icon'"
+                                    [matTooltip] = "getClassBreakdown(character)"
+                                    matTooltipClass="custom-tooltip"
+                                    matTooltipPosition="right"
+                                    #tooltip="matTooltip"
+                                    (mouseenter)="tooltip.show()"
+                                    style="width: 40px; height: 40px; object-fit: cover; position: absolute;"
+                                  >
+
+                              </div>
+                            </div>
+
+                            <!-- Card Content -->
+                            <div class="character-info-container" style="padding: 16px; width: 70%; display: flex; flex-direction: column; justify-content: space-between;">
+
+                                <!-- Owner Avatar -->
+                                <a [routerLink]="['/profile', character.owner_name]" class="author-avatar"
+                                   style="display: flex; align-items: center; margin-bottom: 8px; color: inherit;">
+                                    <img [src]="'assets/images/avatars/' + character.owner + '.png'"
+                                         [alt]="character.owner_name + '\'s Avatar'"
+                                         style="width: 32px; height: 32px; border-radius: 50%; margin-right: 8px;">
+                                    <span style="font-weight: bold;">{{ character.owner_name }}</span>
+
+                                </a>
+                                <div>
+                                    <span class="character-name">{{ character.character_name }}</span>
+                                </div>
+                                <div>
+                                    <h3 style="margin: 0; font-size: 20px;">{{ character.title }}</h3>
+                                    <div class="char-meta" style="margin: 8px 0; font-size: 14px; color: #666;">
+                                        <span>Level {{ character.total_level }}</span> • <span>{{ character.race }}</span> • <span>{{ character.highest_class }}</span>
+                                    </div>
+                                    <div class="char-tags" style="font-size: 12px; color: #999;">
+                                        No community tags
+                                    </div>
+                                </div>
+
+                                <!-- Campaign and Engagement Information -->
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <div class="campaign-info" style="color: #333; font-size: 14px; display: flex; align-items: center;">
+                                        <img src="assets/images/CampaignIcon.png" alt="Campaign Icon" style="width: 20px; height: 20px; margin-right: 4px;">
+                                        <span>No Campaign</span>
+                                    </div>
+
+                                    <div class="character-engagement-information" style="color: #333; font-size: 14px; text-align: right;">
+                                        <span>{{ character.views }} views • Created {{ character.timestamp }} ago</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <ng-template #noResults>
+                  <p>No characters found.</p>
+              </ng-template>
+            </div>
+          </div>
+
+          <div [hidden]="hiddenArray[2]">
+            <app-my-homebrew [userId]="userId"></app-my-homebrew>
+          </div>
+
+          <div [hidden]="hiddenArray[3]">
+            <app-saved-homebrew [userId]="userId"></app-saved-homebrew>
+          </div>
+
         </div>
-      }
-      @if (selectedTab === 'homebrew') {
-        <app-my-homebrew [userId]="userId"></app-my-homebrew>
-      }
-    </div>
-  </div>
+      </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>

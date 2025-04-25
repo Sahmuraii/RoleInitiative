@@ -17,6 +17,7 @@ import { MatButtonModule } from '@angular/material/button';
 export class RegisterComponent {
   registerForm: FormGroup;
   showPassword = false;
+  showConfirm = false;
 
   constructor(
     private fb: FormBuilder,
@@ -33,9 +34,16 @@ export class RegisterComponent {
 
   passwordTooltip = 'Reveal Password';
 
+  confirmTooltip = 'Reveal Password';
+
   togglePasswordVisibility() {
     this.showPassword = !this.showPassword;
     this.passwordTooltip = this.showPassword ? 'Hide Password' : 'Reveal Password';
+  }
+
+  toggleConfirmVisibility() {
+    this.showConfirm = !this.showConfirm;
+    this.confirmTooltip = this.showConfirm ? 'Hide Password' : 'Reveal Password';
   }
 
   getPasswordVisibility() {

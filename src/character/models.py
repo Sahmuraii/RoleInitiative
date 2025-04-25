@@ -3,6 +3,7 @@ from src.auth.models import User
 from sqlalchemy.orm import backref
 from flask import jsonify
 import json
+from datetime import datetime
 
 #----------------------------------------------------------
 #   Character table (Parent)
@@ -14,6 +15,7 @@ class Character(db.Model):
     proficiency_bonus = db.Column(db.Integer, nullable=True)
     total_level = db.Column(db.Integer, nullable=True)
     inspiration = db.Column(db.Integer, nullable=True)
+    deactivated = db.Column(db.Boolean, nullable=False, default=False)
 
     # Relationships
     charRace = db.relationship("Character_Race", backref=backref("char", uselist=False), cascade="all, delete-orphan") #uselist False indicates one-to-one relationship
@@ -26,6 +28,7 @@ class Character(db.Model):
     charExtraSkills = db.relationship('Character_Extra_Skill', backref='char', cascade="all, delete-orphan")
     charCondition = db.relationship('Character_Condition', backref='char', cascade="all, delete-orphan")
     charInventory = db.relationship('Character_Inventory', backref='char', cascade="all, delete-orphan")
+    charSpells = db.relationship('Character_Spells_Known', backref='char', cascade="all, delete-orphan")
 
     def __repr__(self):
         dict_repr = self.__dict__; [dict_repr.pop(i, None) for i in ["_sa_instance_state"]]
@@ -83,6 +86,7 @@ class DND_Class(db.Model):
     hit_die = db.Column(db.Integer, nullable=False)
     is_official = db.Column(db.Boolean)
     characters = db.relationship("Character_Class", back_populates="class_", overlaps="character_classes") #Characters that have this class
+    levels_info = db.relationship("DND_Class_Levelup_Info", backref="class_")
 
     def __repr__(self):
         dict_repr = self.__dict__; [dict_repr.pop(i, None) for i in ["_sa_instance_state"]]
@@ -96,6 +100,30 @@ class DND_Class(db.Model):
             "hit_die": self.hit_die,
             "is_official": self.is_official
         }
+
+class DND_Class_Levelup_Info(db.Model):
+    __tablename__ = 'dnd_class_levelup_info'
+    class_id = db.Column(db.Integer, db.ForeignKey(DND_Class.class_id), primary_key=True, nullable=False)
+    one = db.Column(db.JSON, nullable=False)
+    two = db.Column(db.JSON, nullable=False)
+    three = db.Column(db.JSON, nullable=False)
+    four = db.Column(db.JSON, nullable=False)
+    five = db.Column(db.JSON, nullable=False)
+    six = db.Column(db.JSON, nullable=False)
+    seven = db.Column(db.JSON, nullable=False)
+    eight = db.Column(db.JSON, nullable=False)
+    nine = db.Column(db.JSON, nullable=False)
+    ten = db.Column(db.JSON, nullable=False)
+    eleven = db.Column(db.JSON, nullable=False)
+    twelve = db.Column(db.JSON, nullable=False)
+    thirteen = db.Column(db.JSON, nullable=False)
+    fourteen = db.Column(db.JSON, nullable=False)
+    fifteen = db.Column(db.JSON, nullable=False)
+    sixteen = db.Column(db.JSON, nullable=False)
+    seventeen = db.Column(db.JSON, nullable=False)
+    eighteen = db.Column(db.JSON, nullable=False)
+    nineteen = db.Column(db.JSON, nullable=False)
+    twenty = db.Column(db.JSON, nullable=False)
 
 class DND_Background(db.Model):
     __tablename__ = 'dnd_background'
@@ -145,12 +173,23 @@ class DND_Spell(db.Model):
     spell_level = db.Column(db.Integer, nullable=False) # 0 for cantrips
     spell_school = db.Column(db.String(50), nullable=False)
     casting_time = db.Column(db.String(50), nullable=False)
+    attack_type = db.Column(db.String(50), nullable=True)
+    damage_slot_level = db.Column(db.JSON, nullable=True)
+    damage_char_level = db.Column(db.JSON, nullable=True)
+    damage_type = db.Column(db.String(50), nullable=True)
+    heal_slot_level = db.Column(db.JSON, nullable=True)
+    dc_type = db.Column(db.String(50), nullable=True)
+    dc_success = db.Column(db.String(50), nullable=True)
     reaction_condition = db.Column(db.Text, nullable=True)
-    range_area = db.Column(db.String(100), nullable=False)
-    components = db.Column(db.ARRAY(db.Boolean), nullable=False)
+    is_ritual = db.Column(db.Boolean, nullable=False)
+    is_concentration = db.Column(db.Boolean, nullable=False)
+    area_type = db.Column(db.String(50), nullable=True)
+    area_size = db.Column(db.String(50), nullable=True)
+    range = db.Column(db.String(100), nullable=False)
+    components = db.Column(db.ARRAY(db.String(10)), nullable=False)
     material = db.Column(db.Text, nullable=True)
     duration = db.Column(db.String(100), nullable=False)
-    description = db.Column(db.Text, nullable=False)
+    description = db.Column(db.ARRAY(db.Text), nullable=False)
     higher_level = db.Column(db.Text, nullable=True)
     classes = db.Column(db.ARRAY(db.String(50)), nullable=False)
     subclasses = db.Column(db.ARRAY(db.String(50)), nullable=True)
@@ -158,6 +197,35 @@ class DND_Spell(db.Model):
     def __repr__(self):
         dict_repr = self.__dict__; [dict_repr.pop(i, None) for i in ["_sa_instance_state"]]
         return f"<{self.__class__.__name__}({self.__dict__})>"
+    
+    def serialize(self):
+        return {
+            "spell_id": self.spell_id,
+            "spell_name": self.spell_name,
+            "spell_level": self.spell_level,
+            "spell_school": self.spell_school,
+            "casting_time": self.casting_time,
+            "attack_type": self.attack_type,
+            "damage_slot_level": self.damage_slot_level,
+            "damage_char_level": self.damage_char_level,
+            "damage_type": self.damage_type,
+            "heal_slot_level": self.heal_slot_level,
+            "dc_type": self.dc_type,
+            "dc_success": self.dc_success,
+            "reaction_condition": self.reaction_condition,
+            "is_ritual": self.is_ritual,
+            "is_concentration": self.is_concentration,
+            "area_type": self.area_type,
+            "area_size": self.area_size,
+            "range": self.range,
+            "components": self.components,
+            "material": self.material,
+            "duration": self.duration,
+            "description": self.description,
+            "higher_level": self.higher_level,
+            "classes": self.classes,
+            "subclasses": self.subclasses,
+        }
 
 class UserSpell(db.Model):
     __tablename__ = 'user_spell'
@@ -197,7 +265,181 @@ class UserSpell(db.Model):
         dict_repr = self.__dict__
         dict_repr.pop("_sa_instance_state", None)  # Remove SQLAlchemy internal state
         return f"<{self.__class__.__name__}({dict_repr})>"
+    
+    def serialize(self):
+        return {
+            "user_spell_id": self.user_spell_id,
+            "user_id": self.user_id,
+            "spell_name": self.spell_name,
+            "version": self.version,
+            "level": self.level,
+            "school": self.school,
+            "casting_time": self.casting_time,
+            "reaction_description": self.reaction_description,
+            "components": self.components,
+            "materials_description": self.materials_description,
+            "spell_range_type": self.spell_range_type,
+            "range": self.range,
+            "area_length": self.area_length,
+            "area_type": self.area_type,
+            "duration_type": self.duration_type,
+            "duration": self.duration,
+            "duration_time": self.duration_time,
+            "description": self.description,
+            "ritual_spell": self.ritual_spell,
+            "higher_level_description": self.higher_level_description,
+            "higher_level_scaling": self.higher_level_scaling,
+            "classes": self.classes,
+            "subclasses": self.subclasses,
+            "isSaveOrAttack": self.isSaveOrAttack,
+            "save_stat": self.save_stat,
+            "attack_type": self.attack_type,
+            "damage": self.damage,
+            "damage_type": self.damage_type,
+            "effect": self.effect,
+            "inflicts_conditions": self.inflicts_conditions,
+            "conditions": self.conditions,
+        }
 
+
+class UserMonster(db.Model):
+    __tablename__ = 'user_monster'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    
+    # Basic Info
+    name = db.Column(db.String(100), nullable=False)
+    size = db.Column(db.String(50))
+    type = db.Column(db.String(50))
+    subtype = db.Column(db.String(50))
+    alignment = db.Column(db.String(50))
+    
+    # Combat Stats
+    armor_class = db.Column(db.Integer)
+    armor_type = db.Column(db.String(50))
+    hit_points_die_count = db.Column(db.Integer)
+    hit_points_value = db.Column(db.String(10))
+    hit_points_modifier = db.Column(db.Integer)
+    average_hp = db.Column(db.Integer)
+    speed = db.Column(db.Integer)
+    
+    # Ability Scores
+    strength = db.Column(db.Integer)
+    dexterity = db.Column(db.Integer)
+    constitution = db.Column(db.Integer)
+    intelligence = db.Column(db.Integer)
+    wisdom = db.Column(db.Integer)
+    charisma = db.Column(db.Integer)
+    
+    # Other Stats
+    initiative_bonus = db.Column(db.Integer)
+    proficiency_bonus = db.Column(db.Integer)
+    passive_perception = db.Column(db.Integer)
+    saving_throws = db.Column(db.Text)
+    skills = db.Column(db.Text)
+    
+    # Damage Properties
+    damage_vulnerabilities = db.Column(db.Text)
+    damage_resistances = db.Column(db.Text)
+    damage_immunities = db.Column(db.Text)
+    condition_immunities = db.Column(db.Text)
+    
+    # Senses and Languages
+    senses = db.Column(db.Text)
+    languages = db.Column(db.Text)
+    language_notes = db.Column(db.Text)
+    
+    # Challenge Rating
+    challenge_rating = db.Column(db.String(10))
+    
+    # Special Flags
+    is_legendary = db.Column(db.Boolean, default=False)
+    legendary_action_description = db.Column(db.Text)
+    is_mythic = db.Column(db.Boolean, default=False)
+    mythic_action_description = db.Column(db.Text)
+    has_lair = db.Column(db.Boolean, default=False)
+    lair_xp = db.Column(db.Integer)
+    lair_description = db.Column(db.Text)
+    
+    # Habitats
+    monster_habitats = db.Column(db.Text)
+    
+    # Equipment
+    gear = db.Column(db.Text)
+    
+    # Descriptions
+    description = db.Column(db.Text)
+    traits_description = db.Column(db.Text)
+    actions_description = db.Column(db.Text)
+    bonus_actions_description = db.Column(db.Text)
+    reactions_description = db.Column(db.Text)
+    monster_characteristics_description = db.Column(db.Text)
+    
+    # Timestamps
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    # Relationships
+    damage_adjustments = db.relationship('UserMonster_DamageAdjustments', backref='monster', lazy=True, cascade="all, delete-orphan")
+    traits = db.relationship('UserMonster_Traits', backref='monster', lazy=True, cascade="all, delete-orphan")
+    special_abilities = db.relationship('UserMonster_SpecialAbilitys', backref='monster', lazy=True, cascade="all, delete-orphan")
+    actions = db.relationship('UserMonster_Actions', backref='monster', lazy=True, cascade="all, delete-orphan")
+    bonus_actions = db.relationship('UserMonster_BonusActions', backref='monster', lazy=True, cascade="all, delete-orphan")
+    reactions = db.relationship('UserMonster_Reactions', backref='monster', lazy=True, cascade="all, delete-orphan")
+
+    # Images
+    #image_filename = db.Column(db.String(255))
+    #image_url = db.Column(db.String(255))
+
+class UserMonster_DamageAdjustments(db.Model):
+    __tablename__ = 'usermonster_damageadjustments'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    monster_id = db.Column(db.Integer, db.ForeignKey('user_monster.id'), nullable=False)
+    type = db.Column(db.String(50))
+    adjustment_type = db.Column(db.String(50))  # Resist, Immune, Vulnerable
+    notes = db.Column(db.Text)
+
+class UserMonster_Traits(db.Model):
+    __tablename__ = 'usermonster_traits'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    monster_id = db.Column(db.Integer, db.ForeignKey('user_monster.id'), nullable=False)
+    name = db.Column(db.String(100))
+    description = db.Column(db.Text)
+
+class UserMonster_SpecialAbilitys(db.Model):
+    __tablename__ = 'usermonster_specialabilitys'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    monster_id = db.Column(db.Integer, db.ForeignKey('user_monster.id'), nullable=False)
+    name = db.Column(db.String(100))
+    description = db.Column(db.Text)
+
+class UserMonster_Actions(db.Model):
+    __tablename__ = 'usermonster_actions'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    monster_id = db.Column(db.Integer, db.ForeignKey('user_monster.id'), nullable=False)
+    name = db.Column(db.String(100))
+    description = db.Column(db.Text)
+
+class UserMonster_BonusActions(db.Model):
+    __tablename__ = 'usermonster_bonusactions'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    monster_id = db.Column(db.Integer, db.ForeignKey('user_monster.id'), nullable=False)
+    name = db.Column(db.String(100))
+    description = db.Column(db.Text)
+
+class UserMonster_Reactions(db.Model):
+    __tablename__ = 'usermonster_reactions'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    monster_id = db.Column(db.Integer, db.ForeignKey('user_monster.id'), nullable=False)
+    name = db.Column(db.String(100))
+    description = db.Column(db.Text)
 
 #----------------------------------------------------------
 #   D&D relation tables
@@ -304,11 +546,11 @@ class DND_Items(db.Model):
     __tablename__ = "dnd_item"
     item_id = db.Column(db.Integer, primary_key=True, nullable=False)
     item_name = db.Column(db.String(80), nullable=False)
-    item_description = db.Column(db.String(250), nullable=False)
+    item_description = db.Column(db.String(1000), nullable=False)
     worth = db.Column(db.String(50), nullable=False)
-    weight = db.Column(db.Float, nullable=False)
+    weight = db.Column(db.Float, nullable=True)
     item_type = db.Column(db.Integer, db.ForeignKey(Proficiency_Types.type_id), nullable=False)
-    is_equipable = db.Column(db.Boolean)
+    is_equippable = db.Column(db.Boolean)
     is_official = db.Column(db.Boolean)
 
     def __repr__(self):
@@ -469,6 +711,14 @@ class Character_Inventory(db.Model):
     def __repr__(self):
         dict_repr = self.__dict__; [dict_repr.pop(i, None) for i in ["_sa_instance_state"]]
         return f"<{self.__class__.__name__}({self.__dict__})>"
+    
+#   >>> Spells
+class Character_Spells_Known(db.Model):
+    __tablename__ = "character_spells_known"
+    char_id = db.Column(db.Integer, db.ForeignKey(Character.char_id, ondelete='CASCADE'), primary_key=True, nullable=False)
+    spells = db.Column(db.ARRAY(db.Integer), nullable=True)
+    homebrew_spells = db.Column(db.ARRAY(db.Integer), nullable=True)
+
 
 class DND_Class_Feature(db.Model):
     __tablename__ = "dnd_class_features"
