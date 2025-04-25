@@ -18,6 +18,9 @@ export class SavedHomebrewComponent implements OnInit {
   spells: any[] = [];
   backgrounds: any[] = [];
   monsters: any[] = [];
+  magicItems: any[] = [];
+  feats: any[] = [];
+  collapsedDescriptions: {[key: number]: boolean} = {};
 
   constructor(
     private spellService: SpellService,
@@ -133,6 +136,8 @@ export class SavedHomebrewComponent implements OnInit {
           this.spells = data.spell;
           this.backgrounds = data.background;
           this.monsters = data.monster;
+          this.magicItems = data.magic_item;
+          this.feats = data.feat;
 
           console.log('Saved Spells:', this.spells);
           console.log('Saved Backgrounds:', this.backgrounds);
@@ -153,5 +158,34 @@ export class SavedHomebrewComponent implements OnInit {
 
   navigateToEditMonster(monsterId: number): void {
     this.router.navigate(['/edit-monster', monsterId]); // Navigate to the edit route
+  }
+
+  navigateToEditFeat(featId: number): void {
+    this.router.navigate(['/edit-feat', featId]);
+  }
+
+  navigateToEditMagicItem(itemId: number): void {
+    this.router.navigate(['/edit-magic-item', itemId]);
+  }
+
+  formatDescription(description: string): string {
+    let formatted = description.replace(/&nbsp;/g, ' ');
+
+    formatted = formatted.replace(/<p><\/p>/g, '<p>&nbsp;</p>');
+
+    return formatted;
+  }
+
+  isDescriptionCollapsed(itemId: number): boolean {
+    return this.collapsedDescriptions[itemId] !== false;
+  }
+
+  toggleDescription(itemId: number): void {
+    this.collapsedDescriptions[itemId] = !this.isDescriptionCollapsed(itemId);
+  }
+
+  shouldShowToggle(description: string): boolean {
+    if (!description || description.length < 50) return false;
+    else return true
   }
 }
