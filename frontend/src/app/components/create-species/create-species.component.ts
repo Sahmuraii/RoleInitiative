@@ -42,6 +42,16 @@ export class CreateSpeciesComponent {
   activationType = ['Action', 'Bonus Action', 'Reaction', 'Minute', 'Hour', 'No Action', 'Special'];
   resetTypes = ['Short Rest', 'Long Rest', 'Day', 'Round', 'Minute', 'Hour', 'Day', 'Special', 'Custom'];
   spellLevels = ['Cantrip', '1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th', '9th'];
+  spellClasses = ['Artificer', 'Bard', 'Cleric', 'Druid', 'Paladin', 'Ranger', 'Sorcerer', 'Warlock', 'Wizard'];
+  spellSchools = ['Abjuration', 'Conjuration', 'Divination', 'Enchantment', 'Evocation', 'Illusion', 'Necromancy', 'Transmutation'];
+  spellAttackTypes = ['Melee', 'Ranged', 'Area', 'Self', 'Touch'];
+  spellRangeTypes = ['Self', 'Touch', 'Sight', 'Unlimited', 'Special', 'Feet', 'Miles'];
+  spellResetTypes = ['Short Rest', 'Long Rest', 'Day', 'Special'];
+  modifierOperators = ['+', '-', '*', '/', '='];
+  attackRangeTypes = ['Melee', 'Ranged', 'Self', 'Touch', 'Sight', 'Special'];
+  saveTypes = ['Strength', 'Dexterity', 'Constitution', 'Intelligence', 'Wisdom', 'Charisma'];
+  weaponAttackSubtypes = ['Simple', 'Martial', 'Improvised', 'Natural', 'Special'];
+  spellAreaOfEffects = ['Cone', 'Cube', 'Cylinder', 'Line', 'Sphere', 'Square', 'Special'];
 
   constructor(
     private fb: FormBuilder,
@@ -64,12 +74,23 @@ export class CreateSpeciesComponent {
       speciesTraitIntroduction: [''],
       SpeciesOptionsBool: [false],
       customSize: [''],
-    customSpeciesGroup: [''],
+      customSpeciesGroup: [''],
 
       speciesTraits: this.fb.array([]),
       speciesOptions: this.fb.array([]),
       speciesVariants: this.fb.array([])
     });
+  }
+
+  logActionChange(traitIndex: number, actionIndex: number, event: Event): void {
+    const newValue = (event.target as HTMLSelectElement).value;
+    console.log(`Action type changed in trait ${traitIndex}, action ${actionIndex}:`, newValue);
+    console.log('Full action object:', this.getTraitActions(traitIndex).at(actionIndex).value);
+  }
+
+  logBeforeAddAction(traitIndex: number): void {
+    console.log('Before adding new action to trait', traitIndex);
+    console.log('Current actions:', this.getTraitActions(traitIndex).value);
   }
 
   onModifierTypeChange(modifierGroup: AbstractControl): void {
@@ -249,44 +270,117 @@ export class CreateSpeciesComponent {
   }
 
   private createModifierGroup(): FormGroup {
-  return this.fb.group({
-    modifierType: [''],
-    customModifierType: [''],
-    modifierSubtype: [''],
-    customModifierSubtype: [''],
-    modifierAbilityScore: [''],
-    modifierDiceCount: [0],
-    modifierDiceType: [''],
-    modifierFixedValue: [0],
-    modifierAdditionalBonusTypes: this.fb.array([]),
-    modifierDetails: [''],
-    modifierDurationIntervalNum: [0],
-    modifierDurationIntervalType: ['']
-  });
-}
-
-  private createSpellGroup(): FormGroup {
     return this.fb.group({
-      spellName: [''],
-      spellLevels: [[]],
-      spellDescription: [''],
-      spellIsInfinite: [false]
+      modifierType: [''],
+      customModifierName: [''], 
+      customModifierValue: [''], 
+      modifierSubtype: [''],
+      modifierAbilityScore: [''],
+      modifierDiceCount: [0],
+      modifierDiceType: [''],
+      modifierFixedValue: [0],
+      modifierAdditionalBonusTypes: this.fb.array([]),
+      modifierDetails: [''],
+      modifierDurationIntervalNum: [0],
+      modifierDurationIntervalType: ['']
     });
   }
 
-  private createActionGroup(): FormGroup {
+    private createSpellGroup(): FormGroup {
     return this.fb.group({
-      actionType: [''],
-      actionName: [''],
-      actionAbilityScoreType: [''],
-      actionLevel: [0],
-      actionDiceCount: [0],
-      actionDieType: [''],
-      actionFixedValue: [0],
-      actionDamageType: [''],
-      actionActivationType: [''],
-      actionDescription: ['']
+      spellName: [''],
+      spellLevels: [[]],
+      spellClass: [[]],
+      spellSchool: [''],
+      spellAttackType: [''],
+      spellLevelDivisor: [''],
+      onlyRitualSpells: [false],
+      spellAbilityScore: [''],
+      spellNumberOfUses: [0],
+      spellModifierOperator: [''],
+      spellAbilityModifier: [''],
+      spellUseProfBonus: [false],
+      spellProfBonusOperator: [''],
+      spellResetType: [''],
+      spellCastLevel: [''],
+      spellCastingTime: [''],
+      spellActivationType: [''],
+      spellRange: [''],
+      spellRangeDistance: [0],
+      spellDescription: [''],
+      spellIsInfinite: [false],
+      consumesSpellSlot: [false],
+      countsAsKnownSpell: [false],
+      alwaysPrepared: [false],
+      availableAtCharacterLevel: [0],
+      minSpellChargesExpended: [0],
+      maxSpellChargesExpended: [0],
+      saveDC: [''],
+      restriction: ['']
     });
+  }
+
+    private createActionGroup(): FormGroup {
+      return this.fb.group({
+        actionName: [''],
+        actionType: [''],
+        actionAbilityScoreType: [''],
+        actionLevel: [0],
+        actionIsProficient: [false],
+        actionAttackRangeType: [''],
+        actionSaveType: [''],
+        actionSaveDC: [0],
+        actionDiceCount: [0],
+        actionDieType: [''],
+        actionFixedValue: [0],
+        actionEffectOnMiss: [''],
+        actionEffectOnSaveSuccess: [''],
+        actionEffectOnSaveFail: [''],
+        actionWeaponAttackSubtype: [''],
+        actionDamageType: [''],
+        actionDisplayAsAttack: [false],
+        actionAffectedbyMartialArts: [false],
+        actionSpellRangeType: [''],
+        actionSpellRange: [0],
+        actionSpellLongRange: [0],
+        actionSpellAreaofEffect: [''],
+        actionSpellAreaofEffectSize: [0],
+        actionSpellAreaofEffectSpecialFlag: [false],
+        actionActivationType: [''],
+        actionActivationTime: [''],
+        actionResetType: [''],
+        actionDescription: [''],
+        actionNumberOfUses: [0],
+        actionModifierOperator: [''],
+        actionAbilityModifier: [''],
+        actionUseProfBonus: [false],
+        actionProfBonusOperator: [''],
+        actionLevelDivisor: [''],
+        limitedUses: this.fb.array([])
+      });
+  }
+
+  createLimitedUseGroup(): FormGroup {
+    return this.fb.group({
+      actionNumberOfUses: [0],
+      actionModifierOperator: [''],
+      actionAbilityModifier: [''],
+      actionUseProfBonus: [false],
+      actionProfBonusOperator: [''],
+      actionLevelDivisor: ['']
+    });
+  }
+
+  getLimitedUses(traitIndex: number, actionIndex: number): FormArray {
+    return (this.getTraitActions(traitIndex).at(actionIndex).get('limitedUses')) as FormArray;
+  }
+
+  addLimitedUse(traitIndex: number, actionIndex: number): void {
+    this.getLimitedUses(traitIndex, actionIndex).push(this.createLimitedUseGroup());
+  }
+
+  removeLimitedUse(traitIndex: number, actionIndex: number, limitedUseIndex: number): void {
+    this.getLimitedUses(traitIndex, actionIndex).removeAt(limitedUseIndex);
   }
 
   private createCreatureGroup(): FormGroup {
@@ -361,6 +455,20 @@ export class CreateSpeciesComponent {
   private prepareFormData(): any {
     const formValue = this.speciesForm.value;
     formValue.userId = this.currentUserID;
+    
+    formValue.speciesTraits = formValue.speciesTraits?.map((trait: any) => {
+      if (trait.modifiers) {
+        trait.modifiers = trait.modifiers.map((modifier: any) => {
+          if (modifier.modifierType === 'Custom') {
+            modifier.modifierSubtype = modifier.customModifierName;
+            modifier.modifierFixedValue = modifier.customModifierValue;
+          }
+          return modifier;
+        });
+      }
+      return trait;
+    });
+    
     return formValue;
   }
 
