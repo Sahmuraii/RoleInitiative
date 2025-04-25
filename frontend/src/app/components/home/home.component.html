@@ -1,30 +1,92 @@
 <div class="main-content">
-    <div class="homebrew-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(500px, 1fr)); gap: 16px;">
-        <div class="container">
-          <img src="../../assets/images/homebrew/background.jpg" alt="Background Feature" class="image">
-          <div class="overlay">
-            <a [routerLink]="['/create/background']" class="text">Create a background here</a>
-          </div>
+<div class="homebrew-grid">
+    <a [routerLink]="['/create/background']" class="container">
+        <div class="left">
+            <img src="../../assets/images/homebrew/background.jpg" alt="Background Feature" class="image">
         </div>
-        <div class="container">
-          <img src="../../assets/images/homebrew/character.jpg" alt="Character Feature" class="image">
-          <div class="overlay">
-            <a [routerLink]="['/create/character']" class="text">Create a character here</a>
-          </div>
+        <div class="right">
+            <div class="overlay">
+                <div class="text">
+                    <h4>Create a Background</h4>
+                    <p>Create a unique background for your character, define their history and motivations.</p>
+                </div>
+            </div>
         </div>
-      <div class="container">
-          <img src="../../assets/images/homebrew/spell.jpg" alt="Spell Feature" class="image">
-          <div class="overlay">
-            <a [routerLink]="['/create/spell']" class="text">Create a spell here</a>
-          </div>
+    </a>
+
+    <a [routerLink]="['/create/character']" class="container">
+        <div class="left">
+            <img src="../../assets/images/homebrew/character.jpg" alt="Character Feature" class="image">
         </div>
-      <div class="container">
-          <img src="../../assets/images/homebrew/monster.jpg" alt="Monster Feature" class="image">
-          <div class="overlay">
-            <a [routerLink]="['/create/monster']" class="text">Create a monster here</a>
-          </div>
+        <div class="right">
+            <div class="overlay">
+                <div class="text">
+                    <h4>Create a Character</h4>
+                    <p>Build a character from scratch, select their race, class, and abilities.</p>
+                </div>
+            </div>
         </div>
-    </div>
+    </a>
+
+    <a [routerLink]="['/create/spell']" class="container">
+        <div class="left">
+            <img src="../../assets/images/homebrew/spell.jpg" alt="Spell Feature" class="image">
+        </div>
+        <div class="right">
+            <div class="overlay">
+                <div class="text">
+                    <h4>Create a Spell</h4>
+                    <p>Design a custom spell with unique effects and lore.</p>
+                </div>
+            </div>
+        </div>
+    </a>
+
+    <a [routerLink]="['/create/monster']" class="container">
+        <div class="left">
+            <img src="../../assets/images/homebrew/monster.jpg" alt="Monster Feature" class="image">
+        </div>
+        <div class="right">
+            <div class="overlay">
+                <div class="text">
+                    <h4>Create a Monster</h4>
+                    <p>Create a custom monster to challenge your players, complete with abilities and lore.</p>
+                </div>
+            </div>
+        </div>
+    </a>
+
+    <a [routerLink]="['/create/magic-item']" class="container">
+        <div class="left">
+            <img src="../../assets/images/homebrew/magic-item.jpg" alt="Magic Item Feature" class="image">
+        </div>
+        <div class="right">
+            <div class="overlay">
+                <div class="text">
+                    <h4>Create a Magic Item</h4>
+                    <p>Design a magical item with unique properties and lore to enhance your adventure.</p>
+                </div>
+            </div>
+        </div>
+    </a>
+    <a [routerLink]="['/create/feat']" class="container">
+        <div class="left">
+            <img src="../../assets/images/homebrew/feat.jpg" alt="Feat Feature" class="image">
+        </div>
+        <div class="right">
+            <div class="overlay">
+                <div class="text">
+                    <h4>Create a Feat</h4>
+                    <p>Define a custom feat to give your character new abilities or enhancements.</p>
+                </div>
+            </div>
+        </div>
+    </a>
+
+
+</div>
+
+
 
     <!-- Search Bar -->
     <div class="search-container" (click)="onFocus()" (focusout)="onBlur()">
