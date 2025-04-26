@@ -9,6 +9,7 @@
     font-family: 'Times New Roman', serif;
     color: #3a3a3a;
     width: 100%;
+    min-width: 350px;
     position: relative;
     display: inline-block;
 }
@@ -30,6 +31,7 @@
 .spell-text {
     flex: 0 1 auto; 
     min-width: 0; 
+    width: 100%;
 }
 
 @media screen and (max-width: 150rem) {
@@ -37,12 +39,12 @@
         display: none;
     }
 }
-@media screen and (max-width: 125rem) {
+@media screen and (max-width: 135rem) {
     .duration {
         display: none;
     }
 }
-@media screen and (max-width: 100rem) {
+@media screen and (max-width: 110rem) {
     .casting_time {
         display: none;
     }
@@ -61,19 +63,23 @@
 }
 
 .spell-subtext {
-    font-size: 0.8rem;
+    font-size: 0.9rem;
     color: rgb(92, 92, 92);
     text-align: center;
 }
 
 .spell-name-subtext {
     text-align: left;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .spell-category {
-    font-size: 0.9rem;
+    font-size: 1rem;
     color: #58180D;
     font-weight: bold;
+    text-align: center;
 }
 
 .spell-button {
