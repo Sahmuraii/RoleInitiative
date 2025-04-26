@@ -5,7 +5,7 @@
     border-radius: 5px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     padding: 10px;
-    margin-top: 5px;
+    margin-bottom: 5px;
     font-family: 'Times New Roman', serif;
     color: #3a3a3a;
     width: 100%;
@@ -30,7 +30,22 @@
 .spell-text {
     flex: 0 1 auto; 
     min-width: 0; 
-    max-width: 20%;
+}
+
+@media screen and (max-width: 150rem) {
+    .range {
+        display: none;
+    }
+}
+@media screen and (max-width: 125rem) {
+    .duration {
+        display: none;
+    }
+}
+@media screen and (max-width: 100rem) {
+    .casting_time {
+        display: none;
+    }
 }
 
 .spell-name {
@@ -40,6 +55,7 @@
     margin: 0;
     font-variant: small-caps;
     letter-spacing: 1px;
+    max-width: 90%;
     white-space: initial;
     word-wrap: break-word;
 }
@@ -48,6 +64,10 @@
     font-size: 0.8rem;
     color: rgb(92, 92, 92);
     text-align: center;
+}
+
+.spell-name-subtext {
+    text-align: left;
 }
 
 .spell-category {
