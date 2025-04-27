@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { BackgroundService } from '../../services/background.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-create-background',
@@ -14,6 +15,8 @@ import { AuthService } from '../../services/auth.service';
   styleUrls: ['./create-background.component.css']
 })
 export class CreateBackgroundComponent {
+  @ViewChild('toastTemplate') toastTemplate!: TemplateRef<any>;
+  toasts: any[] = [];
   backgroundForm: FormGroup;
   currentUserID: number | null = null;
 
@@ -39,11 +42,20 @@ export class CreateBackgroundComponent {
     'Infernal', 'Primordial', 'Sylvan', 'Undercommon'
   ];
 
+  skillCategories = [
+    { name: 'Strength', skills: ['Athletics'] },
+    { name: 'Dexterity', skills: ['Acrobatics', 'Sleight of Hand', 'Stealth'] },
+    { name: 'Intelligence', skills: ['Arcana', 'History', 'Investigation', 'Nature', 'Religion'] },
+    { name: 'Wisdom', skills: ['Animal Handling', 'Insight', 'Medicine', 'Perception', 'Survival'] },
+    { name: 'Charisma', skills: ['Deception', 'Intimidation', 'Performance', 'Persuasion'] }
+  ];
+
   constructor(
     private fb: FormBuilder,
     private backgroundService: BackgroundService,
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private snackBar: MatSnackBar
   ) {
     this.backgroundForm = this.fb.group({
       name: ['', Validators.required],
@@ -59,6 +71,16 @@ export class CreateBackgroundComponent {
       bonds: this.fb.array(Array(6).fill(this.fb.control(''))),
       flaws: this.fb.array(Array(6).fill(this.fb.control('')))
     });
+  }
+
+  showToast(message: string, type: 'success' | 'error') {
+    const toast = { message, type };
+    this.toasts.push(toast);
+    setTimeout(() => this.removeToast(toast), 3000);
+  }
+
+  removeToast(toast: any) {
+    this.toasts = this.toasts.filter(t => t !== toast);
   }
 
   ngOnInit(): void {
@@ -133,7 +155,7 @@ export class CreateBackgroundComponent {
 
   onSubmit() {
     if (this.backgroundForm.invalid) {
-      alert('Please fill in all required fields');
+      this.showToast('Please fill in all required fields', 'error');
       return;
     }
 
@@ -142,13 +164,12 @@ export class CreateBackgroundComponent {
     
     this.backgroundService.createBackground(formData).subscribe({
       next: (response) => {
-        console.log('Background created successfully!', response);
-        alert('Background saved!');
+        this.showToast('Background created successfully!', 'success');
         this.router.navigate(['/backgrounds']);
       },
       error: (error) => {
+        this.showToast('Error saving background. Please try again.', 'error');
         console.error('Error creating background:', error);
-        alert('Error saving background. Please try again.');
       }
     });
   }
