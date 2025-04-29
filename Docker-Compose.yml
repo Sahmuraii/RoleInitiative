@@ -5,9 +5,10 @@ services:
             dockerfile: BatchDockerfile1.local
             args:
                 - "no-cache=true"
+            network: host
         image: angular-app
         container_name: RoleInitiative-frontend-container
-        restart: always
+        restart: on-failure
         ports:
             - "4200:4200"
         networks:
@@ -22,9 +23,10 @@ services:
             dockerfile: BatchDockerfile2.local
             args:
                 - "no-cache=true"
+            network: host
         image: flask-app
         container_name: RoleInitiative-backend-container
-        restart: always
+        restart: on-failure
         ports:
             - "5000:5000"
         networks:

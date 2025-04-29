@@ -40,6 +40,35 @@ if NOT EXIST .env (
 	exit /b 1
 )
 
+
+:: Prompt if using ssl
+echo -------------------------------------------------------------
+echo Do you want to use an ssl certificate when running the backend?
+echo (1). Yes, use a certificate [HTTPS]
+echo (2). No, dont use a certificate [HTTP]
+choice /t 30 /c 12 /d 2 /n /m "Enter the number (1, or 2): "
+echo.
+
+
+:: Set ssl-cert based on choice
+if errorlevel 2 (
+	set "sslCert= "
+) else if errorlevel 1 (
+	:: Check for certificate files. Needed for HTTPS.
+	if NOT EXIST cert.pem (
+		echo Certificate File not found. Please contact an admin if you should be in posession of this file.
+		timeout /t 10 /nobreak
+		exit /b 1
+	)
+	if NOT EXIST key.pem (
+		echo Certificate Key File not found. Please contact an admin if you should be in posession of this file.
+		timeout /t 10 /nobreak
+		exit /b 1
+	)
+	set "sslCert=--cert cert.pem --key key.pem"
+)
+
+
 :: Prompt the user for which Dockerfile to use
 echo -------------------------------------------------------------
 echo Select which Dockerfile to use for building the Docker image:
@@ -48,7 +77,7 @@ echo (2). Github Dev Branch
 echo (3). Local Files
 echo (4). *Custom Github branch
 echo (5). Github Dev Branch (Backend Only)
-choice /c 12345 /n /m "Enter the number (1, 2, 3, 4, or 5): "
+choice /t 30 /c 12345 /d 1 /n /m "Enter the number (1, 2, 3, 4, or 5): "
 echo.
 
 :: Determine which Dockerfile to use based on user input
@@ -78,7 +107,7 @@ if errorlevel 5 (
 		echo #Run local development
 		echo #WORKDIR %appFolder%%appPath%
 		echo.
-		echo ENTRYPOINT FLASK_APP=%appName% FLASK_DEBUG=1 flask run --port=5000 --host=0.0.0.0
+		echo ENTRYPOINT FLASK_APP=%appName% FLASK_DEBUG=1 flask run --port=5000 --host=0.0.0.0 %sslCert%
     ) > %dockerfileBackendPath%
 	echo Creating Frontend Dockerfile (DevGit^)...
 	(
@@ -113,7 +142,7 @@ if errorlevel 5 (
 		echo #Run local development
 		echo WORKDIR %appFolder%%projectFolder%%appPath%
 		echo.
-		echo ENTRYPOINT FLASK_APP=%appName% FLASK_DEBUG=1 flask run --port=5000 --host=0.0.0.0
+		echo ENTRYPOINT FLASK_APP=%appName% FLASK_DEBUG=1 flask run --port=5000 --host=0.0.0.0 %sslCert%
 	) > %dockerfileBackendPath%
 	echo Creating Frontend Dockerfile (Custom - %choice%^)...
 	(
@@ -175,7 +204,7 @@ if errorlevel 5 (
 		echo #Run local development
 		echo WORKDIR %appFolder%%projectFolder%%appPath%
 		echo.
-		echo ENTRYPOINT FLASK_APP=%appName% FLASK_DEBUG=1 flask run --port=5000 --host=0.0.0.0
+		echo ENTRYPOINT FLASK_APP=%appName% FLASK_DEBUG=1 flask run --port=5000 --host=0.0.0.0 %sslCert%
 	) > %dockerfileBackendPath%
 	echo Creating Frontend Dockerfile (LocalFile^)...
 	(
@@ -239,7 +268,7 @@ if errorlevel 5 (
 		echo #Run local development
 		echo #WORKDIR %appFolder%%appPath%
 		echo.
-		echo ENTRYPOINT FLASK_APP=%appName% FLASK_DEBUG=1 flask run --port=5000 --host=0.0.0.0
+		echo ENTRYPOINT FLASK_APP=%appName% FLASK_DEBUG=1 flask run --port=5000 --host=0.0.0.0 %sslCert%
     ) > %dockerfileBackendPath%
 	echo Creating Frontend Dockerfile (DevGit^)...
 	(
@@ -303,7 +332,7 @@ if errorlevel 5 (
 		echo #Run local development
 		echo #WORKDIR %appFolder%%appPath%
 		echo.
-		echo ENTRYPOINT FLASK_APP=%appName% FLASK_DEBUG=1 flask run --port=5000 --host=0.0.0.0
+		echo ENTRYPOINT FLASK_APP=%appName% FLASK_DEBUG=1 flask run --port=5000 --host=0.0.0.0 %sslCert%
     ) > %dockerfileBackendPath%
 	echo Creating Frontend Dockerfile (MainGit^)...
 	(
@@ -405,7 +434,7 @@ echo Creating Docker-Compose
 	echo         depends_on:
 	echo             - backend-flask
 	echo         links:
-	echo             - "backend-flask:backend"
+	echo             - "backend-flask:127.0.0.1"
 	echo     backend-flask:
 	echo         build:
 	echo             context: .
@@ -415,7 +444,7 @@ echo Creating Docker-Compose
 	echo             network: host
 	echo         image: %backendImageName%
 	echo         container_name: %backendContainerName%
-	echo         restart: always
+	echo         restart: on-failure
 	echo         ports:
 	echo             - "5000:5000"
 	echo         networks:
