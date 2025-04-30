@@ -54,9 +54,14 @@ def fetch_and_populate_classes():
         
         
         # Prepare the DND_Class object to be added to the database
+        class_description = class_details["name"]
+        try:
+            class_description=class_details["desc"]
+        except:
+            pass
         new_class = DND_Class(
             name=class_details["name"],
-            description=class_details["desc"],
+            description=class_description,
             hit_die=class_details["hit_die"],
             is_official=True
         )
@@ -255,12 +260,12 @@ def fetch_and_populate_class_levelup_info():
         existing_class = DND_Class.query.filter_by(name=cls["name"]).first().class_id
         existing_levelup = DND_Class_Levelup_Info.query.filter_by(class_id=existing_class).first()
         if existing_levelup: continue #If exist, continue to next one
-        print(cls)
+        #print(cls)
 
         success, response = fetch_api_info(f"{DND_BASE_URL}{cls['url']}", headers={"Accept": "application/json"})
         if not success: continue
         cls_details = response.json()
-        print(f"{DND_BASE_URL}{cls['url']}")
+        #print(f"{DND_BASE_URL}{cls['url']}")
 
         success, response = fetch_api_info(f"{DND_BASE_URL}{cls_details["class_levels"]}", headers={"Accept": "application/json"})
         if not success: continue
@@ -378,7 +383,7 @@ def fetch_and_populate_proficiencies():
                 pass
             if match['index'] < matching_type[0]['index']:
                 lowest_index = i
-        print(f"'{matching_type[lowest_index]['name']}' in '{proficiency_details['reference']['url']}'")
+        #print(f"'{matching_type[lowest_index]['name']}' in '{proficiency_details['reference']['url']}'")
         
         new_proficiency = Proficiencies(
             proficiency_name = proficiency_details['name'],
@@ -606,7 +611,6 @@ def fetch_and_populate_spells():
 
         # Grab spell details JSON from API
         spell_details = api_details_response.json()
-
 
 
         # Assemble the class and subclass arrays
