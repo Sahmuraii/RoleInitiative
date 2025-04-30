@@ -6,10 +6,4 @@ from src import app
 #app = create_app()
 
 if __name__ == '__main__':
-    try:
-        app.run(debug=True, ssl_context=("cert.pem", "key.pem"))
-    except:
-        print("Failed using ssh.")
-        app.run(debug=True)
-
-    #"--cert=(cert.pem,key.pem)"
+    app.run(debug=True)
