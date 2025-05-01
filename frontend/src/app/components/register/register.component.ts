@@ -59,13 +59,32 @@ export class RegisterComponent {
   onSubmit() {
     if (this.registerForm.valid) {
       const { username, email, password } = this.registerForm.value;
-      this.authService.register(username, email, password).subscribe((response: any) => {
-        if (response) {
-          this.router.navigate(['/home']);
-        } else {
-          alert('Registration failed. Please try again.');
+      this.authService.register(username, email, password).subscribe({
+        next: (response: any) => {
+          if (response) {
+            // Successful registration
+            this.router.navigate(['/home']);
+          } else {
+            // Fallback if the response does not contain the expected data
+            alert('Registration failed. Please try again.');
+          }
+        },
+        error: (error: HttpErrorResponse) => {
+          // Handle specific errors based on status code
+          if (error.status === 400) {
+            alert('Please ensure all fields are filled out correctly.');
+          } else if (error.status === 409) {
+            alert('Username or email already taken. Please choose another.');
+          } else if (error.status === 500) {
+            alert('An internal error occurred. Please try again later.');
+          } else {
+            alert('An unexpected error occurred. Please try again.');
+          }
+          console.error('Registration error:', error);
         }
       });
+    } else {
+      alert('Form is invalid. Please fill out all required fields.');
     }
   }
 }
