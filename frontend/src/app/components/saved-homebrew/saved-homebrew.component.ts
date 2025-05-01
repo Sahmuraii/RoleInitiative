@@ -20,6 +20,7 @@ export class SavedHomebrewComponent implements OnInit {
   monsters: any[] = [];
   magicItems: any[] = [];
   feats: any[] = [];
+  species: any[] = [];
   collapsedDescriptions: {[key: number]: boolean} = {};
 
   constructor(
@@ -138,34 +139,15 @@ export class SavedHomebrewComponent implements OnInit {
           this.monsters = data.monster;
           this.magicItems = data.magic_item;
           this.feats = data.feat;
+          this.species = data.species;
 
-          console.log('Saved Spells:', this.spells);
-          console.log('Saved Backgrounds:', this.backgrounds);
-          console.log('Saved Monsters:', this.monsters);
+          //console.log('Saved Spells:', this.spells);
+          //console.log('Saved Backgrounds:', this.backgrounds);
+          //console.log('Saved Monsters:', this.monsters);
         },
         error: err => console.error(err)
       });
     }
-  }
-
-  navigateToEditSpells(spellId: number): void {
-    this.router.navigate(['/edit-spell', spellId]); // Navigate to the edit route
-  }
-
-  navigateToEditBackground(backgroundId: number): void {
-    this.router.navigate(['/edit-background', backgroundId]); // Navigate to the edit route
-  }
-
-  navigateToEditMonster(monsterId: number): void {
-    this.router.navigate(['/edit-monster', monsterId]); // Navigate to the edit route
-  }
-
-  navigateToEditFeat(featId: number): void {
-    this.router.navigate(['/edit-feat', featId]);
-  }
-
-  navigateToEditMagicItem(itemId: number): void {
-    this.router.navigate(['/edit-magic-item', itemId]);
   }
 
   formatDescription(description: string): string {
