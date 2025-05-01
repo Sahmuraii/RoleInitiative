@@ -422,8 +422,22 @@
             @if (!item.custom_species_group) {
               <p class="spell-left-subtext">{{ item.size }} {{ item.species_group }}</p>
             }
-
           </div>
+          <div class="card-meta">
+            <p class="spell-category">Walking Speed</p>
+            <p class="spell-subtext">{{ item.speed_walking }}</p>
+          </div>
+
+          <div class="card-meta">
+            <p class="spell-category">Flying Speed</p>
+            @if (item.speed_flying > 0) {
+              <p class="spell-subtext">{{ item.speed_flying }}</p>
+            }
+            @if (item.speed_flying === 0) {
+              <p class="spell-subtext">Unable to fly</p>
+            }
+          </div>
+
           <button
             class="bookmark-btn"
             [class.bookmarked]="item.saved"
@@ -436,9 +450,30 @@
           </button>
 
         </div>
-        <div class="description" [class.expanded]="hoveredSpellIndex === i" [innerHTML]="item.description"></div>
-      </div>
+        <div class="description" [class.expanded]="hoveredSpellIndex === i">
+          <div class="monster-divider"></div>
+          <p class="spell-category">Species Traits</p>
+          <div *ngFor="let result of item.species_traits; let i = index">
+            <div class="monster-feature">
+              <span class="feature-label">{{ result.name }}:</span>
+              <span class="feature-value">
+                <span [innerHTML]="result.description"></span>
+              </span>
+            </div>
 
+            <div class="monster-feature" *ngIf="result.requiredLevel > 0">
+              <span class="feature-label">Required Level:</span>
+              <span class="feature-value">{{ result.requiredLevel }}</span>
+            </div>
+
+            <div class="monster-feature" *ngIf="result.featureType">
+              <span class="feature-label">Feature Type:</span>
+              <span class="feature-value">{{ result.featureType }}</span>
+            </div>
+            <div class="monster-divider"></div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="pagination">
