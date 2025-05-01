@@ -2,7 +2,7 @@
     <div class="everything-not-tabs">
         <h1 class="titleclass">Character Creator</h1>
         <p>Welcome to the character creator! Here you can design your own Dungeons and Dragons character.</p>
-        <p>Follow the steps below to build your character:</p>
+        <p>Click through the tabs below to build your character.</p>
         <br>
     </div>
     <div class="tabs">
@@ -68,6 +68,8 @@
 
             <!-- Class -->
             <div id="class" name="character_class_selections" [hidden]="hiddenArray[2]" class="section">
+                <h2>Choose Your Class</h2>
+                <p>Or multiclass, if you wish.</p><br>
                 <p id="currentlevel">Your current level: {{ totalLevelsDisplay }}</p>
                 <p id="sparelevels">Levels left to allocate: {{ 20 - totalLevelsDisplay }}</p>
                 <label for="selectFirstClass">Choose your primary class (affects character HP):</label>
@@ -103,6 +105,7 @@
 
             <!-- Class Proficiencies -->
             <div id="class_proficiencies" name="character_class_proficiencies" formArrayName="classProficiencies" [hidden]="hiddenArray[3]" class="section">
+                <h2>Choose Your Class's Proficiencies</h2>
                 @if (primaryClass == "None") {
                     <p>No primary class Selected. Go back and select a primary class!</p>
                 } @else {
@@ -135,7 +138,7 @@
 
             <!-- Attributes -->
             <div id="attributes" [hidden]="hiddenArray[4]" class="section">
-                <h2>Set Your Attributes</h2>
+                <h2>Set Your Stats</h2>
                 <p>Choose a method to determine your stats</p>
                 <label for="stat_method">Stat Allocation Method:</label>
                 <select class="wide" id="stat_method" name="stat_method" formControlName="statRuleset" (change)="showAttributeRuleset(this.statRuleset)">

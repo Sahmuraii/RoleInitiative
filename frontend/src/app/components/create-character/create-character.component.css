@@ -45,9 +45,8 @@
 .character-summary {
   position: fixed;
   width: 15%;
-  border: 1px solid black;
   padding: 15px;
-  border: 1px solid #ddd;
+  border: 1px solid #c9ad6a;
   border-radius: 8px;
   top: 33%; /* Sticks as you scroll */
   left: 50px;
@@ -56,10 +55,19 @@
 }
 
 .section {
-  border: 1px solid #ddd;
+  border: 1px solid #c9ad6a;
   border-radius: 8px;
   padding: 15px;
-  background-color: #f9f9f9;
+  background-color: white;
+}
+
+.section h2 {
+  margin-top: 0;
+  color: #58180D;
+  border-bottom: 2px solid #c9ad6a;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+  font-variant: small-caps;
 }
 
 .row {
@@ -67,6 +75,7 @@
   flex-wrap: wrap;
   gap: 15px;
   margin-bottom: 15px;
+  color: #333;
 }
 
 .row > div {
@@ -87,6 +96,53 @@ label {
 .wide {
   width: 100%;
   padding: 8px;
-  border: 1px solid #ccc;
+  border: 1px solid #c9ad6a;
   border-radius: 4px;
+  background-color: #fcf8f3;
+}
+
+button {
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+button[type="button"] {
+  background-color: #8B0000;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-size: 14px;
+  margin: 8px 0;
+  display: inline-block;
+  width: auto;
+}
+
+button[type="button"]:hover {
+  background-color: #A52A2A;
+}
+
+button[type="button"]:active {
+  background-color: #5E0000;
+}
+
+button[type="submit"] {
+  width: 100%;
+  padding: 12px;
+  background-color: #8B0000;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 20px;
+}
+
+button[type="submit"]:hover {
+  background-color: #A52A2A;
+}
+
+button[type="submit"]:active {
+  background-color: #5E0000;
 }
