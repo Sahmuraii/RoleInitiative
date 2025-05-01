@@ -15,6 +15,7 @@
                   }
                 </div>
               </div>
+              <button class="delete-button" (click)="initiateDelete('monster', monster.id)">🗑️</button>
               
               <div class="monster-divider"></div>
               <div class="monster-attributes">
@@ -225,6 +226,7 @@
                   <span>{{ spell.level }} {{ spell.school }}</span>
                 </div>
               </div>
+              <button class="delete-button" (click)="initiateDelete('spell', spell.id)">🗑️</button>
               
               <div class="spell-divider"></div>
               
@@ -290,6 +292,7 @@
                   }
                 </div>
               </div>
+              <button class="delete-button" (click)="initiateDelete('magicItem', item.id)">🗑️</button>
               
               <div class="magic-item-divider"></div>
               
@@ -328,6 +331,7 @@
               <div class="background-header">
                 <h4 class="background-name">{{ background.background_name }}</h4>
               </div>
+              <button class="delete-button" (click)="initiateDelete('background', background.id)">🗑️</button>
               
               <div class="background-divider"></div>
               
@@ -355,6 +359,7 @@
               <div class="feat-header">
                 <h4 class="feat-name">{{ feat.name }}</h4>
               </div>
+              <button class="delete-button" (click)="initiateDelete('feat', feat.id)">🗑️</button>
               
               <div class="feat-divider"></div>
               
@@ -389,6 +394,7 @@
               <div class="species-header">
                 <h4 class="species-name">{{ specie.name }}</h4>
               </div>
+              <button class="delete-button" (click)="initiateDelete('species', specie.id)">🗑️</button>
               
               <div class="species-divider"></div>
               
@@ -414,5 +420,17 @@
       } @else {
         <p>No species created yet.</p>
       }
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div *ngIf="showDeleteConfirmation" class="overlay"></div>
+    <div *ngIf="showDeleteConfirmation" class="delete-confirmation">
+      <h4>Confirm Deletion</h4>
+      <p>Type "DELETE" to confirm you want to delete this item:</p>
+      <input type="text" [(ngModel)]="deleteConfirmationText" (keyup)="onDeleteInputChange()" placeholder="Type DELETE">
+      <div class="delete-confirmation-buttons">
+        <button class="delete-cancel" (click)="cancelDelete()">Cancel</button>
+        <button class="delete-confirm" [disabled]="!canConfirmDelete" (click)="confirmDelete()">Delete</button>
+      </div>
     </div>
 </div>

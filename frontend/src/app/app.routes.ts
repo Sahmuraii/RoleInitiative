@@ -8,8 +8,6 @@ import { InactiveComponent } from './components/inactive/inactive.component';
 import { CreateCharacterComponent } from './components/create-character/create-character.component';
 import { CreateSpellComponent } from './components/create-spell/create-spell.component';
 import { ProfileComponent } from './components/profile/profile.component';
-import { EditSpellComponent } from './components/edit-spell/edit-spell.component';
-import { EditBackgroundComponent } from './components/edit-background/edit-background.component';
 import { CreateMonsterComponent } from './components/create-monster/create-monster.component';
 import { CreateMagicItemComponent } from './components/create-magic-item/create-magic-item.component';
 import { CreateFeatComponent } from './components/create-feat/create-feat.component';
@@ -20,6 +18,7 @@ export const routes: Routes = [
   { path: 'home', component: HomeComponent},
   { path: 'search', component: SearchComponent },
   { path: 'create/background', component: CreateBackgroundComponent },
+  { path: 'backgrounds/edit/:id', component: CreateBackgroundComponent },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'inactive', component: InactiveComponent },
@@ -32,8 +31,6 @@ export const routes: Routes = [
   { path: 'character-sheet', component: CharacterSheetComponent},
   { path: 'character-sheet/:char_id', component: CharacterSheetComponent},
   { path: 'profile/:username', component: ProfileComponent },
-  { path: 'edit-spell/:id', component: EditSpellComponent },
-  { path: 'edit-background/:id', component: EditBackgroundComponent },
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: '**', redirectTo: '/home' },
 ];

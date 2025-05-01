@@ -7,11 +7,12 @@ import { SpeciesService } from '../../services/species.service';
 import { FeatService } from '../../services/feat.service';
 import { CommonModule } from '@angular/common'; 
 import { Router } from '@angular/router'; 
+import { FormsModule } from '@angular/forms';
  
 @Component({
   selector: 'app-my-homebrew',
   standalone: true, 
-  imports: [CommonModule], 
+  imports: [CommonModule, FormsModule], 
   templateUrl: './my-homebrew.component.html',
   styleUrls: ['./my-homebrew.component.css']
 })
@@ -24,6 +25,10 @@ export class MyHomebrewComponent implements OnInit {
   feats: any[] = [];
   species: any[] = [];
   collapsedDescriptions: {[key: number]: boolean} = {};
+  showDeleteConfirmation = false;
+  deleteConfirmationText = '';
+  canConfirmDelete = false;
+  itemToDelete: { type: string, id: number } | null = null;
 
   constructor(
     private spellService: SpellService,
@@ -34,6 +39,85 @@ export class MyHomebrewComponent implements OnInit {
     private speciesService: SpeciesService,
     private router: Router 
   ) {}
+
+  initiateDelete(type: string, id: number): void {
+    this.itemToDelete = { type, id };
+    this.deleteConfirmationText = '';
+    this.canConfirmDelete = false;
+    this.showDeleteConfirmation = true;
+  }
+
+  onDeleteInputChange(): void {
+    this.canConfirmDelete = this.deleteConfirmationText === 'DELETE';
+  }
+
+  cancelDelete(): void {
+    this.showDeleteConfirmation = false;
+    this.itemToDelete = null;
+  }
+
+  confirmDelete(): void {
+    if (!this.canConfirmDelete || !this.itemToDelete) return;
+
+    const { type, id } = this.itemToDelete;
+    
+    switch (type) {
+      case 'monster':
+        this.monsterService.deleteMonster(id).subscribe({
+          next: () => {
+            this.monsters = this.monsters.filter(m => m.id !== id);
+            this.showDeleteConfirmation = false;
+          },
+          error: (error) => console.error('Error deleting monster:', error)
+        });
+        break;
+      case 'spell':
+        this.spellService.deleteSpell(id).subscribe({
+          next: () => {
+            this.spells = this.spells.filter(s => s.id !== id);
+            this.showDeleteConfirmation = false;
+          },
+          error: (error) => console.error('Error deleting spell:', error)
+        });
+        break;
+      case 'magicItem':
+        this.magicItemService.deleteMagicItem(id).subscribe({
+          next: () => {
+            this.magicItems = this.magicItems.filter(i => i.id !== id);
+            this.showDeleteConfirmation = false;
+          },
+          error: (error) => console.error('Error deleting magic item:', error)
+        });
+        break;
+      case 'background':
+        this.backgroundService.deleteBackground(id).subscribe({
+          next: () => {
+            this.backgrounds = this.backgrounds.filter(b => b.id !== id);
+            this.showDeleteConfirmation = false;
+          },
+          error: (error) => console.error('Error deleting background:', error)
+        });
+        break;
+      case 'feat':
+        this.featService.deleteFeat(id).subscribe({
+          next: () => {
+            this.feats = this.feats.filter(f => f.id !== id);
+            this.showDeleteConfirmation = false;
+          },
+          error: (error) => console.error('Error deleting feat:', error)
+        });
+        break;
+      case 'species':
+        this.speciesService.deleteSpecies(id).subscribe({
+          next: () => {
+            this.species = this.species.filter(s => s.id !== id);
+            this.showDeleteConfirmation = false;
+          },
+          error: (error) => console.error('Error deleting species:', error)
+        });
+        break;
+    }
+  }
 
   formatList(value: string): string {
     if (!value) return '';
@@ -224,7 +308,11 @@ export class MyHomebrewComponent implements OnInit {
   }
 
   navigateToEditBackground(backgroundId: number): void {
-    this.router.navigate(['/edit-background', backgroundId]); 
+    if (!backgroundId) {
+      console.error('Cannot navigate to edit - background ID is undefined');
+      return;
+    }
+    this.router.navigate(['/backgrounds', 'edit', backgroundId]); 
   }
 
   navigateToEditMonster(monsterId: number): void {

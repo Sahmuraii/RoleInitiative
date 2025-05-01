@@ -2,7 +2,7 @@ from src import db
 import requests
 
 from src.auth.models import User
-from src.character.models import DND_Class, DND_Race, DND_Condition, DND_Class_Feature, DND_Skill, Proficiency_Types, Proficiencies, DND_Race_Proficiency_Option, DND_Class_Proficiency_Option, Proficiency_List, DND_Spell, DND_Items
+from src.character.models import DND_Class, DND_Class_Levelup_Info, DND_Race, DND_Condition, DND_Class_Feature, DND_Skill, Proficiency_Types, Proficiencies, DND_Race_Proficiency_Option, DND_Class_Proficiency_Option, Proficiency_List, DND_Spell, DND_Items
 
 DND_BASE_URL = "https://www.dnd5eapi.co"
 API_BASE_URL = "https://www.dnd5eapi.co/api"
@@ -50,16 +50,21 @@ def fetch_and_populate_classes():
         if not success: continue
 
         class_details = api_details_response.json() # Extract the class details
-
+        
+        
         
         # Prepare the DND_Class object to be added to the database
+        class_description = class_details["name"]
+        try:
+            class_description=class_details["desc"]
+        except:
+            pass
         new_class = DND_Class(
             name=class_details["name"],
-            description=class_details["desc"],
+            description=class_description,
             hit_die=class_details["hit_die"],
             is_official=True
         )
-        
         db.session.add(new_class)
     
     # Commit all changes to the database
@@ -202,7 +207,7 @@ def fetch_and_populate_class_features():
 
     for feature in features:
         # Check if the condition already exists
-        existing_feature = DND_Class_Feature.query.filter_by(feature_name=feature["name"]).first()
+        existing_feature = DND_Class_Feature.query.filter_by(feature_index=feature["index"]).first()
         if existing_feature: continue #If exist, continue to next one
 
         # Fetch detailed information for each condition
@@ -219,7 +224,8 @@ def fetch_and_populate_class_features():
             feature_description = "\n".join(feature_details["desc"]),
             feature_prerequisite = feature_details["prerequisites"],
             feature_required_level = feature_details["level"],
-            feature_base_class = DND_Class.query.filter_by(name=feature_details["class"]["name"]).first().class_id
+            feature_base_class = DND_Class.query.filter_by(name=feature_details["class"]["name"]).first().class_id,
+            feature_index = feature_details["index"]
         )
         
         db.session.add(new_feature)
@@ -231,8 +237,82 @@ def fetch_and_populate_class_features():
         db.session.rollback()
         print(f"An error occurred: {e}")
 
-def populate_class_levelup_info():
-    pass
+
+
+def get_features_array(features):
+    output = []
+
+    for feature in features:
+        feature_id = DND_Class_Feature.query.filter_by(feature_index=feature["index"]).first().feature_id
+        output.append(feature_id)
+
+    return output
+
+def fetch_and_populate_class_levelup_info():
+    success, response = fetch_api_info(API_CLASS_URL, headers={"Accept": "application/json"})
+    # Check if the request was successful. Skip to the next class
+    if not success: return
+
+    class_details = response.json().get("results", []) # Extract levelup details
+
+    for cls in class_details:
+        # Check if the class already exists
+        existing_class = DND_Class.query.filter_by(name=cls["name"]).first().class_id
+        existing_levelup = DND_Class_Levelup_Info.query.filter_by(class_id=existing_class).first()
+        if existing_levelup: continue #If exist, continue to next one
+        #print(cls)
+
+        success, response = fetch_api_info(f"{DND_BASE_URL}{cls['url']}", headers={"Accept": "application/json"})
+        if not success: continue
+        cls_details = response.json()
+        #print(f"{DND_BASE_URL}{cls['url']}")
+
+        success, response = fetch_api_info(f"{DND_BASE_URL}{cls_details['class_levels']}", headers={"Accept": "application/json"})
+        if not success: continue
+
+        levelup_details = response.json()
+
+        level_array = []
+        for level in levelup_details:
+            level_array.append({
+                "ability_score_bonuses": level["ability_score_bonuses"],
+                "prof_bonus": level["prof_bonus"],
+                "features": get_features_array(level["features"]),
+                "class_specific": level["class_specific"]
+            })
+
+        new_levelup = DND_Class_Levelup_Info(
+            class_id = existing_class,
+            one = level_array[0],
+            two = level_array[1],
+            three = level_array[2],
+            four = level_array[3],
+            five = level_array[4],
+            six = level_array[5],
+            seven = level_array[6],
+            eight = level_array[7],
+            nine = level_array[8],
+            ten = level_array[9],
+            eleven = level_array[10],
+            twelve = level_array[11],
+            thirteen = level_array[12],
+            fourteen = level_array[13],
+            fifteen = level_array[14],
+            sixteen = level_array[15],
+            seventeen = level_array[16],
+            eighteen = level_array[17],
+            nineteen = level_array[18],
+            twenty = level_array[19]
+        )
+        db.session.add(new_levelup)
+
+    try:
+        db.session.commit()
+        print("Levelup Info successfully populated!")
+    except Exception as e:
+        db.session.rollback()
+        print(f"An error occurred: {e}")
+
 
 
 def populate_proficiency_types():
@@ -303,7 +383,7 @@ def fetch_and_populate_proficiencies():
                 pass
             if match['index'] < matching_type[0]['index']:
                 lowest_index = i
-        print(f"'{matching_type[lowest_index]['name']}' in '{proficiency_details['reference']['url']}'")
+        #print(f"'{matching_type[lowest_index]['name']}' in '{proficiency_details['reference']['url']}'")
         
         new_proficiency = Proficiencies(
             proficiency_name = proficiency_details['name'],
@@ -533,7 +613,6 @@ def fetch_and_populate_spells():
         spell_details = api_details_response.json()
 
 
-
         # Assemble the class and subclass arrays
         classArray = []
         for dnd_class in spell_details['classes']:
@@ -716,6 +795,7 @@ def repopulate_empty_tables():
     fetch_and_populate_conditions()
     fetch_and_populate_skills()
     fetch_and_populate_class_features()
+    fetch_and_populate_class_levelup_info()
     populate_proficiency_types()
     fetch_and_populate_proficiencies()
     fetch_and_populate_class_proficiencies()

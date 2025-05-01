@@ -29,3 +29,6 @@ dist-ssr
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
+
+# pem files used for SSL encryption
+*.pem

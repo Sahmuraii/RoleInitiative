@@ -17,4 +17,8 @@ export class SpeciesService {
   getSpeciesByUser(userId: number): Observable<any> {
     return this.http.get(`${API_URL}/species`, { params: { userID: userId.toString() } });
   }
+
+  deleteSpecies(id: number): Observable<any> {
+    return this.http.delete(`${API_URL}/delete_species/${id}`);
+  }
 }

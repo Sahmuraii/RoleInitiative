@@ -18,6 +18,28 @@
             <div class="tab_sections">
                 <!-- Inventory Tab -->
                 <div id="character_inventory" [hidden]="hiddenTabs[0]">
+                    <table class="item_inventory_table">
+                        <thead>
+                            <tr>
+                                <th>Equipped</th>
+                                <th>Item Name</th>
+                                <th>Weight</th>
+                                <th>Worth</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let inv_item of char_data.char_si?.inventory; let i = index" 
+                                [id]="'modifier_' + (i + 1)"
+                                >
+                                <td><input type="checkbox"></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
 
                 <!-- Spell Tab -->
@@ -76,10 +98,26 @@
 
                 <!-- Feat Tab -->
                 <div id="character_feats" [hidden]="hiddenTabs[2]">
+
                 </div>
 
                 <!-- Background Tab -->
                 <div id="character_background" [hidden]="hiddenTabs[3]">
+                    <strong>Personality:</strong><br>
+                    <input type="text">
+                    <br><br>
+                    <strong>Physical Traits:</strong><br>
+                    <input type="text">
+                    <br><br>
+                    <strong>Appearance</strong><br>
+                    <input type="text">
+                    <br><br>
+                    <strong>Backstory</strong><br>
+                    <input type="text">
+                    <br><br>
+                    <strong>Organizations</strong><br>
+                    <input type="text">
+                    <br><br>
                 </div>
             </div>
         </div>

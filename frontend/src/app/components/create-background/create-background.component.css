@@ -60,42 +60,19 @@ textarea {
   resize: vertical;
 }
 
-.remove-btn {
-  background-color: #ff4444;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  padding: 5px 10px;
-  cursor: pointer;
+.proficiency-entry .row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-.remove-btn:hover {
-  background-color: #cc0000;
+.proficiency-entry .row > div {
+  flex: 1;
+  min-width: 0; 
 }
 
-button[type="submit"] {
-  width: 100%;
-  padding: 12px;
-  background-color: var(--primaryRed);
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-  margin-top: 20px;
-}
-
-button[type="submit"]:hover {
-  background-color: var(--primaryRed);
-  opacity: 0.9;
-}
-
-.proficiency-entry {
-  background-color: #fff;
-  padding: 10px;
-  border-radius: 4px;
-  margin-bottom: 10px;
-  border: 1px solid #eee;
+.proficiency-entry .row > div:last-child {
+  flex: 0 0 auto; 
 }
 
 table {
@@ -112,4 +89,121 @@ th, td {
 th {
   background-color: #f2f2f2;
   text-align: left;
+}
+
+button {
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+button[type="button"] {
+  background-color: #8B0000;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-size: 14px;
+  margin: 8px 0;
+  display: inline-block;
+  width: auto;
+}
+
+button[type="button"]:hover {
+  background-color: #A52A2A;
+}
+
+button[type="button"]:active {
+  background-color: #5E0000;
+}
+
+.remove-btn {
+  background-color: #d32f2f;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.remove-btn:hover {
+  background-color: #b71c1c;
+}
+
+button[type="submit"] {
+  width: 100%;
+  padding: 12px;
+  background-color: #8B0000;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 20px;
+}
+
+button[type="submit"]:hover {
+  background-color: #A52A2A;
+}
+
+button[type="submit"]:active {
+  background-color: #5E0000;
+}
+
+.toast-container {
+  position: fixed;
+  top: 100px;
+  right: 20px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.toast {
+  padding: 12px 20px;
+  border-radius: 4px;
+  color: white;
+  font-weight: 500;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  animation: slideIn 0.3s ease-out;
+  max-width: 300px;
+}
+
+.toast.success {
+  background-color: #4CAF50;
+  border-right: 4px solid #2E7D32;
+}
+
+.toast.error {
+  background-color: #C62828;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+.empty-message {
+  color: #666;
+  font-style: italic;
+  padding: 8px;
+  border: 1px dashed #ccc;
+  margin: 8px 0;
+  background-color: #f9f9f9;
 }

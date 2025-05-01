@@ -24,36 +24,40 @@
         <form [formGroup]="characterForm" (ngSubmit)="onSubmit()">
 
             <!-- Basic Info -->
-            <div id="basicInfo" [hidden]="hiddenArray[0]">
+            <div id="basicInfo" [hidden]="hiddenArray[0]" class="section">
                 <h2>Basic Info</h2>
-                <label for="name">Enter your character's name:</label>
-                <input type="text" id="name" name="name" placeholder="Enter character name" formControlName="name"><br>
+                <div class="row">
+                    <div>
+                        <label for="name">Enter your character's name:</label>
+                        <input class="wide" type="text" id="name" name="name" placeholder="Enter character name" formControlName="name"><br>
+                    </div>
+                </div>
 
                 <label for="ruleset">Choose your ruleset:</label>
-                <select id="ruleset" name="ruleset" formControlName="ruleset">
+                <select class="wide" id="ruleset" name="ruleset" formControlName="ruleset">
                     <option value="2014">2014 (Original)</option>
                     <option value="2024">2024 (Updated)</option>
                 </select><br>
 
                 <label for="level_method">Levelup Method:</label>
-                <select id="level_method" name="level_method" formControlName="levelMethod">
+                <select class="wide" id="level_method" name="level_method" formControlName="levelMethod">
                     <option value="experience">Experience</option>
                     <option value="milestone">Milestone</option>
                 </select><br>
 
                 <label for="encumbrance">Encumbrance Rules:</label>
-                <select id="encumbrance" name="encumbrance" formControlName="encumberance">
+                <select class="wide" id="encumbrance" name="encumbrance" formControlName="encumberance">
                     <option value="false">Don't use Encumbrance</option>
                     <option value="true">Use Encumbrance</option>
                 </select>
             </div>
 
             <!-- Race -->
-            <div id="race" [hidden]="hiddenArray[1]">
+            <div id="race" [hidden]="hiddenArray[1]" class="section">
                 <!-- Make sure to add an option to decide between rulesets somehow (2014 vs 2024) -->
                 <h2>Choose Your Race</h2>
                 <label for="charrace">Choose your character's race:</label>
-                <select id="charrace" name="charrace" formControlName="race">
+                <select class="wide" id="charrace" name="charrace" formControlName="race">
                     @for (dndRace of dndRaces(); track $index) {
                         <option value="{{ dndRace.race_id }}">{{ dndRace.name }}</option>
                     }
@@ -63,11 +67,11 @@
             </div>
 
             <!-- Class -->
-            <div id="class" name="character_class_selections" [hidden]="hiddenArray[2]">
+            <div id="class" name="character_class_selections" [hidden]="hiddenArray[2]" class="section">
                 <p id="currentlevel">Your current level: {{ totalLevelsDisplay }}</p>
                 <p id="sparelevels">Levels left to allocate: {{ 20 - totalLevelsDisplay }}</p>
                 <label for="selectFirstClass">Choose your primary class (affects character HP):</label>
-                <select id="selectFirstClass" name="selectFirstClass" formControlName="primaryClass" (change)="initializeClassProficiencies(this.primaryClass)">
+                <select class="wide" id="selectFirstClass" name="selectFirstClass" formControlName="primaryClass" (change)="initializeClassProficiencies(this.primaryClass)">
                     @if (chosenClasses.length > 0) {
                       <option ngValue="None" selected>Select a Class!</option>
                       @for (class of chosenClasses; track $index) {
@@ -82,6 +86,7 @@
                     <div class="level-control">
                         <label>{{ dndClass.name }}:</label>
                         <input 
+                        class="wide"
                         type="number"
                         [formControlName]="i"
                         [min]="minLevel"
@@ -97,7 +102,7 @@
     
 
             <!-- Class Proficiencies -->
-            <div id="class_proficiencies" name="character_class_proficiencies" formArrayName="classProficiencies" [hidden]="hiddenArray[3]">
+            <div id="class_proficiencies" name="character_class_proficiencies" formArrayName="classProficiencies" [hidden]="hiddenArray[3]" class="section">
                 @if (primaryClass == "None") {
                     <p>No primary class Selected. Go back and select a primary class!</p>
                 } @else {
@@ -109,7 +114,7 @@
                                     @for (sel of profSet.value.selects; track j; let j = $index) {
                                         <div formArrayName="selects">
                                             <div [formGroupName]="j">
-                                                <select formControlName="option">
+                                                <select class="wide" formControlName="option">
                                                     <option value="None">Select an Option</option>
                                                     @for (opt of getArrayofProfOptions(this.primaryClass)[i]; track k; let k = $index) {
                                                         <option [value]="opt.id">{{opt.name}}</option>
@@ -129,11 +134,11 @@
             </div>
 
             <!-- Attributes -->
-            <div id="attributes" [hidden]="hiddenArray[4]">
+            <div id="attributes" [hidden]="hiddenArray[4]" class="section">
                 <h2>Set Your Attributes</h2>
                 <p>Choose a method to determine your stats</p>
                 <label for="stat_method">Stat Allocation Method:</label>
-                <select id="stat_method" name="stat_method" formControlName="statRuleset" (change)="showAttributeRuleset(this.statRuleset)">
+                <select class="wide" id="stat_method" name="stat_method" formControlName="statRuleset" (change)="showAttributeRuleset(this.statRuleset)">
                     <option value="roll">Roll</option>
                     <option value="standard_array">Standard Array</option>
                     <option value="point_buy">Point Buy</option>
@@ -158,42 +163,42 @@
                     <button type="button" id="rollStatsButton" (click)="rollStats()">Roll Stats</button><br>
                     <br><p>Assign values from the rolled values: [{{rolledStats}}] (No reusing stats, fill in all fields!)</p>
                     <label>Strength: </label>
-                    <select formControlName="str">
+                    <select class="wide" formControlName="str">
                         @for (stat of rolledStats; track $index) {
                             <option [value]="stat">{{stat}}</option>
                         }
                     </select>
                     <br>
                     <label>Dexterity: </label>
-                    <select formControlName="dex">
+                    <select class="wide" formControlName="dex">
                         @for (stat of rolledStats; track $index) {
                             <option [value]="stat">{{stat}}</option>
                         }
                     </select>
                     <br>
                     <label>Constitution: </label>
-                    <select formControlName="con">
+                    <select class="wide" formControlName="con">
                         @for (stat of rolledStats; track $index) {
                             <option [value]="stat">{{stat}}</option>
                         }
                     </select>
                     <br>
                     <label>Intelligence: </label>
-                    <select formControlName="int">
+                    <select class="wide" formControlName="int">
                         @for (stat of rolledStats; track $index) {
                             <option [value]="stat">{{stat}}</option>
                         }
                     </select>
                     <br>
                     <label>Wisdom: </label>
-                    <select formControlName="wis">
+                    <select class="wide" formControlName="wis">
                         @for (stat of rolledStats; track $index) {
                             <option [value]="stat">{{stat}}</option>
                         }
                     </select>
                     <br>
                     <label>Charisma: </label>
-                    <select formControlName="cha">
+                    <select class="wide" formControlName="cha">
                         @for (stat of rolledStats; track $index) {
                             <option [value]="stat">{{stat}}</option>
                         }
@@ -205,42 +210,42 @@
                 <div id="standard_array" [hidden]="attrRulesHiddenArray[1]">
                     <p><br>Assign values from the standard array: [15, 14, 13, 12, 10, 8] (No reusing stats, fill in all fields!)<br></p>
                     <label>Strength: </label>
-                    <select formControlName="str">
+                    <select class="wide" formControlName="str">
                         @for (stat of standardArray; track $index) {
                             <option [value]="stat">{{stat}}</option>
                         }
                     </select>
                     <br>
                     <label>Dexterity: </label>
-                    <select formControlName="dex">
+                    <select class="wide" formControlName="dex">
                         @for (stat of standardArray; track $index) {
                             <option [value]="stat">{{stat}}</option>
                         }
                     </select>
                     <br>
                     <label>Constitution: </label>
-                    <select formControlName="con">
+                    <select class="wide" formControlName="con">
                         @for (stat of standardArray; track $index) {
                             <option [value]="stat">{{stat}}</option>
                         }
                     </select>
                     <br>
                     <label>Intelligence: </label>
-                    <select formControlName="int">
+                    <select class="wide" formControlName="int">
                         @for (stat of standardArray; track $index) {
                             <option [value]="stat">{{stat}}</option>
                         }
                     </select>
                     <br>
                     <label>Wisdom: </label>
-                    <select formControlName="wis">
+                    <select class="wide" formControlName="wis">
                         @for (stat of standardArray; track $index) {
                             <option [value]="stat">{{stat}}</option>
                         }
                     </select>
                     <br>
                     <label>Charisma: </label>
-                    <select formControlName="cha">
+                    <select class="wide" formControlName="cha">
                         @for (stat of standardArray; track $index) {
                             <option [value]="stat">{{stat}}</option>
                         }
@@ -265,22 +270,22 @@
                     <p>Remaining points: {{27 - spentPoints}}</p>
                     <br>
                     <label>Strength: </label>
-                    <input type="number" value="8" min="8" [max]="maxBuyStatArray[0]" (change)="updateMaxStats([this.str, this.dex, this.con, this.int, this.wis, this.cha])" formControlName="str">
+                    <input class="wide" type="number" value="8" min="8" [max]="maxBuyStatArray[0]" (change)="updateMaxStats([this.str, this.dex, this.con, this.int, this.wis, this.cha])" formControlName="str">
                     <br>
                     <label>Dexterity: </label>
-                    <input type="number" value="8" min="8" [max]="maxBuyStatArray[1]" (change)="updateMaxStats([this.str, this.dex, this.con, this.int, this.wis, this.cha])" formControlName="dex">
+                    <input class="wide" type="number" value="8" min="8" [max]="maxBuyStatArray[1]" (change)="updateMaxStats([this.str, this.dex, this.con, this.int, this.wis, this.cha])" formControlName="dex">
                     <br>
                     <label>Constitution: </label>
-                    <input type="number" value="8" min="8" [max]="maxBuyStatArray[2]" (change)="updateMaxStats([this.str, this.dex, this.con, this.int, this.wis, this.cha])" formControlName="con">
+                    <input class="wide" type="number" value="8" min="8" [max]="maxBuyStatArray[2]" (change)="updateMaxStats([this.str, this.dex, this.con, this.int, this.wis, this.cha])" formControlName="con">
                     <br>
                     <label>Intelligence: </label>
-                    <input type="number" value="8" min="8" [max]="maxBuyStatArray[3]" (change)="updateMaxStats([this.str, this.dex, this.con, this.int, this.wis, this.cha])" formControlName="int">
+                    <input class="wide" type="number" value="8" min="8" [max]="maxBuyStatArray[3]" (change)="updateMaxStats([this.str, this.dex, this.con, this.int, this.wis, this.cha])" formControlName="int">
                     <br>
                     <label>Wisdom: </label>
-                    <input type="number" value="8" min="8" [max]="maxBuyStatArray[4]" (change)="updateMaxStats([this.str, this.dex, this.con, this.int, this.wis, this.cha])" formControlName="wis">
+                    <input class="wide" type="number" value="8" min="8" [max]="maxBuyStatArray[4]" (change)="updateMaxStats([this.str, this.dex, this.con, this.int, this.wis, this.cha])" formControlName="wis">
                     <br>
                     <label>Charisma: </label>
-                    <input type="number" value="8" min="8" [max]="maxBuyStatArray[5]" (change)="updateMaxStats([this.str, this.dex, this.con, this.int, this.wis, this.cha])" formControlName="cha">
+                    <input class="wide" type="number" value="8" min="8" [max]="maxBuyStatArray[5]" (change)="updateMaxStats([this.str, this.dex, this.con, this.int, this.wis, this.cha])" formControlName="cha">
                     <br>
                 </div>
 
@@ -288,22 +293,22 @@
                 <div id="manual" [hidden]="attrRulesHiddenArray[3]">
                     <p><br>Manually set stats (1-20):<br></p>
                     <label>Strength: </label>
-                    <input type="number" min="1" max="20" formControlName="str">
+                    <input class="wide" type="number" min="1" max="20" formControlName="str">
                     <br>
                     <label>Dexterity: </label>
-                    <input type="number" min="1" max="20" formControlName="dex">
+                    <input class="wide" type="number" min="1" max="20" formControlName="dex">
                     <br>
                     <label>Constitution: </label>
-                    <input type="number" min="1" max="20" formControlName="con">
+                    <input class="wide" type="number" min="1" max="20" formControlName="con">
                     <br>
                     <label>Intelligence: </label>
-                    <input type="number" min="1" max="20" formControlName="int">
+                    <input class="wide" type="number" min="1" max="20" formControlName="int">
                     <br>
                     <label>Wisdom: </label>
-                    <input type="number" min="1" max="20" formControlName="wis">
+                    <input class="wide" type="number" min="1" max="20" formControlName="wis">
                     <br>
                     <label>Charisma: </label>
-                    <input type="number" min="1" max="20" formControlName="cha">
+                    <input class="wide" type="number" min="1" max="20" formControlName="cha">
                     <br>
                 </div>
 
@@ -403,18 +408,18 @@
              </div>
 
             <!-- Character Details -->
-            <div id="details" [hidden]="hiddenArray[6]">
+            <div id="details" [hidden]="hiddenArray[6]" class="section">
                 <h2>Character Details</h2><br>
                 <p>All fields on this page are optional.</p>
                 <h3>Personality Traits:</h3>
                 <label for="background">Choose your character's background:</label>
-                <select id="background" name="background" formControlName="background">
+                <select class="wide" id="background" name="background" formControlName="background">
                     <!-- {% for background in all_backgrounds %}
                         <option value="{{ background.background_id }}">{{ background.background_name }}</option>
                     {% endfor %} -->
                 </select><br>
                 <label for="alignment">Choose your character's alignment:</label>
-                <select id="alignment" name="alignment" formControlName="alignment">
+                <select class="wide" id="alignment" name="alignment" formControlName="alignment">
                     <option value="Lawful Good">Lawful Good</option>
                     <option value="Neutral Good">Neutral Good</option>
                     <option value="Chaotic Good">Chaotic Good</option>
@@ -426,37 +431,37 @@
                     <option value="Chaotic Evil">Chaotic Evil</option>
                 </select><br>
                 <label for="personality">Personality:</label><br>
-                <textarea id="personality" name="personality" rows="4" cols="50" formControlName="personality"></textarea><br>
+                <textarea class="wide" id="personality" name="personality" rows="4" cols="50" formControlName="personality"></textarea><br>
                 <label for="faith">Faith:</label>
-                <input type="text" id="faith" name="faith" formControlName="faith"><br>
+                <input class="wide" type="text" id="faith" name="faith" formControlName="faith"><br>
 
                 <br><h3>Physical Traits:</h3>
                 <label for="height">Height:</label>
-                <input type="text" id="height" name="height" formControlName="height"><br>
+                <input class="wide" type="text" id="height" name="height" formControlName="height"><br>
                 <label for="weight">Weight:</label>
-                <input type="text" id="weight" name="weight" formControlName="weight"><br>
+                <input class="wide" type="text" id="weight" name="weight" formControlName="weight"><br>
                 <label for="skin_color">Skin Color:</label>
-                <input type="text" id="skin_color" name="skin_color" formControlName="skinColor"><br>
+                <input class="wide" type="text" id="skin_color" name="skin_color" formControlName="skinColor"><br>
                 <label for="hair_color">Hair Color:</label>
-                <input type="text" id="hair_color" name="hair_color" formControlName="hairColor"><br>
+                <input class="wide" type="text" id="hair_color" name="hair_color" formControlName="hairColor"><br>
                 <label for="eye_color">Eye Color:</label>
-                <input type="text" id="eye_color" name="eye_color" formControlName="eyeColor"><br>
+                <input class="wide" type="text" id="eye_color" name="eye_color" formControlName="eyeColor"><br>
                 <label for="age">Age:</label>
-                <input type="text" id="age" name="age" formControlName="age"><br>
+                <input class="wide" type="text" id="age" name="age" formControlName="age"><br>
                 <label for="appearance">General Appearance:</label><br>
-                <textarea id="appearance" name="appearance" rows="4" cols="50" formControlName="appearance"></textarea><br>
+                <textarea class="wide" id="appearance" name="appearance" rows="4" cols="50" formControlName="appearance"></textarea><br>
 
                 <br><h3>Other Details:</h3>
                 <label for="backstory">Backstory:</label><br>
-                <textarea id="backstory" name="backstory" rows="4" cols="50" formControlName="backstory"></textarea><br>
+                <textarea class="wide" id="backstory" name="backstory" rows="4" cols="50" formControlName="backstory"></textarea><br>
                 <label for="bonds">Alliances and Organizations:</label><br>
-                <textarea id="bonds" name="bonds" rows="4" cols="50" formControlName="bonds"></textarea><br>
+                <textarea class="wide" id="bonds" name="bonds" rows="4" cols="50" formControlName="bonds"></textarea><br>
                 <label for="misc_description">Anything else you'd like to add:</label><br>
-                <textarea id="misc_description" name="misc_description" rows="4" cols="50" formControlName="miscDetails"></textarea>
+                <textarea class="wide" id="misc_description" name="misc_description" rows="4" cols="50" formControlName="miscDetails"></textarea>
             </div>
 
             <!-- Equipment -->
-            <div id="equipment" [hidden]="hiddenArray[7]">
+            <div id="equipment" [hidden]="hiddenArray[7]" class="section">
                 <h2>Starting Equipment</h2>
                 <p>Select starting equipment based on your background, class, and race:</p>
                 <!-- Generate dynamically based on above-mentioned -->
@@ -471,7 +476,7 @@
                 <p>Manual fill in for now</p>
                 <div class="form-section">
                     <label for="equipmentList">Equipment List</label>
-                    <textarea id="equipmentList" rows="4" placeholder="List your character's equipment" formControlName="equipment"></textarea>
+                    <textarea class="wide" id="equipmentList" rows="4" placeholder="List your character's equipment" formControlName="equipment"></textarea>
                 </div>
             </div>
             <div id="debug" [hidden]="true">

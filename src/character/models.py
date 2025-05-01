@@ -728,6 +728,7 @@ class DND_Class_Feature(db.Model):
     feature_prerequisite = db.Column(db.JSON, nullable=False)
     feature_required_level = db.Column(db.Integer, nullable=False)
     feature_base_class = db.Column(db.Integer, db.ForeignKey(DND_Class.class_id), nullable=False)
+    feature_index = db.Column(db.String(100), nullable=False)
 
     def __repr__(self):
         dict_repr = self.__dict__; [dict_repr.pop(i, None) for i in ["_sa_instance_state"]]

@@ -16,4 +16,8 @@ export class FeatService {
   getFeatsByUser(userId: number): Observable<any> {
     return this.http.get(`${API_URL}/feats`, { params: { userID: userId.toString() } });
   }
+
+  deleteFeat(id: number): Observable<any> {
+    return this.http.delete(`${API_URL}/delete_feat/${id}`);
+  }
 }

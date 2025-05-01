@@ -1,5 +1,10 @@
 <div class="main-content">
-  <h1>Create Custom Background</h1>
+  <div class="toast-container">
+    <div *ngFor="let toast of toasts" class="toast {{toast.type}}">
+      {{toast.message}}
+    </div>
+  </div>
+  <h1>{{ isEditMode ? 'Edit Background' : 'Create New Background' }}</h1>
   <form [formGroup]="backgroundForm" (ngSubmit)="onSubmit()">
     <!-- Basic Information -->
     <div class="section">
@@ -32,13 +37,18 @@
                 <div>
                   <select [formControlName]="i">
                     <option value="">Select Skill</option>
-                    <option *ngFor="let skill of skillProficiencies" [value]="skill">{{ skill }}</option>
+                    <optgroup *ngFor="let category of skillCategories" [label]="category.name">
+                      <option *ngFor="let skill of category.skills" [value]="skill">{{ skill }}</option>
+                    </optgroup>
                   </select>
                 </div>
                 <div>
                   <button type="button" (click)="removeProficiency('skill', i)" class="remove-btn">×</button>
                 </div>
               </div>
+            </div>
+            <div *ngIf="skillProficienciesArray.length === 0" class="empty-message">
+              No skill proficiencies added
             </div>
           </div>
           <button type="button" (click)="addProficiency('skill')">Add Skill Proficiency</button>
@@ -61,6 +71,9 @@
                 </div>
               </div>
             </div>
+            <div *ngIf="toolProficienciesArray.length === 0" class="empty-message">
+              No tool proficiencies added
+            </div>
           </div>
           <button type="button" (click)="addProficiency('tool')">Add Tool Proficiency</button>
         </div>
@@ -82,6 +95,9 @@
                 </div>
               </div>
             </div>
+            <div *ngIf="languageProficienciesArray.length === 0" class="empty-message">
+              No language proficiencies added
+            </div>
           </div>
           <button type="button" (click)="addProficiency('language')">Add Language Proficiency</button>
         </div>
@@ -101,6 +117,9 @@
               <button type="button" (click)="removeEquipment(i)" class="remove-btn">×</button>
             </div>
           </div>
+        </div>
+        <div *ngIf="equipmentArray.length === 0" class="empty-message">
+          No equipment items added
         </div>
       </div>
       <button type="button" (click)="addEquipment()">Add Equipment</button>
@@ -130,71 +149,107 @@
       <!-- Personality Traits -->
       <div class="row full-width">
         <div>
-          <label>Personality Traits (d8):</label>
-          <table>
-            <tbody formArrayName="personalityTraits">
-              <tr *ngFor="let trait of personalityTraitsArray.controls; let i = index">
-                <td>
-                  <input type="text" [formControlName]="i" placeholder="Trait {{ i + 1 }}">
-                </td>
-              </tr>
-            </tbody>
-          </table>
+            <label>
+            {{ personalityTraitsArray.length === 0 ? 'Personality Traits' : 'Personality Traits (1d' + personalityTraitsArray.length + ')' }}
+            </label>
+          <div formArrayName="personalityTraits">
+            <div *ngFor="let trait of personalityTraitsArray.controls; let i = index" class="proficiency-entry">
+              <div class="row">
+                <div>
+                  <input type="text" [formControlName]="i" placeholder="Personality Trait {{i + 1}}">
+                </div>
+                <div>
+                  <button type="button" (click)="removePersonalityTrait(i)" class="remove-btn">×</button>
+                </div>
+              </div>
+            </div>
+            <div *ngIf="personalityTraitsArray.length === 0" class="empty-message">
+              No personality traits added
+            </div>
+          </div>
+          <button type="button" (click)="addPersonalityTrait()">Add Personality Trait</button>
         </div>
       </div>
       
       <!-- Ideals -->
       <div class="row full-width">
         <div>
-          <label>Ideals (d6):</label>
-          <table>
-            <tbody formArrayName="ideals">
-              <tr *ngFor="let ideal of idealsArray.controls; let i = index">
-                <td>
-                  <input type="text" [formControlName]="i" placeholder="Ideal {{ i + 1 }}">
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <label>
+            {{ idealsArray.length === 0 ? 'Ideals' : 'Ideals (1d' + idealsArray.length + ')' }}
+          </label>
+          <div formArrayName="ideals">
+            <div *ngFor="let ideal of idealsArray.controls; let i = index" class="proficiency-entry">
+              <div class="row">
+                <div>
+                  <input type="text" [formControlName]="i" placeholder="Ideal {{i + 1}}">
+                </div>
+                <div>
+                  <button type="button" (click)="removeIdeal(i)" class="remove-btn">×</button>
+                </div>
+              </div>
+            </div>
+            <div *ngIf="idealsArray.length === 0" class="empty-message">
+              No ideals added
+            </div>
+          </div>
+          <button type="button" (click)="addIdeal()">Add Ideal</button>
         </div>
       </div>
       
       <!-- Bonds -->
       <div class="row full-width">
         <div>
-          <label>Bonds (d6):</label>
-          <table>
-            <tbody formArrayName="bonds">
-              <tr *ngFor="let bond of bondsArray.controls; let i = index">
-                <td>
-                  <input type="text" [formControlName]="i" placeholder="Bond {{ i + 1 }}">
-                </td>
-              </tr>
-            </tbody>
-          </table>
+            <label>
+            {{ bondsArray.length === 0 ? 'Bonds' : 'Bonds (1d' + bondsArray.length + ')' }}
+            </label>
+          <div formArrayName="bonds">
+            <div *ngFor="let bond of bondsArray.controls; let i = index" class="proficiency-entry">
+              <div class="row">
+                <div>
+                  <input type="text" [formControlName]="i" placeholder="Bond {{i + 1}}">
+                </div>
+                <div>
+                  <button type="button" (click)="removeBond(i)" class="remove-btn">×</button>
+                </div>
+              </div>
+            </div>
+            <div *ngIf="bondsArray.length === 0" class="empty-message">
+              No bonds added
+            </div>
+          </div>
+          <button type="button" (click)="addBond()">Add Bond</button>
         </div>
       </div>
       
       <!-- Flaws -->
       <div class="row full-width">
         <div>
-          <label>Flaws (d6):</label>
-          <table>
-            <tbody formArrayName="flaws">
-              <tr *ngFor="let flaw of flawsArray.controls; let i = index">
-                <td>
-                  <input type="text" [formControlName]="i" placeholder="Flaw {{ i + 1 }}">
-                </td>
-              </tr>
-            </tbody>
-          </table>
+            <label>
+            {{ flawsArray.length === 0 ? 'Flaws' : 'Flaws (1d' + flawsArray.length + ')' }}
+            </label>
+          <div formArrayName="flaws">
+            <div *ngFor="let flaw of flawsArray.controls; let i = index" class="proficiency-entry">
+              <div class="row">
+                <div>
+                  <input type="text" [formControlName]="i" placeholder="Flaw {{i + 1}}">
+                </div>
+                <div>
+                  <button type="button" (click)="removeFlaw(i)" class="remove-btn">×</button>
+                </div>
+              </div>
+            </div>
+            <div *ngIf="flawsArray.length === 0" class="empty-message">
+              No flaws added
+            </div>
+          </div>
+          <button type="button" (click)="addFlaw()">Add Flaw</button>
         </div>
       </div>
     </div>
 
     <!-- Submit Button -->
     <div class="row full-width">
-      <button type="submit">Create Background</button>
+      <button type="submit">{{ isEditMode ? 'Update Background' : 'Create Background' }}</button>
     </div>
   </form>
 </div>

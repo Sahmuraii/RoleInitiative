@@ -1,22 +1,27 @@
 <div class="spell-display" (click)="toggleDesc()">
     <div class="small-display">
         <div class="spell-text">
-            <p class="spell-name">{{ spellName }}</p>
+            @if (spellName.length > 24 && hideDesc) {
+                <p class="spell-name">{{ spellName.slice(0, 24) + "..." }}</p>
+            } @else {
+                <p class="spell-name">{{ spellName }}</p>
+            }
+            
             @if (spellLevel == 0) {
-                <p class="spell-subtext">Cantrip - {{ spellSchool }}</p>
+                <p class="spell-subtext spell-name-subtext">Cantrip - {{ spellSchool }}</p>
             }  @else {
-                <p class="spell-subtext">Level {{ spellLevel }} - {{ spellSchool }}</p>
+                <p class="spell-subtext spell-name-subtext">Level {{ spellLevel }} - {{ spellSchool }}</p>
             }
         </div>
-        <div class="spell-text">
+        <div class="spell-text casting_time">
             <p class="spell-category">Casting Time</p>
             <p class="spell-subtext">{{ castingTime }}</p>
         </div>
-        <div class="spell-text">
+        <div class="spell-text duration">
             <p class="spell-category">Duration</p>
             <p class="spell-subtext">{{ duration }}</p>
         </div>
-        <div class="spell-text">
+        <div class="spell-text range">
             <p class="spell-category">Range</p>
             <p class="spell-subtext">{{ spellRange }}</p>
         </div>

@@ -216,16 +216,7 @@ h1 {
     margin-right: 20px;
 }
 
-.character-summary {
-    position: fixed;
-    width: 15%;
-    border: 1px solid black;
-    padding: 15px;
-    border-radius: 5px;
-    top: 33%; /* Sticks as you scroll */
-    left: 50px;
-    height: fit-content;
-}
+
 
 .character-summary h2 {
     font-size: 1.2em;

@@ -14,6 +14,8 @@ from datetime import datetime
 
 from ..utils.email import send_email
 
+import json
+
 
 auth_bp = Blueprint("auth_bp", __name__, template_folder="templates")
 

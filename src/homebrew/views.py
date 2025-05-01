@@ -29,47 +29,45 @@ def create_background():
     print("Request data:", request.get_json())
     if request.method == 'POST':
         print("Method = Post")
-        # Parse JSON data from the request
         data = request.get_json()
 
         if not data:
             return jsonify({"error": "No data provided"}), 400
 
-        # Extract data from the JSON payload
-        user_id = data.get('user_id')  # Get the user ID to tie the background to a user
+        user_id = data.get('user_id')  
         if not user_id:
             return jsonify({"error": "User ID is required"}), 400
 
-        name = data.get('name')  # Get the name of the background
-        description = data.get('description')  # Get the description of the background
+        name = data.get('name')  
+        description = data.get('description')  
 
-        skill_proficiencies = data.get('skillProficiencies', [])  # Get the skill proficiencies
-        tool_proficiencies = data.get('toolProficiencies', [])  # Get the tool proficiencies
-        language_proficiencies = data.get('languageProficiencies', [])  # Get the language proficiencies
-        equipment = data.get('equipment', [])  # Get the equipment
+        skill_proficiencies = data.get('skillProficiencies', [])  
+        tool_proficiencies = data.get('toolProficiencies', [])  
+        language_proficiencies = data.get('languageProficiencies', [])  
+        equipment = data.get('equipment', []) 
 
-        feature_name = data.get('featureName')  # Get the name of the feature
-        feature_description = data.get('featureDescription')  # Get the description of the feature
+        feature_name = data.get('featureName') 
+        feature_description = data.get('featureDescription')  
 
-        personality_traits = data.get('personalityTraits', [])  # Get the personality traits
-        ideals = data.get('ideals', [])  # Get the ideals
-        bonds = data.get('bonds', [])  # Get the bonds
-        flaws = data.get('flaws', [])  # Get the flaws
+        suggested_characteristics = data.get('suggested_characteristics', {})
+        
+        if not suggested_characteristics:
+            suggested_characteristics = {
+                "personality_traits": [],
+                "ideals": [],
+                "bonds": [],
+                "flaws": []
+            }
+        else:
+            suggested_characteristics.setdefault("personality_traits", [])
+            suggested_characteristics.setdefault("ideals", [])
+            suggested_characteristics.setdefault("bonds", [])
+            suggested_characteristics.setdefault("flaws", [])
 
-        # Suggested Characteristics JSON
-        suggested_characteristics = {
-            "personality_traits": personality_traits,
-            "ideals": ideals,
-            "bonds": bonds,
-            "flaws": flaws
-        }
+        original_background_id = data.get('original_background_id')  
 
-        # Optional: If this is a modified version of an existing background
-        original_background_id = data.get('original_background_id')  # Get the original background ID (if applicable)
-
-        # Create a new UserBackground object
         new_background = UserBackground(
-            user_id=user_id,  # Tie the background to the user
+            user_id=user_id,  
             background_name=name,
             background_description=description,
             skill_proficiencies=skill_proficiencies,
@@ -82,12 +80,14 @@ def create_background():
             specialty_table=None,
         )
 
-        # Add to the database session and commit
         try:
             db.session.add(new_background)
             db.session.commit()
             print(f"Background {name} successfully added to the database.")
-            return jsonify({"message": "Background created successfully!"}), 201
+            return jsonify({
+                "message": "Background created successfully!",
+                "background_id": new_background.user_background_id
+            }), 201
         except Exception as e:
             db.session.rollback()
             print(f"Error adding background to the database: {e}")
@@ -99,15 +99,15 @@ def create_background():
 
 @homebrew_bp.route('/backgrounds', methods=['GET'])
 def get_backgrounds():
-    user_id = request.args.get('userID')  # Get the user ID from the query parameters
+    user_id = request.args.get('userID')
     if not user_id:
         return jsonify({"error": "User ID is required"}), 400
 
     try:
         backgrounds = UserBackground.query.filter_by(user_id=user_id).all()
-        # Extract the background data from the query results
         background_data = [
             {
+                "id": background.user_background_id,  
                 "background_name": background.background_name,
                 "background_description": background.background_description,
             }
@@ -119,7 +119,69 @@ def get_backgrounds():
         print(f"Error fetching backgrounds: {e}")
         return jsonify({"error": "Failed to fetch backgrounds"}), 500
 
+@homebrew_bp.route('/background/<int:background_id>', methods=['GET'])
+def get_background(background_id):
+    try:
+        background = UserBackground.query.get_or_404(background_id)
+        suggested_characteristics = background.suggested_characteristics or {}
+        return jsonify({
+            "id": background.user_background_id,
+            "user_id": background.user_id,
+            "background_name": background.background_name,
+            "background_description": background.background_description,
+            "skill_proficiencies": background.skill_proficiencies or [],
+            "tool_proficiencies": background.tool_proficiencies or [],
+            "language_proficiencies": background.language_proficiencies or [],
+            "equipment": background.equipment or [],
+            "feature_name": background.feature_name,
+            "feature_effect": background.feature_effect,
+            "suggested_characteristics": {
+                "personality_traits": suggested_characteristics.get('personality_traits', []),
+                "ideals": suggested_characteristics.get('ideals', []),
+                "bonds": suggested_characteristics.get('bonds', []),
+                "flaws": suggested_characteristics.get('flaws', [])
+            },
+            "specialty_table": background.specialty_table
+        }), 200
+    except Exception as e:
+        print(f"Error fetching background: {e}")
+        return jsonify({"error": "Failed to fetch background"}), 500
 
+
+@homebrew_bp.route('/update_background/<int:background_id>', methods=['PUT'])
+def update_background(background_id):
+    try:
+        background = UserBackground.query.get_or_404(background_id)
+        data = request.get_json()
+
+        if not data:
+            return jsonify({"error": "No data provided"}), 400
+
+        background.background_name = data.get('name', background.background_name)
+        background.background_description = data.get('description', background.background_description)
+        background.skill_proficiencies = data.get('skillProficiencies', background.skill_proficiencies)
+        background.tool_proficiencies = data.get('toolProficiencies', background.tool_proficiencies)
+        background.language_proficiencies = data.get('languageProficiencies', background.language_proficiencies)
+        background.equipment = data.get('equipment', background.equipment)
+        background.feature_name = data.get('featureName', background.feature_name)
+        background.feature_effect = data.get('featureDescription', background.feature_effect)
+        
+        suggested_chars = data.get('suggested_characteristics', {})
+        background.suggested_characteristics = {
+            "personality_traits": suggested_chars.get('personality_traits', []),
+            "ideals": suggested_chars.get('ideals', []),
+            "bonds": suggested_chars.get('bonds', []),
+            "flaws": suggested_chars.get('flaws', [])
+        }
+
+        db.session.commit()
+        return jsonify({"message": "Background updated successfully!"}), 200
+
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error updating background: {e}")
+        return jsonify({"error": "Failed to update background"}), 500
+    
 @homebrew_bp.route('/create_spell', methods=['GET', 'POST'])
 def create_spell():
     print("Received a request to /create_spell")
@@ -1018,3 +1080,82 @@ def get_species():
         db.session.rollback()
         print(f"Error fetching species: {e}")
         return jsonify({"error": "Failed to fetch species"}), 500
+
+@homebrew_bp.route('/delete_background/<int:background_id>', methods=['DELETE'])
+def delete_background(background_id):
+    try:
+        background = UserBackground.query.get_or_404(background_id)
+        db.session.delete(background)
+        db.session.commit()
+        return jsonify({"message": "Background deleted successfully"}), 200
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error deleting background: {e}")
+        return jsonify({"error": "Failed to delete background"}), 500
+
+@homebrew_bp.route('/delete_spell/<int:spell_id>', methods=['DELETE'])
+def delete_spell(spell_id):
+    try:
+        spell = UserSpell.query.get_or_404(spell_id)
+        db.session.delete(spell)
+        db.session.commit()
+        return jsonify({"message": "Spell deleted successfully"}), 200
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error deleting spell: {e}")
+        return jsonify({"error": "Failed to delete spell"}), 500
+
+@homebrew_bp.route('/delete_monster/<int:monster_id>', methods=['DELETE'])
+def delete_monster(monster_id):
+    try:
+        UserMonster_DamageAdjustments.query.filter_by(monster_id=monster_id).delete()
+        UserMonster_Traits.query.filter_by(monster_id=monster_id).delete()
+        UserMonster_SpecialAbilitys.query.filter_by(monster_id=monster_id).delete()
+        UserMonster_Actions.query.filter_by(monster_id=monster_id).delete()
+        UserMonster_BonusActions.query.filter_by(monster_id=monster_id).delete()
+        UserMonster_Reactions.query.filter_by(monster_id=monster_id).delete()
+        
+        monster = UserMonster.query.get_or_404(monster_id)
+        db.session.delete(monster)
+        db.session.commit()
+        return jsonify({"message": "Monster deleted successfully"}), 200
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error deleting monster: {e}")
+        return jsonify({"error": "Failed to delete monster"}), 500
+
+@homebrew_bp.route('/delete_magic_item/<int:item_id>', methods=['DELETE'])
+def delete_magic_item(item_id):
+    try:
+        item = UserMagicItem.query.get_or_404(item_id)
+        db.session.delete(item)
+        db.session.commit()
+        return jsonify({"message": "Magic item deleted successfully"}), 200
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error deleting magic item: {e}")
+        return jsonify({"error": "Failed to delete magic item"}), 500
+
+@homebrew_bp.route('/delete_feat/<int:feat_id>', methods=['DELETE'])
+def delete_feat(feat_id):
+    try:
+        feat = UserFeat.query.get_or_404(feat_id)
+        db.session.delete(feat)
+        db.session.commit()
+        return jsonify({"message": "Feat deleted successfully"}), 200
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error deleting feat: {e}")
+        return jsonify({"error": "Failed to delete feat"}), 500
+
+@homebrew_bp.route('/delete_species/<int:species_id>', methods=['DELETE'])
+def delete_species(species_id):
+    try:
+        species = UserSpecies.query.get_or_404(species_id)
+        db.session.delete(species)
+        db.session.commit()
+        return jsonify({"message": "Species deleted successfully"}), 200
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error deleting species: {e}")
+        return jsonify({"error": "Failed to delete species"}), 500
