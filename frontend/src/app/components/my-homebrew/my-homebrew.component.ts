@@ -224,7 +224,11 @@ export class MyHomebrewComponent implements OnInit {
   }
 
   navigateToEditBackground(backgroundId: number): void {
-    this.router.navigate(['/edit-background', backgroundId]); 
+    if (!backgroundId) {
+      console.error('Cannot navigate to edit - background ID is undefined');
+      return;
+    }
+    this.router.navigate(['/backgrounds', 'edit', backgroundId]); 
   }
 
   navigateToEditMonster(monsterId: number): void {

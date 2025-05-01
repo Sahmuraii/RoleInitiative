@@ -198,3 +198,12 @@ button[type="submit"]:active {
     opacity: 0;
   }
 }
+
+.empty-message {
+  color: #666;
+  font-style: italic;
+  padding: 8px;
+  border: 1px dashed #ccc;
+  margin: 8px 0;
+  background-color: #f9f9f9;
+}

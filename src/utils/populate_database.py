@@ -267,7 +267,7 @@ def fetch_and_populate_class_levelup_info():
         cls_details = response.json()
         #print(f"{DND_BASE_URL}{cls['url']}")
 
-        success, response = fetch_api_info(f"{DND_BASE_URL}{cls_details["class_levels"]}", headers={"Accept": "application/json"})
+        success, response = fetch_api_info(f"{DND_BASE_URL}{cls_details['class_levels']}", headers={"Accept": "application/json"})
         if not success: continue
 
         levelup_details = response.json()
