@@ -49,67 +49,7 @@
             <label for="proficencyBonus">Proficiency Bonus:</label>
             <input type="number" id="proficencyBonus" formControlName="proficiencyBonus">
           </div>
-          <div class="section">
-            <h2>Senses</h2>
-            <div formArrayName="senses">
-              <div *ngFor="let sense of senses.controls; let i = index" [formGroupName]="i" class="sense-entry stacked-controls">
-                <div class="sense-row">
-                  <div class="full-width-input">
-                    <select formControlName="type" class="form-control">
-                      <option value="">Select a sense</option>
-                      <option *ngFor="let senseType of senseTypes" [value]="senseType">
-                        {{ senseType }}
-                      </option>
-                    </select>
-                  </div>
-                </div>
-                <div class="sense-row">
-                  <div class="full-width-input">
-                    <input type="number" formControlName="value" placeholder="Distance (feet)" class="form-control">
-                  </div>
-                  <button type="button" (click)="removeSense(i)" class="btn btn-danger remove-btn">
-                    ×
-                  </button>
-                </div>
-              </div>
-            </div>
-            <button type="button" (click)="addSense()" class="btn btn-primary">
-              Add Sense
-            </button>
-          </div>
-          <div class="section">
-            <h2>Languages</h2>
-            <div formArrayName="languages">
-              <div *ngFor="let lang of languages.controls; let i = index" [formGroupName]="i" class="language-entry stacked-controls">
-                <div class="language-row">
-                  <div class="full-width-input">
-                    <select formControlName="language" class="form-control">
-                      <option value="">Select a language</option>
-                      <option *ngFor="let langOption of languagesList" [value]="langOption">
-                        {{ langOption }}
-                      </option>
-                    </select>
-                  </div>
-                </div>
-                <div class="language-row">
-                  <div class="full-width-input">
-                    <input type="text" formControlName="notes" placeholder="Notes (e.g., 'telepathy 60ft')" class="form-control">
-                  </div>
-                  <button type="button" (click)="removeLanguage(i)" class="btn btn-danger remove-btn">
-                    ×
-                  </button>
-                </div>
-              </div>
-            </div>
-            <button type="button" (click)="addLanguage()" class="btn btn-primary">
-              Add Language
-            </button>
-            <div class="additional-notes">
-              <label>Additional Language Notes:</label>
-              <input type="text" formControlName="languageNotes" placeholder="General language notes" class="form-control">
-            </div>
-          </div>
-          </div>
+        </div>
       </div>
 
       <!-- Defensive Stats -->
@@ -154,8 +94,81 @@
       </div>
     </div>
 
+    <div class="section-container">
+      <!-- Senses Section -->
+      <div class="section">
+      <h2>Senses</h2>
+      <div class="row">
+        <div class="stacked-controls">
+        <div formArrayName="senses">
+          <div *ngFor="let sense of senses.controls; let i = index" [formGroupName]="i" class="sense-entry">
+          <div class="sense-row">
+            <div class="full-width-input">
+            <select formControlName="type" class="form-control">
+              <option value="">Select a sense</option>
+              <option *ngFor="let senseType of senseTypes" [value]="senseType">
+              {{ senseType }}
+              </option>
+            </select>
+            </div>
+          </div>
+          <div class="sense-row">
+            <div class="full-width-input">
+            <input type="number" formControlName="value" placeholder="Distance (feet)" class="form-control">
+            </div>
+            <button type="button" (click)="removeSense(i)" class="btn btn-danger remove-btn">
+            ×
+            </button>
+          </div>
+          </div>
+        </div>
+        <button type="button" (click)="addSense()" class="btn btn-primary">
+          Add Sense
+        </button>
+        </div>
+      </div>
+    </div>
 
-     <!-- Ability Scores and Defenses -->
+      <!-- Languages Section -->
+    <div class="section">
+      <h2>Languages</h2>
+      <div class="row">
+        <div class="stacked-controls">
+        <div formArrayName="languages">
+          <div *ngFor="let lang of languages.controls; let i = index" [formGroupName]="i" class="language-entry">
+          <div class="language-row">
+            <div class="full-width-input">
+            <select formControlName="language" class="form-control">
+              <option value="">Select a language</option>
+              <option *ngFor="let langOption of languagesList" [value]="langOption">
+              {{ langOption }}
+              </option>
+            </select>
+            </div>
+          </div>
+          <div class="language-row">
+            <div class="full-width-input">
+            <input type="text" formControlName="notes" placeholder="Notes (e.g., 'telepathy 60ft')" class="form-control">
+            </div>
+            <button type="button" (click)="removeLanguage(i)" class="btn btn-danger remove-btn">
+            ×
+            </button>
+          </div>
+          </div>
+        </div>
+        <button type="button" (click)="addLanguage()" class="btn btn-primary">
+          Add Language
+        </button>
+        <div class="additional-notes">
+          <label>Additional Language Notes:</label>
+          <input type="text" formControlName="languageNotes" placeholder="General language notes" class="form-control">
+        </div>
+        </div>
+      </div>
+      </div>
+    </div>
+
+    <!-- Ability Scores and Defenses -->
     <div class="section">
       <h2>Ability Scores and Defenses</h2>
       <div class="row">
@@ -185,41 +198,41 @@
         </div>
       </div>
       <div class="row">
-      <!-- Damage Adjustments -->
-      <div class="section">
-        <h2>Damage Adjustments</h2>
-        <div class="row">
-          <div>
-            <div formArrayName="damageAdjustments">
-              <div *ngFor="let adjustment of damageAdjustments.controls; let i = index" [formGroupName]="i" class="adjustment-entry">
-                <div class="damage-type-container">
-                  <select formControlName="type">
-                    <option value="">Select a damage type</option>
-                    <option *ngFor="let damageType of damageTypes" [value]="damageType">{{ damageType }}</option>
-                  </select>
-                  <span class="remove-icon" (click)="removeDamageAdjustment(i)">×</span>
-                </div>
+        <!-- Damage Adjustments -->
+        <div class="section">
+          <h2>Damage Adjustments</h2>
+          <div class="row">
+            <div>
+              <div formArrayName="damageAdjustments">
+                <div *ngFor="let adjustment of damageAdjustments.controls; let i = index" [formGroupName]="i" class="adjustment-entry">
+                  <div class="damage-type-container">
+                    <select formControlName="type">
+                      <option value="">Select a damage type</option>
+                      <option *ngFor="let damageType of damageTypes" [value]="damageType">{{ damageType }}</option>
+                    </select>
+                    <span class="remove-icon" (click)="removeDamageAdjustment(i)">×</span>
+                  </div>
 
-                <div class="adjustment-type">
-                  <label>
-                    <input type="radio" formControlName="adjustmentType" value="Resist"> Resist
-                  </label>
-                  <label>
-                    <input type="radio" formControlName="adjustmentType" value="Immune"> Immune
-                  </label>
-                  <label>
-                    <input type="radio" formControlName="adjustmentType" value="Vulnerable"> Vulnerable
-                  </label>
-                </div>
+                  <div class="adjustment-type">
+                    <label>
+                      <input type="radio" formControlName="adjustmentType" value="Resist"> Resist
+                    </label>
+                    <label>
+                      <input type="radio" formControlName="adjustmentType" value="Immune"> Immune
+                    </label>
+                    <label>
+                      <input type="radio" formControlName="adjustmentType" value="Vulnerable"> Vulnerable
+                    </label>
+                  </div>
 
-                <!-- Notes Input -->
-                <input type="text" formControlName="notes" placeholder="Notes (e.g., 'from spells only')">
+                  <!-- Notes Input -->
+                  <input type="text" formControlName="notes" placeholder="Notes (e.g., 'from spells only')">
+                </div>
               </div>
+              <button type="button" (click)="addDamageAdjustment()">Add Damage Adjustment</button>
             </div>
-            <button type="button" (click)="addDamageAdjustment()">Add Damage Adjustment</button>
           </div>
         </div>
-      </div>
         <!-- Condition Immunities -->
         <div class="section">
           <h2>Condition Immunities</h2>
@@ -262,39 +275,39 @@
       </div>
     </div>
 
-      <!-- Skills and Saving Throws -->
-      <div class="section">
-        <h2>Skills and Saving Throws</h2>
-        <div class="row">
-          <div>
-            <label>Saving Throws:</label>
-            <div formArrayName="savingThrows">
-              <div *ngFor="let savingThrow of savingThrows.controls; let i = index" [formGroupName]="i" class="saving-throw-entry">
-                <label>{{ savingThrow.get('stat')?.value }}:</label>
-                <input type="number" formControlName="value">
-              </div>
+    <!-- Skills and Saving Throws -->
+    <div class="section">
+      <h2>Skills and Saving Throws</h2>
+      <div class="row">
+        <div>
+          <label>Saving Throws:</label>
+          <div formArrayName="savingThrows">
+            <div *ngFor="let savingThrow of savingThrows.controls; let i = index" [formGroupName]="i" class="saving-throw-entry">
+              <label>{{ savingThrow.get('stat')?.value }}:</label>
+              <input type="number" formControlName="value">
             </div>
-          </div>
-          <div>
-            <label>Skills:</label>
-            <div formArrayName="skills">
-              <div *ngFor="let skill of skills.controls; let i = index" [formGroupName]="i" class="skill-entry">
-                <select [formControlName]="'skill'" (change)="onSkillChange($event, i)">
-                  <option value="">Select a skill</option>
-                  <optgroup *ngFor="let category of skillCategories" [label]="category.name">
-                    <option *ngFor="let skill of category.skills" [value]="skill">{{ skill }}</option>
-                  </optgroup>
-                  <option value="custom">Add Custom</option>
-                </select>
-                <input *ngIf="skill.get('skill')?.value === 'custom'" type="text" formControlName="customSkill" placeholder="Enter custom skill">
-                <input type="number" formControlName="value">
-                <span class="remove-icon" (click)="removeSkill(i)">×</span>
-              </div>
-            </div>
-            <button type="button" (click)="addSkill()">Add Skill</button>
           </div>
         </div>
+        <div>
+          <label>Skills:</label>
+          <div formArrayName="skills">
+            <div *ngFor="let skill of skills.controls; let i = index" [formGroupName]="i" class="skill-entry">
+              <select [formControlName]="'skill'" (change)="onSkillChange($event, i)">
+                <option value="">Select a skill</option>
+                <optgroup *ngFor="let category of skillCategories" [label]="category.name">
+                  <option *ngFor="let skill of category.skills" [value]="skill">{{ skill }}</option>
+                </optgroup>
+                <option value="custom">Add Custom</option>
+              </select>
+              <input *ngIf="skill.get('skill')?.value === 'custom'" type="text" formControlName="customSkill" placeholder="Enter custom skill">
+              <input type="number" formControlName="value">
+              <span class="remove-icon" (click)="removeSkill(i)">×</span>
+            </div>
+          </div>
+          <button type="button" (click)="addSkill()">Add Skill</button>
+        </div>
       </div>
+    </div>
 
     <!-- Actions and Traits -->
     <div class="section">
@@ -422,27 +435,6 @@
         </div>
       </div>
     </div>
-
-    <!-- Photo Upload Section -->
-    <div class="section">
-      <h2>Monster Image</h2>
-      <div class="row full-width">
-        <div>
-          <label>Upload Monster Image (256×256):</label>
-          <div class="image-upload-container">
-            <input type="file" id="monsterImage" accept="image/*" (change)="onImageUpload($event)" #fileInput>
-            <label for="monsterImage" class="upload-button">
-              <span *ngIf="!imagePreview">Choose Image</span>
-              <span *ngIf="imagePreview">Change Image</span>
-            </label>
-            <div class="image-preview" *ngIf="imagePreview">
-              <img [src]="imagePreview" alt="Monster preview">
-              <button type="button" class="remove-image" (click)="removeImage()">×</button>
-            </div>
-          </div>
-        </div>
-      </div>
-  </div>
 
     <!-- Submit Button -->
     <div class="row full-width">

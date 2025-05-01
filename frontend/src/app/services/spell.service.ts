@@ -36,7 +36,7 @@ export class SpellService {
 
   // Delete a spell
   deleteSpell(spellId: number): Observable<any> {
-    return this.http.delete(`${API_URL}/homebrew-spells/${spellId}`);
+    return this.http.delete(`${API_URL}/delete_spell/${spellId}`);
   }
 
   // Search spells by name or other criteria

@@ -32,7 +32,7 @@ export class MagicItemService {
   }
 
   deleteMagicItem(itemId: number): Observable<any> {
-    return this.http.delete(`${API_URL}/magic_items/${itemId}`);
+    return this.http.delete(`${API_URL}/delete_magic_item/${itemId}`);
   }
 
   searchMagicItems(query: string): Observable<any> {

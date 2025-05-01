@@ -34,7 +34,7 @@ export class BackgroundService {
     });
   }
 
-  deleteBackground(id: string): Observable<any> {
-    return this.http.delete(`${API_URL}/${id}`);
+  deleteBackground(id: number): Observable<any> {
+    return this.http.delete(`${API_URL}/delete_background/${id}`);
   }
 }

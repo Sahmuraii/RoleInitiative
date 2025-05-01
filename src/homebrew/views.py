@@ -1080,3 +1080,82 @@ def get_species():
         db.session.rollback()
         print(f"Error fetching species: {e}")
         return jsonify({"error": "Failed to fetch species"}), 500
+
+@homebrew_bp.route('/delete_background/<int:background_id>', methods=['DELETE'])
+def delete_background(background_id):
+    try:
+        background = UserBackground.query.get_or_404(background_id)
+        db.session.delete(background)
+        db.session.commit()
+        return jsonify({"message": "Background deleted successfully"}), 200
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error deleting background: {e}")
+        return jsonify({"error": "Failed to delete background"}), 500
+
+@homebrew_bp.route('/delete_spell/<int:spell_id>', methods=['DELETE'])
+def delete_spell(spell_id):
+    try:
+        spell = UserSpell.query.get_or_404(spell_id)
+        db.session.delete(spell)
+        db.session.commit()
+        return jsonify({"message": "Spell deleted successfully"}), 200
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error deleting spell: {e}")
+        return jsonify({"error": "Failed to delete spell"}), 500
+
+@homebrew_bp.route('/delete_monster/<int:monster_id>', methods=['DELETE'])
+def delete_monster(monster_id):
+    try:
+        UserMonster_DamageAdjustments.query.filter_by(monster_id=monster_id).delete()
+        UserMonster_Traits.query.filter_by(monster_id=monster_id).delete()
+        UserMonster_SpecialAbilitys.query.filter_by(monster_id=monster_id).delete()
+        UserMonster_Actions.query.filter_by(monster_id=monster_id).delete()
+        UserMonster_BonusActions.query.filter_by(monster_id=monster_id).delete()
+        UserMonster_Reactions.query.filter_by(monster_id=monster_id).delete()
+        
+        monster = UserMonster.query.get_or_404(monster_id)
+        db.session.delete(monster)
+        db.session.commit()
+        return jsonify({"message": "Monster deleted successfully"}), 200
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error deleting monster: {e}")
+        return jsonify({"error": "Failed to delete monster"}), 500
+
+@homebrew_bp.route('/delete_magic_item/<int:item_id>', methods=['DELETE'])
+def delete_magic_item(item_id):
+    try:
+        item = UserMagicItem.query.get_or_404(item_id)
+        db.session.delete(item)
+        db.session.commit()
+        return jsonify({"message": "Magic item deleted successfully"}), 200
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error deleting magic item: {e}")
+        return jsonify({"error": "Failed to delete magic item"}), 500
+
+@homebrew_bp.route('/delete_feat/<int:feat_id>', methods=['DELETE'])
+def delete_feat(feat_id):
+    try:
+        feat = UserFeat.query.get_or_404(feat_id)
+        db.session.delete(feat)
+        db.session.commit()
+        return jsonify({"message": "Feat deleted successfully"}), 200
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error deleting feat: {e}")
+        return jsonify({"error": "Failed to delete feat"}), 500
+
+@homebrew_bp.route('/delete_species/<int:species_id>', methods=['DELETE'])
+def delete_species(species_id):
+    try:
+        species = UserSpecies.query.get_or_404(species_id)
+        db.session.delete(species)
+        db.session.commit()
+        return jsonify({"message": "Species deleted successfully"}), 200
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error deleting species: {e}")
+        return jsonify({"error": "Failed to delete species"}), 500

@@ -30,7 +30,7 @@ export class MonsterService {
   }
 
   deleteMonster(monsterId: number): Observable<any> {
-    return this.http.delete(`${API_URL}/monsters/${monsterId}`);
+    return this.http.delete(`${API_URL}/delete_monster/${monsterId}`);
   }
   
   searchMonsters(query: string): Observable<any> {

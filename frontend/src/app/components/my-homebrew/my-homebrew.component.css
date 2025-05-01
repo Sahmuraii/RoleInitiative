@@ -576,3 +576,82 @@
 .species-stat-block .edit-button:hover {
   background-color: #6d4621;
 }
+
+.delete-button {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  color: #58180D;
+  cursor: pointer;
+  font-size: 1.2rem;
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+}
+
+.delete-button:hover {
+  opacity: 1;
+  color: #d32f2f;
+}
+
+.delete-confirmation {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #f9f2e0;
+  border: 1px solid #c9ad6a;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  z-index: 1000;
+  width: 300px;
+  text-align: center;
+}
+
+.delete-confirmation h4 {
+  margin-top: 0;
+  color: #58180D;
+}
+
+.delete-confirmation input {
+  width: 100%;
+  padding: 8px;
+  margin: 10px 0;
+  border: 1px solid #c9ad6a;
+  border-radius: 4px;
+}
+
+.delete-confirmation-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.delete-confirmation-buttons button {
+  padding: 8px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.delete-confirm {
+  background-color: #d32f2f;
+  color: white;
+}
+
+.delete-cancel {
+  background-color: #8b5a2b;
+  color: white;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}
