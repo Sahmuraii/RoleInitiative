@@ -81,12 +81,7 @@ export class CreateMonsterComponent implements OnInit {
       hitPointsModifier: [''], 
       averageHP: [''],
       speed: [''], 
-      strength: [''], 
-      dexterity: [''], 
-      constitution: [''], 
-      intelligence: [''], 
-      wisdom: [''],
-      charisma: [''], 
+      abilityScores: this.fb.array([]),
       initiativeBonus: [''], 
       proficiencyBonus: [''],
       passivePerception: [''], 
@@ -124,7 +119,7 @@ export class CreateMonsterComponent implements OnInit {
     });
 
     this.initializeSavingThrows();
-    this.initializeSkills();
+    this.initializeAbilityScores();
   }
 
   ngOnInit(): void {
@@ -140,6 +135,16 @@ export class CreateMonsterComponent implements OnInit {
         console.warn('Running on the server. Skipping localStorage access.');
       }
     }
+
+  initializeAbilityScores(): void {
+    const abilityScoresArray = this.monsterForm.get('abilityScores') as FormArray;
+    ['Strength', 'Dexterity', 'Constitution', 'Intelligence', 'Wisdom', 'Charisma'].forEach(stat => {
+      abilityScoresArray.push(this.fb.group({
+        stat: [stat],
+        value: ['']
+      }));
+    });
+  }
 
   initializeSavingThrows(): void {
     const savingThrowsArray = this.monsterForm.get('savingThrows') as FormArray;
@@ -266,6 +271,10 @@ export class CreateMonsterComponent implements OnInit {
   removeSense(index: number) {
     this.senses.removeAt(index);
   }
+
+  get abilityScores(): FormArray {
+  return this.monsterForm.get('abilityScores') as FormArray;
+}
 
   get senses(): FormArray {
     return this.monsterForm.get('senses') as FormArray;

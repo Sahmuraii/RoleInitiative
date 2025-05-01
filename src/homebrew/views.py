@@ -313,6 +313,9 @@ def create_monster():
 
             if not data.get('name'):
                 return jsonify({"error": "Monster name is required"}), 400
+            
+            ability_scores = {score['stat'].lower(): score['value'] 
+                             for score in data.get('abilityScores', [])}
 
             # Create the monster
             new_monster = UserMonster(
@@ -329,12 +332,12 @@ def create_monster():
                 hit_points_modifier=clean_int(data.get('hitPointsModifier')),
                 average_hp=clean_int(data.get('averageHP')),
                 speed=clean_int(data.get('speed')),
-                strength=clean_int(data.get('strength')),
-                dexterity=clean_int(data.get('dexterity')),
-                constitution=clean_int(data.get('constitution')),
-                intelligence=clean_int(data.get('intelligence')),
-                wisdom=clean_int(data.get('wisdom')),
-                charisma=clean_int(data.get('charisma')),
+                strength=clean_int(ability_scores.get('strength')),
+                dexterity=clean_int(ability_scores.get('dexterity')),
+                constitution=clean_int(ability_scores.get('constitution')),
+                intelligence=clean_int(ability_scores.get('intelligence')),
+                wisdom=clean_int(ability_scores.get('wisdom')),
+                charisma=clean_int(ability_scores.get('charisma')),
                 initiative_bonus=clean_int(data.get('initiativeBonus')),
                 proficiency_bonus=clean_int(data.get('proficiencyBonus')),
                 passive_perception=clean_int(data.get('passivePerception')),
@@ -453,6 +456,7 @@ def get_spells():
         spells = UserSpell.query.filter_by(user_id=user_id).all()
         spells_data = [
             {
+                "id": spell.user_spell_id,
                 "spell_name": spell.spell_name,
                 "level": spell.level,
                 "school": spell.school,

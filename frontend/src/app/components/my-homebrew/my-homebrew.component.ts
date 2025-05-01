@@ -41,6 +41,11 @@ export class MyHomebrewComponent implements OnInit {
   ) {}
 
   initiateDelete(type: string, id: number): void {
+    console.log(`Deleting ${type} with ID:`, id); // Debugging
+    if (!id) {
+      console.error('ID is undefined!');
+      return;
+    }
     this.itemToDelete = { type, id };
     this.deleteConfirmationText = '';
     this.canConfirmDelete = false;
