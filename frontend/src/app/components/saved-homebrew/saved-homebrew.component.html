@@ -201,10 +201,6 @@
                   </div>
                 </div>
               }
-
-              <div class="monster-actions">
-                <button class="edit-button" (click)="navigateToEditMonster(monster.id)">Edit</button>
-              </div>
             </div>
           }
         </div>
@@ -262,10 +258,6 @@
               <div class="spell-description">
                 <p>{{ spell.description }}</p>
               </div>
-
-              <div class="spell-actions">
-                <button class="edit-button" (click)="navigateToEditSpells(spell.id)">Edit</button>
-              </div>
             </div>
           }
         </div>
@@ -307,10 +299,6 @@
                   }
                 </div>
               }
-
-              <div class="magic-item-actions">
-                <button class="edit-button" (click)="navigateToEditMagicItem(item.id)">Edit</button>
-              </div>
             </div>
           }
         </div>
@@ -333,10 +321,6 @@
 
               <div class="background-description">
                 <p>{{ background.background_description }}</p>
-              </div>
-
-              <div class="background-actions">
-                <button class="edit-button" (click)="navigateToEditBackground(background.id)">Edit</button>
               </div>
             </div>
           }
@@ -367,10 +351,6 @@
 
               <div class="feat-description">
                 <p [innerHTML]="formatDescription(feat.description)"></p>
-              </div>
-
-              <div class="feat-actions">
-                <button class="edit-button" (click)="navigateToEditFeat(feat.id)">Edit</button>
               </div>
             </div>
           }
