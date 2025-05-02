@@ -5,6 +5,8 @@ import { CharacterSheetComponent } from './components/character-sheet/character-
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
 import { InactiveComponent } from './components/inactive/inactive.component';
+import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
+import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
 import { CreateCharacterComponent } from './components/create-character/create-character.component';
 import { CreateSpellComponent } from './components/create-spell/create-spell.component';
 import { ProfileComponent } from './components/profile/profile.component';
@@ -22,6 +24,8 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'inactive', component: InactiveComponent },
+  { path: 'forgot-password', component: ForgotPasswordComponent },
+  { path: 'reset-password/:token', component: ResetPasswordComponent },
   { path: 'create/character', component: CreateCharacterComponent},
   { path: 'create/spell', component: CreateSpellComponent},
   { path: 'create/monster', component: CreateMonsterComponent},

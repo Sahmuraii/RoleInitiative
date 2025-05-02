@@ -24,7 +24,8 @@ export class AppComponent {
 
   constructor(private router: Router) {
     this.router.events.subscribe(() => {
-      this.showNavbar = !['/login', '/register', '/inactive'].includes(this.router.url); // DO NOT show the navbar on auth pages
+      this.showNavbar = !(['/login', '/register', '/inactive', '/forgot-password'].includes(this.router.url)
+      || this.router.url.startsWith('/reset-password')); // DO NOT show the navbar on auth pages
     });
   }
 }
