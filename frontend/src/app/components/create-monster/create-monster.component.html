@@ -1,5 +1,5 @@
 <div class="main-content">
-  <h1>Create a New Monster</h1>
+  <h1>{{ editMode ? 'Edit Monster' : 'Create a New Monster' }}</h1>
   <form [formGroup]="monsterForm" (ngSubmit)="onSubmit()">
     
     <!-- Monster Basics -->
@@ -423,7 +423,7 @@
 
     <!-- Submit Button -->
     <div class="row full-width">
-      <button type="submit">Create Monster</button>
+      <button type="submit">{{ editMode ? 'Update Monster' : 'Create Monster' }}</button>
     </div>
   </form>
 </div>

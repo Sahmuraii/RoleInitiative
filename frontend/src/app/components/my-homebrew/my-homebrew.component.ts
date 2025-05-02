@@ -41,7 +41,7 @@ export class MyHomebrewComponent implements OnInit {
   ) {}
 
   initiateDelete(type: string, id: number): void {
-    console.log(`Deleting ${type} with ID:`, id); // Debugging
+    console.log(`Deleting ${type} with ID:`, id); 
     if (!id) {
       console.error('ID is undefined!');
       return;
@@ -321,7 +321,11 @@ export class MyHomebrewComponent implements OnInit {
   }
 
   navigateToEditMonster(monsterId: number): void {
-    this.router.navigate(['/edit-monster', monsterId]); 
+    if (!monsterId) {
+      console.error('Cannot navigate to edit - monster ID is undefined');
+      return;
+    }
+    this.router.navigate(['/monsters', 'edit', monsterId]); 
   }
 
   fetchFeats(): void {

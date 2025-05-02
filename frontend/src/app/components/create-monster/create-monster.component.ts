@@ -2,7 +2,7 @@ import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MonsterService } from '../../services/monster.service';
 import { AuthService } from '../../services/auth.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { CommonModule, isPlatformBrowser } from '@angular/common'; 
 import { QuillModule } from 'ngx-quill';
 
@@ -37,6 +37,8 @@ export class CreateMonsterComponent implements OnInit {
   currentUserID: number | null = null;
   imagePreview: string | ArrayBuffer | null = null; 
   selectedFile: File | null = null; 
+  editMode = false;
+  monsterId: number | null = null;
 
   sizes = ['Tiny', 'Small', 'Medium', 'Large', 'Huge', 'Gargantuan'];
   types = ['Aberration', 'Beast', 'Celestial', 'Construct', 'Dragon', 'Elemental', 'Fey', 'Fiend', 'Giant', 'Humanoid', 'Monstrosity', 'Ooze', 'Plant', 'Undead'];
@@ -66,6 +68,7 @@ export class CreateMonsterComponent implements OnInit {
     private monsterService: MonsterService,
     private router: Router,
     private authService: AuthService,
+    private route: ActivatedRoute,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
     this.monsterForm = this.fb.group({
@@ -123,18 +126,202 @@ export class CreateMonsterComponent implements OnInit {
   }
 
   ngOnInit(): void {
-      if (isPlatformBrowser(this.platformId)) {
-        const currentUser = this.authService.getCurrentUser();
-        if (currentUser && currentUser.id != null) {
-          this.currentUserID = currentUser.id;
-        } else {
-          console.error('No user is logged in for Spells.');
-          this.router.navigate(['/login']);
-        }
+    if (isPlatformBrowser(this.platformId)) {
+      const currentUser = this.authService.getCurrentUser();
+      if (currentUser && currentUser.id) {
+        this.currentUserID = currentUser.id;
+        
+        this.route.params.subscribe(params => {
+          if (params['id']) {
+            this.editMode = true;
+            this.monsterId = +params['id'];
+            this.loadMonsterData(this.monsterId);
+          } else {
+            this.initializeAbilityScores();
+            this.initializeSavingThrows();
+          }
+        });
       } else {
-        console.warn('Running on the server. Skipping localStorage access.');
+        console.error('No user is logged in for Monsters.');
+        this.router.navigate(['/login']);
       }
+    } else {
+      console.warn('Running on the server. Skipping localStorage access.');
     }
+  }
+
+  loadMonsterData(monsterId: number): void {
+    this.monsterService.getMonsterById(monsterId).subscribe({
+      next: (monster) => {
+        this.patchFormWithMonsterData(monster);
+      },
+      error: (error) => {
+        console.error('Error loading monster:', error);
+        alert('Failed to load monster data');
+      }
+    });
+  }
+
+  patchFormWithMonsterData(monster: any): void {
+    this.monsterForm.patchValue({
+      name: monster.name,
+      size: monster.size,
+      type: monster.type,
+      subtype: monster.subtype,
+      alignment: monster.alignment,
+      armorClass: monster.armorClass,
+      armorType: monster.armorType,
+      hitPointsDieCount: monster.hitPointsDieCount,
+      hitPointsValue: monster.hitPointsValue,
+      hitPointsModifier: monster.hitPointsModifier,
+      averageHP: monster.averageHP,
+      speed: monster.speed,
+      initiativeBonus: monster.initiativeBonus,
+      proficiencyBonus: monster.proficiencyBonus,
+      passivePerception: monster.passivePerception,
+      challengeRating: monster.challengeRating,
+      languageNotes: monster.languageNotes,
+      isLegendary: monster.isLegendary,
+      legendaryActionDescription: monster.legendaryActionDescription,
+      isMythic: monster.isMythic,
+      mythicActionDescription: monster.mythicActionDescription,
+      hasLair: monster.hasLair,
+      lairXP: monster.lairXP,
+      lairDescription: monster.lairDescription,
+      traitsDescription: monster.traitsDescription,
+      actionsDescription: monster.actionsDescription,
+      bonusActionsDescription: monster.bonusActionsDescription,
+      reactionsDescription: monster.reactionsDescription,
+      monsterCharacteristicsDescription: monster.monsterCharacteristicsDescription
+    });
+
+    const abilityScoresArray = this.monsterForm.get('abilityScores') as FormArray;
+    abilityScoresArray.clear();
+    ['Strength', 'Dexterity', 'Constitution', 'Intelligence', 'Wisdom', 'Charisma'].forEach(stat => {
+      const value = monster[stat.toLowerCase()] || '';
+      abilityScoresArray.push(this.fb.group({
+        stat: [stat],
+        value: [value]
+      }));
+    });
+
+    const savingThrowsArray = this.monsterForm.get('savingThrows') as FormArray;
+    savingThrowsArray.clear();
+    if (monster.savingThrows) {
+      const savingThrows = monster.savingThrows.split(', ');
+      ['Strength', 'Dexterity', 'Constitution', 'Intelligence', 'Wisdom', 'Charisma'].forEach(stat => {
+        const match = savingThrows.find((st: string) => st.startsWith(stat));
+        const value = match ? match.split(' ')[1] : '';
+        savingThrowsArray.push(this.fb.group({
+          stat: [stat],
+          value: [value]
+        }));
+      });
+    }
+
+    const sensesArray = this.monsterForm.get('senses') as FormArray;
+    sensesArray.clear();
+    if (monster.senses) {
+      const senses = monster.senses.split(', ');
+      senses.forEach((sense: string) => {
+        const [type, value] = sense.split(' ');
+        sensesArray.push(this.fb.group({
+          type: [type],
+          value: [value]
+        }));
+      });
+    }
+
+    const languagesArray = this.monsterForm.get('languages') as FormArray;
+    languagesArray.clear();
+    if (monster.languages) {
+      const languages = monster.languages.split(', ');
+      languages.forEach((language: string) => {
+        languagesArray.push(this.fb.group({
+          language: [language],
+          notes: ['']
+        }));
+      });
+    }
+
+    const skillsArray = this.monsterForm.get('skills') as FormArray;
+    skillsArray.clear();
+    if (monster.skills) {
+      const skills = monster.skills.split(', ');
+      skills.forEach((skill: string) => {
+        const parts = skill.split(' ');
+        const skillName = parts.slice(0, -1).join(' ');
+        const value = parts[parts.length - 1];
+        skillsArray.push(this.fb.group({
+          skill: [skillName],
+          customSkill: [''],
+          value: [value]
+        }));
+      });
+    }
+
+    const damageAdjustmentsArray = this.monsterForm.get('damageAdjustments') as FormArray;
+    damageAdjustmentsArray.clear();
+    
+    if (monster.damageVulnerabilities) {
+      const vulnerabilities = monster.damageVulnerabilities.split(', ');
+      vulnerabilities.forEach((type: string) => {
+        damageAdjustmentsArray.push(this.fb.group({
+          type: [type],
+          adjustmentType: ['Vulnerable'],
+          notes: ['']
+        }));
+      });
+    }
+    
+    if (monster.damageResistances) {
+      const resistances = monster.damageResistances.split(', ');
+      resistances.forEach((type: string) => {
+        damageAdjustmentsArray.push(this.fb.group({
+          type: [type],
+          adjustmentType: ['Resist'],
+          notes: ['']
+        }));
+      });
+    }
+    
+    if (monster.damageImmunities) {
+      const immunities = monster.damageImmunities.split(', ');
+      immunities.forEach((type: string) => {
+        damageAdjustmentsArray.push(this.fb.group({
+          type: [type],
+          adjustmentType: ['Immune'],
+          notes: ['']
+        }));
+      });
+    }
+
+    const conditionImmunitiesArray = this.monsterForm.get('conditionImmunities') as FormArray;
+    conditionImmunitiesArray.clear();
+    if (monster.conditionImmunities) {
+      const conditions = monster.conditionImmunities.split(', ');
+      conditions.forEach((condition: string) => {
+        conditionImmunitiesArray.push(this.fb.group({
+          condition: [condition]
+        }));
+      });
+    }
+
+    const monsterHabitatsArray = this.monsterForm.get('monsterHabitats') as FormArray;
+    monsterHabitatsArray.clear();
+    if (monster.monsterHabitats) {
+      const habitats = monster.monsterHabitats.split(', ');
+      habitats.forEach((habitat: string) => {
+        monsterHabitatsArray.push(this.fb.group({
+          habitat: [habitat]
+        }));
+      });
+    }
+
+    if (monster.imageUrl) {
+      this.imagePreview = monster.imageUrl;
+    }
+  }
 
   initializeAbilityScores(): void {
     const abilityScoresArray = this.monsterForm.get('abilityScores') as FormArray;
@@ -483,7 +670,7 @@ export class CreateMonsterComponent implements OnInit {
           missingFields.push(controlName);
         }
       }
-  
+
       if (missingFields.length > 0) {
         alert(`The following fields are required: ${missingFields.join(', ')}`);
       } else {
@@ -491,8 +678,7 @@ export class CreateMonsterComponent implements OnInit {
       }
       return;
     }
-  
-    // Format arrays into strings where needed (similar to spell's components handling)
+
     const formattedData = {
       ...this.monsterForm.value,
       savingThrows: this.savingThrows.value
@@ -520,40 +706,61 @@ export class CreateMonsterComponent implements OnInit {
         .join(', '),
       userID: this.currentUserID
     };
-  
+
     console.log('Monster data:', formattedData);
-  
-    // Handle image separately if needed
+
     if (this.selectedFile) {
       const formData = new FormData();
       formData.append('image', this.selectedFile);
       formData.append('data', JSON.stringify(formattedData));
       
-      this.monsterService.createMonster(formData).subscribe({
-        next: (response) => {
-          alert('Monster created successfully!');
-          console.log('Monster created with response:', response);
-          this.router.navigate(['/create_monster']);
-        },
-        error: (error) => {
-          console.log('Error creating monster:', error);
-          console.error('Error creating monster:', error);
-          alert('Failed to create monster. Please try again.');
-        }
-      });
+      if (this.editMode && this.monsterId) {
+        this.monsterService.updateMonster(this.monsterId, formData).subscribe({
+          next: (response) => {
+            alert('Monster updated successfully!');
+            this.router.navigate(['/home']); 
+          },
+          error: (error) => {
+            console.error('Error updating monster:', error);
+            alert('Failed to update monster. Please try again.');
+          }
+        });
+      } else {
+        this.monsterService.createMonster(formData).subscribe({
+          next: (response) => {
+            alert('Monster created successfully!');
+            this.router.navigate(['/monsters']);
+          },
+          error: (error) => {
+            console.error('Error creating monster:', error);
+            alert('Failed to create monster. Please try again.');
+          }
+        });
+      }
     } else {
-      this.monsterService.createMonster(formattedData).subscribe({
-        next: (response) => {
-          alert('Monster created successfully!');
-          console.log('Monster created with response:', response);
-          this.router.navigate(['/create_monster']);
-        },
-        error: (error) => {
-          console.log('Error creating monster:', error);
-          console.error('Error creating monster:', error);
-          alert('Failed to create monster. Please try again.');
-        }
-      });
+      if (this.editMode && this.monsterId) {
+        this.monsterService.updateMonster(this.monsterId, formattedData).subscribe({
+          next: (response) => {
+            alert('Monster updated successfully!');
+            this.router.navigate(['/monsters']);
+          },
+          error: (error) => {
+            console.error('Error updating monster:', error);
+            alert('Failed to update monster. Please try again.');
+          }
+        });
+      } else {
+        this.monsterService.createMonster(formattedData).subscribe({
+          next: (response) => {
+            alert('Monster created successfully!');
+            this.router.navigate(['/monsters']);
+          },
+          error: (error) => {
+            console.error('Error creating monster:', error);
+            alert('Failed to create monster. Please try again.');
+          }
+        });
+      }
     }
   }
 }

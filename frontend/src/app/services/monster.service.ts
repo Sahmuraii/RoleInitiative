@@ -21,12 +21,14 @@ export class MonsterService {
     return this.http.get(`${API_URL}/monsters`, { params: { userID: userId.toString() } });
   }
 
-  getMonsterById(monsterId: number): Observable<any> {
-    return this.http.get(`${API_URL}/monsters/${monsterId}`);
+  updateMonster(monsterId: number, data: any): Observable<any> {
+    return this.http.put(`${API_URL}/update_monster/${monsterId}`, data, {
+      headers: { 'Content-Type': 'application/json' }
+    });
   }
 
-  updateMonster(monsterId: number, monsterData: any): Observable<any> {
-    return this.http.put(`${API_URL}/monsters/${monsterId}`, monsterData);
+  getMonsterById(monsterId: number): Observable<any> {
+    return this.http.get(`${API_URL}/monster/${monsterId}`);
   }
 
   deleteMonster(monsterId: number): Observable<any> {

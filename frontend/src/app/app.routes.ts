@@ -29,6 +29,7 @@ export const routes: Routes = [
   { path: 'create/character', component: CreateCharacterComponent},
   { path: 'create/spell', component: CreateSpellComponent},
   { path: 'create/monster', component: CreateMonsterComponent},
+  { path: 'monsters/edit/:id', component: CreateMonsterComponent},
   { path: 'create/magic-item', component: CreateMagicItemComponent},
   { path: 'create/feat', component: CreateFeatComponent },
   { path: 'create/species', component: CreateSpeciesComponent },
