@@ -89,8 +89,8 @@
       <div formArrayName="speciesTraits">
         <div *ngFor="let trait of speciesTraits.controls; let i = index" 
              [formGroupName]="i" 
-             class="modifier-entry speciesTraits-{{i}}">
-          <button type="button" (click)="removeSpeciesTrait(i)" class="remove-btn">×</button>
+             class="modifier-entry">
+          <button type="button" (click)="removeSpeciesTrait(i)" class="remove-btn" title="Remove Trait"></button>
           
           <div class="row">
             <div>
@@ -160,8 +160,8 @@
               <div formArrayName="modifiers">
                 <div *ngFor="let modifier of getTraitModifiers(i).controls; let j = index" 
                     [formGroupName]="j" 
-                    class="condition-entry modifiers-{{i}}-{{j}}">
-                  <button type="button" (click)="removeTraitModifier(i, j)" class="remove-btn">×</button>
+                    class="condition-entry">
+                  <button type="button" (click)="removeTraitModifier(i, j)" class="remove-btn" title="Remove Modifier"></button>
                   <div class="row">
                     <div>
                       <select formControlName="modifierType" (change)="onModifierTypeChange(modifier)">
@@ -205,8 +205,8 @@
               <div formArrayName="spells">
                 <div *ngFor="let spell of getTraitSpells(i).controls; let j = index" 
                     [formGroupName]="j" 
-                    class="spell-entry spells-{{i}}-{{j}}">
-                  <button type="button" (click)="removeTraitSpell(i, j)" class="remove-btn">×</button>
+                    class="spell-entry">
+                  <button type="button" (click)="removeTraitSpell(i, j)" class="remove-btn" title="Remove Spell"></button>
                   
                   <div class="row">
                     <div>
@@ -403,8 +403,8 @@
               <div formArrayName="actions">
                 <div *ngFor="let action of getTraitActions(i).controls; let j = index" 
                      [formGroupName]="j" 
-                     class="condition-entry actions-{{i}}-{{j}}">
-                  <button type="button" (click)="removeTraitAction(i, j)" class="remove-btn">×</button>
+                     class="condition-entry">
+                  <button type="button" (click)="removeTraitAction(i, j)" class="remove-btn" title="Remove Action"></button>
                   <div class="row">
                     <div>
                       <label>Action Type:</label>
@@ -631,8 +631,8 @@
                     <div formArrayName="limitedUses">
                       <div *ngFor="let limitedUse of getLimitedUses(i, j).controls; let k = index" 
                           [formGroupName]="k" 
-                          class="condition-entry limitedUses-{{i}}-{{j}}-{{k}}">
-                        <button type="button" (click)="removeLimitedUse(i, j, k)" class="remove-btn">×</button>
+                          class="condition-entry">
+                        <button type="button" (click)="removeLimitedUse(i, j, k)" class="remove-btn" title="Remove Limited Use"></button>
                         
                         <div class="row">
                           <div>
@@ -698,8 +698,8 @@
               <div formArrayName="creatures">
                 <div *ngFor="let creature of getTraitCreatures(i).controls; let j = index" 
                     [formGroupName]="j" 
-                    class="condition-entry creatures-{{i}}-{{j}}">
-                  <button type="button" (click)="removeTraitCreature(i, j)" class="remove-btn">×</button>
+                    class="condition-entry">
+                  <button type="button" (click)="removeTraitCreature(i, j)" class="remove-btn" title="Remove Creature"></button>
                   
                   <div class="row">
                     <div>
@@ -815,18 +815,11 @@
                     <div formArrayName="customMonsters">
                       <div *ngFor="let monster of getCreatureCustomMonsters(i, j).controls; let k = index" 
                           [formGroupName]="k" 
-                          class="row">
+                          class="row monster-name-entry">
                         <div>
-                          <label>Monster Name:</label>
-                          <div class="row">
-                            <div>
-                              <input type="text" formControlName="{{k}}" placeholder="Enter monster name">
-                            </div>
-                            <div>
-                              <button type="button" (click)="removeCreatureCustomMonster(i, j, k)" class="remove-btn">×</button>
-                            </div>
-                          </div>
+                          <input type="text" formControlName="{{k}}" placeholder="Enter monster name">
                         </div>
+                        <button type="button" (click)="removeCreatureCustomMonster(i, j, k)" class="remove-btn" title="Remove Monster"></button>
                       </div>
                     </div>
                     <button type="button" (click)="addCreatureCustomMonster(i, j)">Add Monster</button>
@@ -849,8 +842,8 @@
               <div formArrayName="additionalSpells">
                 <div *ngFor="let spell of getTraitAdditionalSpells(i).controls; let j = index" 
                      [formGroupName]="j" 
-                     class="spell-entry additionalSpells-{{i}}-{{j}}">
-                  <button type="button" (click)="removeTraitAdditionalSpell(i, j)" class="remove-btn">×</button>
+                     class="spell-entry">
+                  <button type="button" (click)="removeTraitAdditionalSpell(i, j)" class="remove-btn" title="Remove Spell"></button>
                   <div class="row">
                     <div>
                       <input type="text" formControlName="spellName" placeholder="Spell Name">
@@ -892,8 +885,8 @@
         <div formArrayName="speciesOptions">
           <div *ngFor="let option of speciesOptions.controls; let i = index" 
                [formGroupName]="i" 
-               class="modifier-entry speciesOptions-{{i}}">
-            <button type="button" (click)="removeSpeciesOption(i)" class="remove-btn">×</button>
+               class="modifier-entry">
+            <button type="button" (click)="removeSpeciesOption(i)" class="remove-btn" title="Remove Option"></button>
             <div class="row">
               <div>
                 <label for="option-name-{{i}}">Option Name:</label>
@@ -926,8 +919,8 @@
               <div formArrayName="speciesOptionTraits">
                 <div *ngFor="let trait of getSpeciesOptionTraits(i).controls; let j = index" 
                      [formGroupName]="j" 
-                     class="condition-entry optionTraits-{{i}}-{{j}}">
-                  <button type="button" (click)="removeSpeciesOptionTrait(i, j)" class="remove-btn">×</button>
+                     class="condition-entry">
+                  <button type="button" (click)="removeSpeciesOptionTrait(i, j)" class="remove-btn" title="Remove Trait"></button>
                   <div class="row">
                     <div>
                       <input type="text" formControlName="name" placeholder="Trait Name" required>
@@ -954,8 +947,8 @@
       <div formArrayName="speciesVariants">
         <div *ngFor="let variant of speciesVariants.controls; let i = index" 
              [formGroupName]="i" 
-             class="modifier-entry speciesVariants-{{i}}">
-          <button type="button" (click)="removeSpeciesVariant(i)" class="remove-btn">×</button>
+             class="modifier-entry">
+          <button type="button" (click)="removeSpeciesVariant(i)" class="remove-btn" title="Remove Variant"></button>
           <div class="row">
             <div>
               <label for="variant-name-{{i}}">Variant Name:</label>
@@ -983,8 +976,8 @@
             <div formArrayName="speciesVariantTraits">
               <div *ngFor="let trait of getSpeciesVariantTraits(i).controls; let j = index" 
                    [formGroupName]="j" 
-                   class="condition-entry variantTraits-{{i}}-{{j}}">
-                <button type="button" (click)="removeSpeciesVariantTrait(i, j)" class="remove-btn">×</button>
+                   class="condition-entry">
+                <button type="button" (click)="removeSpeciesVariantTrait(i, j)" class="remove-btn" title="Remove Trait"></button>
                 <div class="row">
                   <div>
                     <input type="text" formControlName="name" placeholder="Trait Name" required>
