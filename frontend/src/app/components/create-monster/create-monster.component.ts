@@ -121,8 +121,6 @@ export class CreateMonsterComponent implements OnInit {
       monsterCharacteristicsDescription: [''] 
     });
 
-    this.initializeSavingThrows();
-    this.initializeAbilityScores();
   }
 
   ngOnInit(): void {
