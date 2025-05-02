@@ -62,6 +62,10 @@ body, html {
     align-items: center;
     justify-content: flex-start;
     padding: 0.5rem;
+    overflow-y: auto;
+    max-height: 100%;
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary-color) transparent;
 }
 
 .auth-form {
@@ -70,6 +74,25 @@ body, html {
     display: flex;
     flex-direction: column;
     justify-content: center;
+}
+
+.auth-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.auth-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.auth-container::-webkit-scrollbar-thumb {
+    background-color: var(--primary-color);
+    border-radius: 10px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+}
+
+.auth-container::-webkit-scrollbar-thumb:hover {
+    background-color: var(--secondary-color);
 }
 
 .auth-form h2 {

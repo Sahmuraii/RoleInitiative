@@ -313,6 +313,9 @@ def create_monster():
 
             if not data.get('name'):
                 return jsonify({"error": "Monster name is required"}), 400
+            
+            ability_scores = {score['stat'].lower(): score['value'] 
+                             for score in data.get('abilityScores', [])}
 
             # Create the monster
             new_monster = UserMonster(
@@ -329,12 +332,12 @@ def create_monster():
                 hit_points_modifier=clean_int(data.get('hitPointsModifier')),
                 average_hp=clean_int(data.get('averageHP')),
                 speed=clean_int(data.get('speed')),
-                strength=clean_int(data.get('strength')),
-                dexterity=clean_int(data.get('dexterity')),
-                constitution=clean_int(data.get('constitution')),
-                intelligence=clean_int(data.get('intelligence')),
-                wisdom=clean_int(data.get('wisdom')),
-                charisma=clean_int(data.get('charisma')),
+                strength=clean_int(ability_scores.get('strength')),
+                dexterity=clean_int(ability_scores.get('dexterity')),
+                constitution=clean_int(ability_scores.get('constitution')),
+                intelligence=clean_int(ability_scores.get('intelligence')),
+                wisdom=clean_int(ability_scores.get('wisdom')),
+                charisma=clean_int(ability_scores.get('charisma')),
                 initiative_bonus=clean_int(data.get('initiativeBonus')),
                 proficiency_bonus=clean_int(data.get('proficiencyBonus')),
                 passive_perception=clean_int(data.get('passivePerception')),
@@ -453,6 +456,7 @@ def get_spells():
         spells = UserSpell.query.filter_by(user_id=user_id).all()
         spells_data = [
             {
+                "id": spell.user_spell_id,
                 "spell_name": spell.spell_name,
                 "level": spell.level,
                 "school": spell.school,
@@ -477,7 +481,6 @@ def get_all_homebrew_spells():
     for spell in UserSpell.query.all():
         homebrew_spells.append(spell.serialize())
     return jsonify(homebrew_spells)
-
 
 
 @homebrew_bp.route('/monsters', methods=['GET'])
@@ -568,6 +571,231 @@ def get_monsters():
         db.session.rollback()
         print(f"Error fetching monsters: {e}")
         return jsonify({"error": "Failed to fetch monsters"}), 500
+    
+@homebrew_bp.route('/monster/<int:monster_id>', methods=['GET'])
+def get_monster(monster_id):
+    try:
+        # Get the monster
+        monster = UserMonster.query.get_or_404(monster_id)
+        
+        # Get related data from join tables
+        traits = UserMonster_Traits.query.filter_by(monster_id=monster_id).all()
+        special_abilities = UserMonster_SpecialAbilitys.query.filter_by(monster_id=monster_id).all()
+        actions = UserMonster_Actions.query.filter_by(monster_id=monster_id).all()
+        bonus_actions = UserMonster_BonusActions.query.filter_by(monster_id=monster_id).all()
+        reactions = UserMonster_Reactions.query.filter_by(monster_id=monster_id).all()
+        damage_adjustments = UserMonster_DamageAdjustments.query.filter_by(monster_id=monster_id).all()
+
+        # Build the response
+        monster_data = {
+            "id": monster.id,
+            "user_id": monster.user_id,
+            "name": monster.name,
+            "size": monster.size,
+            "type": monster.type,
+            "subtype": monster.subtype,
+            "alignment": monster.alignment,
+            "armorClass": monster.armor_class,
+            "armorType": monster.armor_type,
+            "hitPointsDieCount": monster.hit_points_die_count,
+            "hitPointsValue": monster.hit_points_value,
+            "hitPointsModifier": monster.hit_points_modifier,
+            "averageHP": monster.average_hp,
+            "speed": monster.speed,
+            "strength": monster.strength,
+            "dexterity": monster.dexterity,
+            "constitution": monster.constitution,
+            "intelligence": monster.intelligence,
+            "wisdom": monster.wisdom,
+            "charisma": monster.charisma,
+            "initiativeBonus": monster.initiative_bonus,
+            "proficiencyBonus": monster.proficiency_bonus,
+            "passivePerception": monster.passive_perception,
+            "savingThrows": monster.saving_throws,
+            "skills": monster.skills,
+            "damageVulnerabilities": monster.damage_vulnerabilities,
+            "damageResistances": monster.damage_resistances,
+            "damageImmunities": monster.damage_immunities,
+            "conditionImmunities": monster.condition_immunities,
+            "senses": monster.senses,
+            "languages": monster.languages,
+            "languageNotes": monster.language_notes,
+            "challengeRating": monster.challenge_rating,
+            "isLegendary": monster.is_legendary,
+            "legendaryActionDescription": monster.legendary_action_description,
+            "isMythic": monster.is_mythic,
+            "mythicActionDescription": monster.mythic_action_description,
+            "hasLair": monster.has_lair,
+            "lairXP": monster.lair_xp,
+            "lairDescription": monster.lair_description,
+            "monsterHabitats": monster.monster_habitats,
+            "gear": monster.gear,
+            "description": monster.description,
+            "traitsDescription": monster.traits_description,
+            "actionsDescription": monster.actions_description,
+            "bonusActionsDescription": monster.bonus_actions_description,
+            "reactionsDescription": monster.reactions_description,
+            "monsterCharacteristicsDescription": monster.monster_characteristics_description,
+            "traits": [{"name": t.name, "description": t.description} for t in traits],
+            "specialAbilities": [{"name": sa.name, "description": sa.description} for sa in special_abilities],
+            "actions": [{"name": a.name, "description": a.description} for a in actions],
+            "bonusActions": [{"name": ba.name, "description": ba.description} for ba in bonus_actions],
+            "reactions": [{"name": r.name, "description": r.description} for r in reactions],
+            "damageAdjustments": [{
+                "type": da.type,
+                "adjustmentType": da.adjustment_type,
+                "notes": da.notes
+            } for da in damage_adjustments]
+        }
+
+        return jsonify(monster_data), 200
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error fetching monster: {e}")
+        return jsonify({"error": "Failed to fetch monster"}), 500
+
+@homebrew_bp.route('/update_monster/<int:monster_id>', methods=['PUT'])
+def update_monster(monster_id):
+    try:
+        # Get the existing monster
+        monster = UserMonster.query.get_or_404(monster_id)
+        data = request.get_json()
+
+        if not data:
+            return jsonify({"error": "No data provided"}), 400
+
+        # Update basic monster fields
+        monster.name = data.get('name', monster.name)
+        monster.size = data.get('size', monster.size)
+        monster.type = data.get('type', monster.type)
+        monster.subtype = data.get('subtype', monster.subtype)
+        monster.alignment = data.get('alignment', monster.alignment)
+        monster.armor_class = clean_int(data.get('armorClass', monster.armor_class))
+        monster.armor_type = data.get('armorType', monster.armor_type)
+        monster.hit_points_die_count = clean_int(data.get('hitPointsDieCount', monster.hit_points_die_count))
+        monster.hit_points_value = data.get('hitPointsValue', monster.hit_points_value)
+        monster.hit_points_modifier = clean_int(data.get('hitPointsModifier', monster.hit_points_modifier))
+        monster.average_hp = clean_int(data.get('averageHP', monster.average_hp))
+        monster.speed = clean_int(data.get('speed', monster.speed))
+        
+        # Ability scores
+        ability_scores = {score['stat'].lower(): score['value'] 
+                         for score in data.get('abilityScores', [])}
+        monster.strength = clean_int(ability_scores.get('strength', monster.strength))
+        monster.dexterity = clean_int(ability_scores.get('dexterity', monster.dexterity))
+        monster.constitution = clean_int(ability_scores.get('constitution', monster.constitution))
+        monster.intelligence = clean_int(ability_scores.get('intelligence', monster.intelligence))
+        monster.wisdom = clean_int(ability_scores.get('wisdom', monster.wisdom))
+        monster.charisma = clean_int(ability_scores.get('charisma', monster.charisma))
+        
+        monster.initiative_bonus = clean_int(data.get('initiativeBonus', monster.initiative_bonus))
+        monster.proficiency_bonus = clean_int(data.get('proficiencyBonus', monster.proficiency_bonus))
+        monster.passive_perception = clean_int(data.get('passivePerception', monster.passive_perception))
+        monster.saving_throws = data.get('savingThrows', monster.saving_throws)
+        monster.skills = data.get('skills', monster.skills)
+        monster.damage_vulnerabilities = data.get('damageVulnerabilities', monster.damage_vulnerabilities)
+        monster.damage_resistances = data.get('damageResistances', monster.damage_resistances)
+        monster.damage_immunities = data.get('damageImmunities', monster.damage_immunities)
+        monster.condition_immunities = data.get('conditionImmunities', monster.condition_immunities)
+        monster.senses = data.get('senses', monster.senses)
+        monster.languages = data.get('languages', monster.languages)
+        monster.language_notes = data.get('languageNotes', monster.language_notes)
+        monster.challenge_rating = data.get('challengeRating', monster.challenge_rating)
+        monster.is_legendary = data.get('isLegendary', monster.is_legendary)
+        monster.legendary_action_description = data.get('legendaryActionDescription', monster.legendary_action_description)
+        monster.is_mythic = data.get('isMythic', monster.is_mythic)
+        monster.mythic_action_description = data.get('mythicActionDescription', monster.mythic_action_description)
+        monster.has_lair = data.get('hasLair', monster.has_lair)
+        monster.lair_xp = clean_int(data.get('lairXP', monster.lair_xp))
+        monster.lair_description = data.get('lairDescription', monster.lair_description)
+        monster.monster_habitats = data.get('monsterHabitats', monster.monster_habitats)
+        monster.gear = data.get('gear', monster.gear)
+        monster.description = data.get('description', monster.description)
+        monster.traits_description = data.get('traitsDescription', monster.traits_description)
+        monster.actions_description = data.get('actionsDescription', monster.actions_description)
+        monster.bonus_actions_description = data.get('bonusActionsDescription', monster.bonus_actions_description)
+        monster.reactions_description = data.get('reactionsDescription', monster.reactions_description)
+        monster.monster_characteristics_description = data.get('monsterCharacteristicsDescription', monster.monster_characteristics_description)
+
+        # Clear existing related records
+        UserMonster_DamageAdjustments.query.filter_by(monster_id=monster_id).delete()
+        UserMonster_Traits.query.filter_by(monster_id=monster_id).delete()
+        UserMonster_SpecialAbilitys.query.filter_by(monster_id=monster_id).delete()
+        UserMonster_Actions.query.filter_by(monster_id=monster_id).delete()
+        UserMonster_BonusActions.query.filter_by(monster_id=monster_id).delete()
+        UserMonster_Reactions.query.filter_by(monster_id=monster_id).delete()
+
+        # Handle damage adjustments
+        for adj in data.get('damageAdjustments', []):
+            new_adj = UserMonster_DamageAdjustments(
+                monster_id=monster_id,
+                type=adj.get('type'),
+                adjustment_type=adj.get('adjustmentType'),
+                notes=adj.get('notes')
+            )
+            db.session.add(new_adj)
+
+        # Handle traits
+        for trait in data.get('traits', []):
+            new_trait = UserMonster_Traits(
+                monster_id=monster_id,
+                name=trait.get('name'),
+                description=trait.get('description')
+            )
+            db.session.add(new_trait)
+
+        # Handle special abilities
+        for ability in data.get('specialAbilities', []):
+            new_ability = UserMonster_SpecialAbilitys(
+                monster_id=monster_id,
+                name=ability.get('name'),
+                description=ability.get('description')
+            )
+            db.session.add(new_ability)
+
+        # Handle actions
+        for action in data.get('actions', []):
+            new_action = UserMonster_Actions(
+                monster_id=monster_id,
+                name=action.get('name'),
+                description=action.get('description')
+            )
+            db.session.add(new_action)
+
+        # Handle bonus actions
+        for bonus_action in data.get('bonusActions', []):
+            new_bonus_action = UserMonster_BonusActions(
+                monster_id=monster_id,
+                name=bonus_action.get('name'),
+                description=bonus_action.get('description')
+            )
+            db.session.add(new_bonus_action)
+
+        # Handle reactions
+        for reaction in data.get('reactions', []):
+            new_reaction = UserMonster_Reactions(
+                monster_id=monster_id,
+                name=reaction.get('name'),
+                description=reaction.get('description')
+            )
+            db.session.add(new_reaction)
+
+        db.session.commit()
+
+        return jsonify({
+            "status": "success",
+            "message": "Monster updated successfully!",
+            "monster_id": monster_id
+        }), 200
+
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error updating monster: {str(e)}")
+        return jsonify({
+            "status": "error",
+            "message": "Failed to update monster",
+            "error": str(e)
+        }), 500
 
 
 @homebrew_bp.route('/save-homebrew', methods=['POST'])
@@ -607,7 +835,7 @@ def get_saved_homebrew():
     user_id = request.args.get('userID')  # Get the user ID from the query parameters
     saved_items = SavedHomebrew.query.filter_by(user_id=user_id).all()
 
-    grouped = {"spell": [], "background": [], "monster": [], "magic_item": [], "feat": []}
+    grouped = {"spell": [], "background": [], "monster": [], "magic_item": [], "feat": [], "species": []}
 
     # print(f"User ID: {user_id}")
     # print(f"Saved items: {[{'type': i.content_type, 'id': i.content_id} for i in saved_items]}")
@@ -625,6 +853,8 @@ def get_saved_homebrew():
             model = UserMagicItem.query.get(item.content_id)
         elif item.content_type == "feat":
             model = UserFeat.query.get(item.content_id)
+        elif item.content_type == "species":
+            model = UserSpecies.query.get(item.content_id)
 
         if model:
             model_dict = model.__dict__.copy()
@@ -663,7 +893,8 @@ def search_homebrew():
         "background": UserBackground,
         "monster": UserMonster,
         "magic_item": UserMagicItem,
-        "feat": UserFeat
+        "feat": UserFeat,
+        "species": UserSpecies
     }
 
     model = model_map.get(content_type)

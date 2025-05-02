@@ -201,15 +201,11 @@
                   </div>
                 </div>
               }
-
-              <div class="monster-actions">
-                <button class="edit-button" (click)="navigateToEditMonster(monster.id)">Edit</button>
-              </div>
             </div>
           }
         </div>
       } @else {
-        <p>No monsters created yet.</p>
+        <p>No monsters saved yet.</p>
       }
     </div>
 
@@ -262,15 +258,11 @@
               <div class="spell-description">
                 <p>{{ spell.description }}</p>
               </div>
-
-              <div class="spell-actions">
-                <button class="edit-button" (click)="navigateToEditSpells(spell.id)">Edit</button>
-              </div>
             </div>
           }
         </div>
       } @else {
-        <p>No spells created yet.</p>
+        <p>No spells saved yet.</p>
       }
     </div>
 
@@ -307,15 +299,11 @@
                   }
                 </div>
               }
-
-              <div class="magic-item-actions">
-                <button class="edit-button" (click)="navigateToEditMagicItem(item.id)">Edit</button>
-              </div>
             </div>
           }
         </div>
       } @else {
-        <p>No magic items created yet.</p>
+        <p>No magic items saved yet.</p>
       }
     </div>
 
@@ -334,15 +322,11 @@
               <div class="background-description">
                 <p>{{ background.background_description }}</p>
               </div>
-
-              <div class="background-actions">
-                <button class="edit-button" (click)="navigateToEditBackground(background.id)">Edit</button>
-              </div>
             </div>
           }
         </div>
       } @else {
-        <p>No backgrounds created yet.</p>
+        <p>No backgrounds saved yet.</p>
       }
     </div>
 
@@ -368,15 +352,43 @@
               <div class="feat-description">
                 <p [innerHTML]="formatDescription(feat.description)"></p>
               </div>
+            </div>
+          }
+        </div>
+      } @else {
+        <p>No feats saved yet.</p>
+      }
+    </div>
 
-              <div class="feat-actions">
-                <button class="edit-button" (click)="navigateToEditFeat(feat.id)">Edit</button>
+    <div class="homebrew-section">
+      <h3>Species</h3>
+      @if (species.length > 0) {
+        <div class="species-cards">
+          @for (specie of species; track specie.id) {
+            <div class="species-stat-block">
+              <div class="species-header">
+                <h4 class="species-name">{{ specie.name }}</h4>
+              </div>
+
+              <div class="species-divider"></div>
+
+              <div class="magic-item-description-container">
+                <div class="magic-item-description" [class.collapsed]="isDescriptionCollapsed(specie.id)">
+                  <p [innerHTML]="formatDescription(specie.description)"></p>
+                </div>
+                @if (shouldShowToggle(specie.description)) {
+                  <button class="toggle-description"
+                          (click)="toggleDescription(specie.id)"
+                          [attr.aria-expanded]="!isDescriptionCollapsed(specie.id)">
+                    {{ isDescriptionCollapsed(specie.id) ? 'Show More' : 'Show Less' }}
+                  </button>
+                }
               </div>
             </div>
           }
         </div>
       } @else {
-        <p>No feats created yet.</p>
+        <p>No species saved yet.</p>
       }
     </div>
 </div>

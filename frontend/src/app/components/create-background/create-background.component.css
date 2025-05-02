@@ -4,6 +4,7 @@
   margin: auto;
   padding: calc(var(--navbar-height) + 1rem) 2rem 2rem;
   overflow: visible;
+  background-color: #f5eee3;
 }
 
 form {
@@ -13,17 +14,19 @@ form {
 }
 
 .section {
-  border: 1px solid #ddd;
+  border: 1px solid #c9ad6a;
   border-radius: 8px;
   padding: 15px;
-  background-color: #f9f9f9;
+  background-color: white;
 }
 
 .section h2 {
   margin-top: 0;
-  color: #333;
-  border-bottom: 1px solid #ddd;
-  padding-bottom: 8px;
+  color: #58180D;
+  border-bottom: 2px solid #c9ad6a;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+  font-variant: small-caps;
 }
 
 .row {
@@ -46,13 +49,15 @@ label {
   display: block;
   margin-bottom: 5px;
   font-weight: bold;
+  color: #333;
 }
 
 input, select, textarea {
   width: 100%;
   padding: 8px;
-  border: 1px solid #ccc;
+  border: 1px solid #c9ad6a;
   border-radius: 4px;
+  background-color: #fcf8f3;
 }
 
 textarea {
@@ -68,11 +73,11 @@ textarea {
 
 .proficiency-entry .row > div {
   flex: 1;
-  min-width: 0; 
+  min-width: 0;
 }
 
 .proficiency-entry .row > div:last-child {
-  flex: 0 0 auto; 
+  flex: 0 0 auto;
 }
 
 table {
@@ -82,13 +87,15 @@ table {
 }
 
 th, td {
-  border: 1px solid #ddd;
+  border: 1px solid #c9ad6a;
   padding: 8px;
+  background-color: white;
 }
 
 th {
-  background-color: #f2f2f2;
+  background-color: #f0e6cc;
   text-align: left;
+  color: #58180D;
 }
 
 button {
@@ -124,6 +131,11 @@ button[type="button"]:active {
   border-radius: 4px;
   padding: 5px 10px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
 }
 
 .remove-btn:hover {
@@ -203,7 +215,63 @@ button[type="submit"]:active {
   color: #666;
   font-style: italic;
   padding: 8px;
-  border: 1px dashed #ccc;
+  border: 1px dashed #c9ad6a;
   margin: 8px 0;
-  background-color: #f9f9f9;
+  background-color: #fcf8f3;
+}
+
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.checkbox-row input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+}
+
+.checkbox-row label {
+  font-weight: bold;
+  margin: 0;
+  user-select: none;
+}
+
+.add-btn {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  margin-top: 10px;
+}
+
+.add-btn:hover {
+  background-color: #388E3C;
+}
+
+.rich-text {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #c9ad6a;
+  border-radius: 5px;
+  font-size: 14px;
+  min-height: 150px;
+  resize: vertical;
+  background-color: #fcf8f3;
+}
+
+.ql-container {
+  min-height: 150px;
+  border-radius: 0 0 5px 5px;
+  background-color: #fcf8f3;
+  border: 1px solid #c9ad6a !important;
+}
+
+.ql-toolbar {
+  border-radius: 5px 5px 0 0;
+  border: 1px solid #c9ad6a !important;
+  background-color: #f0e6cc;
 }

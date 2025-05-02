@@ -28,6 +28,8 @@ app.config["SQLALCHEMY_DATABASE_URI"] = 'postgresql://{user}:{pw}@{url}/{db}'.fo
 app.config["SECRET_KEY"] = getenv('FLASK_SECRET_KEY')
 app.config["SECURITY_PASSWORD_SALT"] = getenv("SECURITY_PASSWORD_SALT", default="very-important")
 
+app.config["FRONTEND_URL"] = "https://roleinitiative.unr.dev"
+
 # Mail Settings
 app.config["MAIL_DEFAULT_SENDER"] = "noreply@flask.com"
 app.config["MAIL_SERVER"] = "smtp.gmail.com"

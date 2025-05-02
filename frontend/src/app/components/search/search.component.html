@@ -8,6 +8,7 @@
       <option value="monster">Monsters</option>
       <option value="magic_item">Magic Items</option>
       <option value="feat">Feats</option>
+      <option value="species">Species</option>
     </select>
 
     <input
@@ -27,17 +28,17 @@
              (mouseleave)="onMouseExit()">
           <div class="spell-text">
             <p class="spell-name">{{ item.spell_name }}</p>
-            <p class="spell-subtext">Level {{ item.level }} - {{ item.school }}</p>
+            <p class="spell-left-subtext">{{ item.level }} {{ item.school }}</p>
           </div>
-          <div class="spell-text">
+          <div class="card-meta">
             <p class="spell-category">Casting Time</p>
             <p class="spell-subtext">{{ item.casting_time }}</p>
           </div>
-          <div class="spell-text">
+          <div class="card-meta">
             <p class="spell-category">Duration</p>
-            <p class="spell-subtext">{{ item.duration }}</p>
+            <p class="spell-subtext">{{ item.duration_type }}</p>
           </div>
-          <div class="spell-text">
+          <div class="card-meta">
             <p class="spell-category">Range/Area</p>
             <p class="spell-subtext">{{ item.range }}</p>
           </div>
@@ -68,15 +69,15 @@
             <p class="spell-name">{{ item.name }}</p>
             <p class="spell-left-subtext">{{ item.size }} {{ item.type }}<span *ngIf="item.subtype"> - {{ item.subtype }}</span><span *ngIf="item.alignment">, {{ item.alignment }}</span></p>
           </div>
-          <div class="spell-text">
+          <div class="card-meta">
             <p class="spell-category">Armor Class</p>
             <p class="spell-subtext">{{ item.armor_class }}<span *ngIf="item.armor_type"> {{ item.armor_type }}</span></p>
           </div>
-          <div class="spell-text">
+          <div class="card-meta">
             <p class="spell-category">Hit Points</p>
             <p class="spell-subtext">{{ item.average_hp }} ({{ item.hit_points_die_count }}{{ item.hit_points_value }}{{ item.hit_points_modifier >= 0 ? ' + ' : ' - ' }}{{ item.hit_points_modifier }})</p>
           </div>
-          <div class="spell-text">
+          <div class="card-meta">
             <p class="spell-category">Speed</p>
             <p class="spell-subtext">{{ item.speed }}</p>
           </div>
@@ -265,15 +266,15 @@
           <div class="spell-text">
             <p class="spell-name">{{ item.background_name }}</p>
           </div>
-          <div class="spell-text">
+          <div class="card-meta">
             <p class="spell-category">Skill Proficiencies</p>
             <p class="spell-subtext">{{ item.skill_proficiencies }}</p>
           </div>
-          <div class="spell-text">
+          <div class="card-meta">
             <p class="spell-category">Tool Proficiencies</p>
             <p class="spell-subtext">{{ item.tool_proficiencies }}</p>
           </div>
-          <div class="spell-text">
+          <div class="card-meta">
             <p class="spell-category">Language Proficiencies</p>
             <p class="spell-subtext">{{ item.language_proficiencies }}</p>
           </div>
@@ -342,11 +343,11 @@
             <p class="spell-name">{{ item.name }}</p>
             <p class="spell-left-subtext">{{ item.rarity }} {{ item.magic_item_type }}</p>
           </div>
-          <div class="spell-text">
+          <div class="card-meta">
             <p class="spell-category">Size</p>
             <p class="spell-subtext">{{ item.size }}</p>
           </div>
-          <div class="spell-text">
+          <div class="card-meta">
             <p class="spell-category">Price</p>
             <p class="spell-subtext">{{ item.cost_amount }} {{ item.cost_currency }}</p>
           </div>
@@ -408,6 +409,71 @@
         <div class="description" [class.expanded]="hoveredSpellIndex === i" [innerHTML]="item.description"></div>
       </div>
 
+      <!-- Species display -->
+      <div *ngIf="selectedType === 'species'" class="species-display">
+        <div class="small-display"
+             (mouseenter)="onMouseEnter(i)"
+             (mouseleave)="onMouseExit()">
+          <div class="spell-text">
+            <p class="spell-name">{{ item.name }}</p>
+            @if (item.custom_species_group) {
+              <p class="spell-left-subtext">{{ item.size }} {{ item.custom_species_group }}</p>
+            }
+            @if (!item.custom_species_group) {
+              <p class="spell-left-subtext">{{ item.size }} {{ item.species_group }}</p>
+            }
+          </div>
+          <div class="card-meta">
+            <p class="spell-category">Walking Speed</p>
+            <p class="spell-subtext">{{ item.speed_walking }}</p>
+          </div>
+
+          <div class="card-meta">
+            <p class="spell-category">Flying Speed</p>
+            @if (item.speed_flying > 0) {
+              <p class="spell-subtext">{{ item.speed_flying }}</p>
+            }
+            @if (item.speed_flying === 0) {
+              <p class="spell-subtext">Unable to fly</p>
+            }
+          </div>
+
+          <button
+            class="bookmark-btn"
+            [class.bookmarked]="item.saved"
+            (click)="toggleSave(item, i)"
+            [attr.aria-label]="item.saved ? 'Unsave' : 'Save'">
+            <i
+              class="fa bookmark-icon"
+              [ngClass]="item.saved ? 'fa-bookmark' : 'fa-regular fa-bookmark'">
+            </i>
+          </button>
+
+        </div>
+        <div class="description" [class.expanded]="hoveredSpellIndex === i">
+          <div class="monster-divider"></div>
+          <p class="spell-category">Species Traits</p>
+          <div *ngFor="let result of item.species_traits; let i = index">
+            <div class="monster-feature">
+              <span class="feature-label">{{ result.name }}:</span>
+              <span class="feature-value">
+                <span [innerHTML]="result.description"></span>
+              </span>
+            </div>
+
+            <div class="monster-feature" *ngIf="result.requiredLevel > 0">
+              <span class="feature-label">Required Level:</span>
+              <span class="feature-value">{{ result.requiredLevel }}</span>
+            </div>
+
+            <div class="monster-feature" *ngIf="result.featureType">
+              <span class="feature-label">Feature Type:</span>
+              <span class="feature-value">{{ result.featureType }}</span>
+            </div>
+            <div class="monster-divider"></div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="pagination">

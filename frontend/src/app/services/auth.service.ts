@@ -56,6 +56,28 @@ export class AuthService {
     );
   }
 
+  resetPassword(email: string): Observable<any> {
+    const userData = { email };
+    return this.http.post(`${API_URL}/forgot-password`, userData).pipe(
+      tap((response: any) => {
+      }),
+      catchError((error) => {
+        console.error('Email failed to send', error);
+        throw error;
+      })
+    );
+  }
+
+  resetPasswordConfirm(token: string, password: string): Observable<any> {
+    return this.http.post(`${API_URL}/reset/${token}`, { password }).pipe(
+      tap(() => console.log('Password successfully reset.')),
+      catchError((error) => {
+        console.error('Failed to reset password', error);
+        throw error;
+      })
+    );
+  }
+
   logout(): void {
     if (this.isBrowser()) {
       localStorage.removeItem('currentUser');

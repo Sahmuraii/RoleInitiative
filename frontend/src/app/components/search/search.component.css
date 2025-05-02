@@ -147,7 +147,7 @@ li {
 }
 
 
-.spell-display, .monster-display, .background-display, .magic-item-display, .feat-display {
+.spell-display, .monster-display, .background-display, .magic-item-display, .feat-display, .species-display {
     background-color: #f9f2e0;
     border: 1px solid #c9ad6a;
     border-radius: 5px;
@@ -166,7 +166,7 @@ li {
     min-width: max-content;
     justify-content: space-between;
     align-items: flex-start;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     gap: 1rem;
 }
 
@@ -179,6 +179,27 @@ li {
 .spell-text {
     flex: 0 1 auto;
     min-width: 0;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 150px;
+    margin: 0.5rem;
+    align-items: left;
+}
+
+.card-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  flex: 0 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 150px;
+  margin: 0.5rem;
 }
 
 .spell-name {

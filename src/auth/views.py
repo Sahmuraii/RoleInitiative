@@ -6,7 +6,7 @@ import bcrypt
 from src.auth.models import User
 
 from .forms import LoginForm, RegisterForm
-from src import db
+from src import db, app
 from src.utils.decorators import logout_required
 from src.auth.token import generate_token, confirm_token
 
@@ -27,7 +27,7 @@ def register():
         data = request.get_json()
 
         # Log the received data to the frontend console
-        print(f"Received registration data: {json.dumps(data)}")
+        #print(f"Received registration data: {json.dumps(data)}")
 
         # Validate request data
         if not data:
@@ -79,6 +79,63 @@ def inactive():
     if current_user.is_confirmed:
         return redirect(url_for("core.home"))
     return render_template("auth/inactive.html")
+
+@auth_bp.route("/forgot-password", methods=["POST"])
+def forgotPassword():
+    try:
+        data = request.get_json()
+
+        # Validate request data
+        if not data:
+            return jsonify({"message": "Data not processed correctly"}), 400
+        if "email" not in data or not data["email"].strip():
+            return jsonify({"message": "Missing or invalid email"}), 400
+
+        email = data["email"].strip().lower()
+        user = User.query.filter_by(email=email).first()
+
+        if not user:
+            # Not secure. An attacker could notice the difference between success and error messages to determine if an email is registered with our service
+            return jsonify({"message": "No account associated with that email."}), 404
+            #return jsonify({"message": "If the email exists, a reset link will be sent."}), 200
+
+        token = generate_token(email)
+        base_url = app.config['FRONTEND_URL']
+        if request.host == "localhost:4200":
+            base_url = "http://localhost:4200"
+        reset_url = f"{base_url}/reset-password/{token}"
+        html = render_template("auth/reset_password_email.html", reset_url=reset_url)
+        subject = "Password Reset Request - RoleInitiative"
+        send_email(email, subject, html)
+
+        return jsonify({"message": "If the email exists, a reset link will be sent."}), 200
+
+    except Exception as e:
+        print(f"Error during forgot password: {str(e)}")
+        return jsonify({"message": "Internal server error"}), 500
+
+@auth_bp.route("/reset/<token>", methods=["POST"])
+def reset_password(token):
+    try:
+        data = request.get_json()
+        if not data or "password" not in data or not data["password"].strip():
+            return jsonify({"message": "Missing or invalid password"}), 400
+
+        password = data["password"].strip()
+        email = confirm_token(token)
+
+        if not email:
+            return jsonify({"message": "Invalid or expired token"}), 400
+
+        user = User.query.filter_by(email=email).first_or_404()
+        user.password = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
+        db.session.commit()
+
+        return jsonify({"message": "Password has been reset successfully"}), 200
+
+    except Exception as e:
+        print(f"Error during password reset: {str(e)}")
+        return jsonify({"message": "Internal server error"}), 500
 
 
 @auth_bp.route("/send_confirmation")
