@@ -6,7 +6,7 @@ import bcrypt
 from src.auth.models import User
 
 from .forms import LoginForm, RegisterForm
-from src import db
+from src import db, app
 from src.utils.decorators import logout_required
 from src.auth.token import generate_token, confirm_token
 
@@ -95,10 +95,15 @@ def forgotPassword():
         user = User.query.filter_by(email=email).first()
 
         if not user:
+            # Not secure. An attacker could notice the difference between success and error messages to determine if an email is registered with our service
             return jsonify({"message": "No account associated with that email."}), 404
+            #return jsonify({"message": "If the email exists, a reset link will be sent."}), 200
 
         token = generate_token(email)
-        reset_url = f"http://localhost:4200/reset-password/{token}"
+        base_url = app.config['FRONTEND_URL']
+        if request.host == "localhost:4200":
+            base_url = "http://localhost:4200"
+        reset_url = f"{base_url}/reset-password/{token}"
         html = render_template("auth/reset_password_email.html", reset_url=reset_url)
         subject = "Password Reset Request - RoleInitiative"
         send_email(email, subject, html)
