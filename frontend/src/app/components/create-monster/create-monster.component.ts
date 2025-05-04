@@ -399,51 +399,6 @@ export class CreateMonsterComponent implements OnInit {
       this.monsterForm.get('lairDescription')?.reset();
     }
   }
-  
-  onImageUpload(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    if (!input.files || input.files.length === 0) return;
-  
-    const file = input.files[0];
-    this.selectedFile = file;
-
-    if (!file.type.match('image.*')) {
-      alert('Only image files are allowed!');
-      return;
-    }
-  
-    if (file.size > 2 * 1024 * 1024) {
-      alert('Maximum allowed image size is 2MB');
-      return;
-    }
-  
-    const reader = new FileReader();
-    reader.onload = () => {
-      this.imagePreview = reader.result;
-      
-      const img = new Image();
-      img.onload = () => {
-        if (img.width !== 256 || img.height !== 256) {
-          alert('Image must be exactly 256x256 pixels');
-          this.imagePreview = null;
-          this.selectedFile = null;
-          return;
-        }
-        this.monsterForm.patchValue({ image: file });
-      };
-      img.src = reader.result as string;
-    };
-    reader.readAsDataURL(file);
-  }
-  
-  removeImage(): void {
-    this.imagePreview = null;
-    this.selectedFile = null;
-    this.monsterForm.patchValue({ image: null });
-    
-    const fileInput = document.getElementById('monsterImage') as HTMLInputElement;
-    if (fileInput) fileInput.value = '';
-  }
 
   addSense() {
     const sensesArray = this.monsterForm.get('senses') as FormArray;
