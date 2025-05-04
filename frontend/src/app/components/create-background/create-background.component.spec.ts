@@ -3,7 +3,7 @@ import { CreateBackgroundComponent } from './create-background.component';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { BackgroundService } from '../../services/background.service';
 import { AuthService } from '../../services/auth.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { of, throwError } from 'rxjs';
 
@@ -13,6 +13,7 @@ describe('CreateBackgroundComponent', () => {
   let backgroundService: BackgroundService;
   let authService: AuthService;
   let router: Router;
+  let activatedRoute: ActivatedRoute;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -26,7 +27,9 @@ describe('CreateBackgroundComponent', () => {
         {
           provide: BackgroundService,
           useValue: {
-            createBackground: jasmine.createSpy('createBackground').and.returnValue(of({}))
+            createBackground: jasmine.createSpy('createBackground').and.returnValue(of({})),
+            updateBackground: jasmine.createSpy('updateBackground').and.returnValue(of({})),
+            getBackgroundById: jasmine.createSpy('getBackgroundById').and.returnValue(of({}))
           }
         },
         {
@@ -40,6 +43,12 @@ describe('CreateBackgroundComponent', () => {
           useValue: {
             navigate: jasmine.createSpy('navigate')
           }
+        },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            params: of({})
+          }
         }
       ]
     }).compileComponents();
@@ -49,6 +58,7 @@ describe('CreateBackgroundComponent', () => {
     backgroundService = TestBed.inject(BackgroundService);
     authService = TestBed.inject(AuthService);
     router = TestBed.inject(Router);
+    activatedRoute = TestBed.inject(ActivatedRoute);
     fixture.detectChanges();
   });
 
@@ -73,26 +83,42 @@ describe('CreateBackgroundComponent', () => {
   });
 
   it('should add proficiencies to the form', () => {
-    component.addProficiency('skill', 'Athletics');
+    component.addProficiency('skill');
     expect(component.skillProficienciesArray.length).toBe(1);
-    expect(component.skillProficienciesArray.at(0).value).toBe('Athletics');
 
-    component.addProficiency('tool', 'Navigator\'s Tools');
+    component.addProficiency('tool');
     expect(component.toolProficienciesArray.length).toBe(1);
-    expect(component.toolProficienciesArray.at(0).value).toBe('Navigator\'s Tools');
 
-    component.addProficiency('language', 'Elvish');
+    component.addProficiency('language');
     expect(component.languageProficienciesArray.length).toBe(1);
-    expect(component.languageProficienciesArray.at(0).value).toBe('Elvish');
   });
 
   it('should add equipment to the form', () => {
-    component.addEquipment('Cutlass');
+    component.addEquipment();
     expect(component.equipmentArray.length).toBe(1);
-    expect(component.equipmentArray.at(0).value).toBe('Cutlass');
   });
 
-  it('should submit the form with user_id', () => {
+  it('should remove proficiencies from the form', () => {
+    component.addProficiency('skill');
+    component.removeProficiency('skill', 0);
+    expect(component.skillProficienciesArray.length).toBe(0);
+
+    component.addProficiency('tool');
+    component.removeProficiency('tool', 0);
+    expect(component.toolProficienciesArray.length).toBe(0);
+
+    component.addProficiency('language');
+    component.removeProficiency('language', 0);
+    expect(component.languageProficienciesArray.length).toBe(0);
+  });
+
+  it('should remove equipment from the form', () => {
+    component.addEquipment();
+    component.removeEquipment(0);
+    expect(component.equipmentArray.length).toBe(0);
+  });
+
+  it('should submit the form with user_id in create mode', () => {
     component.backgroundForm.patchValue({
       name: 'Custom Pirate',
       description: 'A swashbuckling adventurer of the high seas.',
@@ -100,14 +126,21 @@ describe('CreateBackgroundComponent', () => {
       featureDescription: 'You can secure free passage on a ship for you and your companions.'
     });
 
-    component.addProficiency('skill', 'Athletics');
-    component.addProficiency('tool', 'Navigator\'s Tools');
-    component.addProficiency('language', 'Elvish');
-    component.addEquipment('Cutlass');
+    component.addProficiency('skill');
+    component.skillProficienciesArray.at(0).setValue('Athletics');
+    
+    component.addProficiency('tool');
+    component.toolProficienciesArray.at(0).setValue('Navigator\'s Tools');
+    
+    component.addProficiency('language');
+    component.languageProficienciesArray.at(0).setValue('Elvish');
+    
+    component.addEquipment();
+    component.equipmentArray.at(0).setValue('Cutlass');
 
     component.onSubmit();
 
-    const expectedFormData = {
+    const expectedFormData = jasmine.objectContaining({
       name: 'Custom Pirate',
       description: 'A swashbuckling adventurer of the high seas.',
       skillProficiencies: ['Athletics'],
@@ -116,15 +149,34 @@ describe('CreateBackgroundComponent', () => {
       equipment: ['Cutlass'],
       featureName: 'Ship\'s Passage',
       featureDescription: 'You can secure free passage on a ship for you and your companions.',
-      personalityTraits: Array(8).fill(''),
-      ideals: Array(6).fill(''),
-      bonds: Array(6).fill(''),
-      flaws: Array(6).fill(''),
+      suggested_characteristics: {
+        personality_traits: [],
+        ideals: [],
+        bonds: [],
+        flaws: []
+      },
       user_id: 1
-    };
+    });
 
     expect(backgroundService.createBackground).toHaveBeenCalledWith(expectedFormData);
-    expect(router.navigate).toHaveBeenCalledWith(['/create_background']);
+    expect(router.navigate).toHaveBeenCalledWith(['/backgrounds']);
+  });
+
+  it('should submit the form in edit mode', () => {
+    component.isEditMode = true;
+    component.backgroundId = 1;
+    
+    component.backgroundForm.patchValue({
+      name: 'Updated Pirate',
+      description: 'Updated description',
+      featureName: 'Updated Feature',
+      featureDescription: 'Updated feature description'
+    });
+
+    component.onSubmit();
+
+    expect(backgroundService.updateBackground).toHaveBeenCalledWith(1, jasmine.any(Object));
+    expect(router.navigate).toHaveBeenCalledWith(['/backgrounds']);
   });
 
   it('should handle form submission error', () => {
@@ -149,5 +201,44 @@ describe('CreateBackgroundComponent', () => {
     component.ngOnInit();
 
     expect(router.navigate).toHaveBeenCalledWith(['/login']);
+  });
+
+  it('should load background for editing', () => {
+    const mockBackground = {
+      id: 1,
+      background_name: 'Pirate',
+      background_description: 'Swashbuckler',
+      feature_name: 'Ship Passage',
+      feature_effect: 'Free passage',
+      skill_proficiencies: ['Athletics'],
+      tool_proficiencies: ['Navigator\'s Tools'],
+      language_proficiencies: ['Elvish'],
+      equipment: ['Cutlass'],
+      suggested_characteristics: {
+        personality_traits: ['Bold'],
+        ideals: ['Freedom'],
+        bonds: ['Ship'],
+        flaws: ['Greedy']
+      },
+      user_id: 1
+    };
+
+    (backgroundService.getBackgroundById as jasmine.Spy).and.returnValue(of(mockBackground));
+    (activatedRoute as any).params = of({ id: '1' });
+
+    component.ngOnInit();
+
+    expect(component.isEditMode).toBeTrue();
+    expect(component.backgroundId).toBe(1);
+    expect(backgroundService.getBackgroundById).toHaveBeenCalledWith(1);
+    expect(component.backgroundForm.get('name')?.value).toBe('Pirate');
+    expect(component.skillProficienciesArray.length).toBe(1);
+    expect(component.toolProficienciesArray.length).toBe(1);
+    expect(component.languageProficienciesArray.length).toBe(1);
+    expect(component.equipmentArray.length).toBe(1);
+    expect(component.personalityTraitsArray.length).toBe(1);
+    expect(component.idealsArray.length).toBe(1);
+    expect(component.bondsArray.length).toBe(1);
+    expect(component.flawsArray.length).toBe(1);
   });
 });
