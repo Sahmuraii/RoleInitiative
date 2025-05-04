@@ -24,7 +24,16 @@ jobs:
       working-directory: ./frontend
       run: npm ci
 
+    - name: Install Chrome Headless
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libgbm-dev wget
+        wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+        sudo apt install -y ./google-chrome-stable_current_amd64.deb
+
     - name: Run Component Tests
       working-directory: ./frontend
       run: |
-        npm test --code-coverage --watch=false --browsers=ChromeHeadless --include=src/app/components/create-monster/create-monster.component.spec.ts
+        export DISPLAY=:99
+        Xvfb :99 -screen 0 1024x768x16 &
+        npm test -- --watch=false --browsers=ChromeHeadless --include=src/app/components/create-monster/create-monster.component.spec.ts --code-coverage
