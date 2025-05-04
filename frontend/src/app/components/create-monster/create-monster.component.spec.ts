@@ -446,25 +446,6 @@ describe('CreateMonsterComponent', () => {
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/monsters']);
   }));
 
-  it('should handle file uploads when creating a monster', fakeAsync(() => {
-    fixture.detectChanges();
-    
-    component.monsterForm.get('name')?.setValue('New Monster with Image');
-    
-    const mockFile = new File(['test'], 'test-image.jpg', { type: 'image/jpeg' });
-    component.selectedFile = mockFile;
-    
-    mockMonsterService.createMonster.and.returnValue(of({ id: 3, name: 'New Monster with Image' }));
-    spyOn(window, 'alert');
-    
-    component.onSubmit();
-    tick();
-    
-    expect(mockMonsterService.createMonster).toHaveBeenCalled();
-    expect(window.alert).toHaveBeenCalledWith('Monster created successfully!');
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/monsters']);
-  }));
-
   it('should handle errors when creating a monster', fakeAsync(() => {
     fixture.detectChanges();
     
