@@ -1,10 +1,6 @@
-name: Angular Unit Tests
+name: Angular Tests
 
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+on: [push, pull_request]
 
 jobs:
   test:
@@ -12,16 +8,29 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-
-    - name: Set up Node.js
-      uses: actions/setup-node@v3
       with:
-        node-version: '18.x'
-        cache: 'npm'
+        fetch-depth: 0
+
+    - name: Verify lock file
+      run: |
+        if [ ! -f package-lock.json ]; then
+          npm install --package-lock-only
+          git add package-lock.json
+        fi
+
+    - name: Cache dependencies
+      uses: actions/cache@v3
+      id: cache
+      with:
+        path: |
+          node_modules
+          .angular/cache
+        key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
 
     - name: Install dependencies
+      if: steps.cache.outputs.cache-hit != 'true'
       run: npm ci
 
-    - name: Run Unit Tests
+    - name: Run Tests
       run: |
-        npm run test -- --include=src/app/components/create-monster/create-monster.component.spec.ts --watch=false --browsers=ChromeHeadless
+        npm test -- --watch=false --browsers=ChromeHeadless --include=src/app/components/create-monster/create-monster.component.spec.ts
