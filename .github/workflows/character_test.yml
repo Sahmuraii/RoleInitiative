@@ -36,4 +36,4 @@ jobs:
       run: |
         export DISPLAY=:99
         Xvfb :99 -screen 0 1024x768x16 &
-        npm test -- --watch=false --browsers=ChromeHeadless --include=src/app/components/create-monster/create-character.component.spec.ts --code-coverage
+        npm test -- --watch=false --browsers=ChromeHeadless --include=src/app/components/create-character/create-character.component.spec.ts --code-coverage
