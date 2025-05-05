@@ -59,7 +59,7 @@ describe('CreateCharacterComponent', () => {
   } 
 
   beforeEach(async () => {
-    mockCreateCharacterService = jasmine.createSpyObj('CreateCharacterService', ['createCharacter']);
+    mockCreateCharacterService = jasmine.createSpyObj('CreateCharacterService', ['createCharacter', 'getRaceData', 'getClassData', 'getClassProficiencyData', 'getSpellData', 'getUserSpellData']);
     mockAuthService = jasmine.createSpyObj('AuthService', ['getCurrentUser']);
     mockRouter = jasmine.createSpyObj('Router', ['navigate']);
     mockActivatedRoute = {
