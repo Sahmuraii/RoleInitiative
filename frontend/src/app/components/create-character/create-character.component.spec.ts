@@ -20,9 +20,43 @@ describe('CreateCharacterComponent', () => {
 
 
   const mockUser = { id: 8295, name: 'Test_User' };
-  const mockCharacter = {
-
-  }
+  const mockCharacter = { 
+    "name": null, 
+    "ruleset": "2014", 
+    "levelMethod": "experience", 
+    "encumberance": "false", 
+    "race": null, 
+    "classLevels": [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], 
+    "primaryClass": "None", 
+    "classProficiencies": [], 
+    "statRuleset": "roll", 
+    "rollDiceAmt": 4, 
+    "rollDiceType": 6, 
+    "rollDropAmt": 1, 
+    "str": 8, 
+    "dex": 8, 
+    "con": 8, 
+    "int": 8, 
+    "wis": 8, 
+    "cha": 8, 
+    "spellsKnown": [], 
+    "homebrewSpellsKnown": [], 
+    "background": "", 
+    "alignment": "", 
+    "personality": "", 
+    "faith": "", 
+    "height": "", 
+    "weight": "", 
+    "skinColor": "", 
+    "hairColor": "", 
+    "eyeColor": "", 
+    "age": "", 
+    "appearance": "", 
+    "backstory": "", 
+    "bonds": "", 
+    "miscDetails": "", 
+    "equipment": "" 
+  } 
 
   beforeEach(async () => {
     mockCreateCharacterService = jasmine.createSpyObj('CreateCharacterService', ['createCharacter']);
@@ -48,6 +82,9 @@ describe('CreateCharacterComponent', () => {
         { provide: FormBuilder, useValue: formBuilder }
       ]
     }).compileComponents();
+
+    mockAuthService.getCurrentUser.and.returnValue(mockUser);
+    mockCreateCharacterService.createCharacter.and.returnValue(of({}));
 
     fixture = TestBed.createComponent(CreateCharacterComponent);
     component = fixture.componentInstance;
@@ -90,11 +127,23 @@ describe('CreateCharacterComponent', () => {
     expect(component.characterForm.get('classProficiencies')).toBeDefined();
   });
 
-  it('should initialize form with empty values', () => {
+  it('should initialize form with default values', () => {
     fixture.detectChanges();
     expect(component.characterForm).toBeTruthy();
     expect(component.characterForm.get('name')?.value).toBe('');
-    expect(component.characterForm.get('size')?.value).toBe('');
+    expect(component.characterForm.get('ruleset')?.value).toBe('2014');
+    expect(component.characterForm.get('levelMethod')?.value).toBe('experience');
+    expect(component.characterForm.get('encumberance')?.value).toBe('false');
+    expect(component.characterForm.get('race')?.value).toBe(null);
+    expect(component.characterForm.get('classLevels')?.value).toBe([ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ]);
+    expect(component.characterForm.get('primaryClass')?.value).toBe('None');
+    expect(component.characterForm.get('classProficiencies')?.value).toBe([]);
+    expect(component.characterForm.get('str')?.value).toBe(8);
+    expect(component.characterForm.get('dex')?.value).toBe(8);
+    expect(component.characterForm.get('con')?.value).toBe(8);
+    expect(component.characterForm.get('int')?.value).toBe(8);
+    expect(component.characterForm.get('wis')?.value).toBe(8);
+    expect(component.characterForm.get('cha')?.value).toBe(8);
   });
 
   it('Should return the right class proficiency sets for Barbarian (class_id = 1)', () => {
