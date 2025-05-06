@@ -669,7 +669,7 @@ describe('CreateCharacterComponent', () => {
     expect(component.getProfFirstOption("1", 0)).toBe(86)
   })
 
-  it('Should initialize proficiencies correctly', () => {
+  it('Should initialize proficiency options correctly', () => {
     component.classProficiencyOptions.set(mockClassProficiencies)
     fixture.detectChanges()
     const result = component.initializeProfOptions(component.classProficiencyOptions()[0])
@@ -682,5 +682,38 @@ describe('CreateCharacterComponent', () => {
       { "id": 96, "name": "Skill: Perception", "type": 1 },
       { "id": 102, "name": "Skill: Survival", "type": 1 },
     ])
+  })
+
+  it('Should initialize proficiency selects successfully', () => {
+    component.classProficiencyOptions.set(mockClassProficiencies)
+    fixture.detectChanges()
+    component.initializeClassProficiencies("1")
+    expect(component.characterForm.get('classProficiencies')).toContain({
+      "list_desc": "Choose two from Animal Handling, Athletics, Intimidation, Nature, Perception, and Survival",
+      "selects": [
+        {
+          "prof_list": [
+            {"id": 86, "name": "Skill: Animal Handling", "type": 1},
+            {"id": 88, "name": "Skill: Athletics", "type": 1},
+            {"id": 92, "name": "Skill: Intimidation", "type": 1},
+            {"id": 95, "name": "Skill: Nature", "type": 1},
+            {"id": 96, "name": "Skill: Perception", "type": 1},
+            {"id": 102, "name": "Skill: Survival", "type": 1}
+          ],
+          "option": "None"
+        },
+        {
+          "prof_list": [
+            {"id": 86, "name": "Skill: Animal Handling", "type": 1},
+            {"id": 88, "name": "Skill: Athletics", "type": 1},
+            {"id": 92, "name": "Skill: Intimidation", "type": 1},
+            {"id": 95, "name": "Skill: Nature", "type": 1},
+            {"id": 96, "name": "Skill: Perception", "type": 1},
+            {"id": 102, "name": "Skill: Survival", "type": 1}
+          ],
+          "option": "None"
+        }
+      ]
+    })
   })
 });
