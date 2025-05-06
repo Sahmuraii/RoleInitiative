@@ -492,4 +492,10 @@ describe('CreateCharacterComponent', () => {
     expect(result[0].class_id).toBe(1); // Verify the class_id
     expect(result[0].name).toBe("Barbarian"); // Verify the name
   });
+
+  it('Should return an array of all classes of the format { class_id: number, level: number }[]', () => {
+    const result = component.getClassLevels();
+    expect(result.length).toBe(12)
+    expect(result[0]).toEqual({"class_id": 1, "level": 1})
+  })
 });
