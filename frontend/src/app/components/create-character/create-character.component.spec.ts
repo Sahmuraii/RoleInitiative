@@ -716,4 +716,36 @@ describe('CreateCharacterComponent', () => {
       ]
     })
   })
+
+  it('Should get an array of the chosen class proficiencies', () => {
+    component.characterForm.setControl('classProficiencies', {
+      "list_desc": "Choose two from Animal Handling, Athletics, Intimidation, Nature, Perception, and Survival",
+      "selects": [
+        {
+          "prof_list": [
+            {"id": 86, "name": "Skill: Animal Handling", "type": 1},
+            {"id": 88, "name": "Skill: Athletics", "type": 1},
+            {"id": 92, "name": "Skill: Intimidation", "type": 1},
+            {"id": 95, "name": "Skill: Nature", "type": 1},
+            {"id": 96, "name": "Skill: Perception", "type": 1},
+            {"id": 102, "name": "Skill: Survival", "type": 1}
+          ],
+          "option": "88"
+        },
+        {
+          "prof_list": [
+            {"id": 86, "name": "Skill: Animal Handling", "type": 1},
+            {"id": 88, "name": "Skill: Athletics", "type": 1},
+            {"id": 92, "name": "Skill: Intimidation", "type": 1},
+            {"id": 95, "name": "Skill: Nature", "type": 1},
+            {"id": 96, "name": "Skill: Perception", "type": 1},
+            {"id": 102, "name": "Skill: Survival", "type": 1}
+          ],
+          "option": "102"
+        }
+      ]
+    })
+    fixture.detectChanges()
+    expect(component.getProfOptions()).toEqual(["88", "102"])
+  })
 });
