@@ -4,7 +4,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CreateCharacterService } from '../../services/create-character.service';
 import { Class_Proficiency_Option } from '../../models/class_proficiency_option.type';
 import { AuthService } from '../../services/auth.service';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { of } from 'rxjs';
 import { Router, ActivatedRoute } from '@angular/router';
 import { PLATFORM_ID } from '@angular/core';
@@ -389,6 +389,11 @@ describe('CreateCharacterComponent', () => {
     "conditions": []
   }]
 
+  const mockClassLevels = new FormArray([
+    new FormControl(1),
+    new FormControl(2),
+  ])
+
   beforeEach(async () => {
     mockCreateCharacterService = jasmine.createSpyObj('CreateCharacterService', ['createCharacter', 'getRaceData', 'getClassData', 'getClassProficiencyData', 'getSpellData', 'getUserSpellData']);
     mockAuthService = jasmine.createSpyObj('AuthService', ['getCurrentUser']);
@@ -494,6 +499,8 @@ describe('CreateCharacterComponent', () => {
   });
 
   it('Should return an array of all classes of the format { class_id: number, level: number }[]', () => {
+    component.classLevels.setValue([1, 0])
+    fixture.detectChanges()
     const result = component.getClassLevels();
     expect(result.length).toBe(12)
     expect(result[0]).toEqual({"class_id": 1, "level": 1})
