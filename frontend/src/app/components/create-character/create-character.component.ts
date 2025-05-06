@@ -631,14 +631,15 @@ export class CreateCharacterComponent implements OnInit {
       this.dndSpellsSignal.set(spells)
     })
 
-    this.authService.isLoggedIn$.subscribe((isLoggedIn) => {
-      if (isLoggedIn && this.authService.getCurrentUser()) {
-        this.createCharacterService.getUserSpellData().subscribe((userSpells) => {
-          this.userSpellsSignal.set(userSpells)
-        })
-        this.getUserSavedHomebrewSpellList()
-      }
-    });
+    // this.authService.isLoggedIn$.subscribe((isLoggedIn) => {
+    //   if (isLoggedIn && this.authService.getCurrentUser()) {
+        
+    //   }
+    // });
+    this.createCharacterService.getUserSpellData().subscribe((userSpells) => {
+      this.userSpellsSignal.set(userSpells)
+    })
+    this.getUserSavedHomebrewSpellList()
   }
   
   public showTab(tabId: string) {
