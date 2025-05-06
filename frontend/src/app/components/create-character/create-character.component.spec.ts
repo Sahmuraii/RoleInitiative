@@ -718,7 +718,7 @@ describe('CreateCharacterComponent', () => {
   })
 
   it('Should get an array of the chosen class proficiencies', () => {
-    component.characterForm.setControl('classProficiencies', {
+    component.characterForm.get('classProficiencies')?.setValue({
       "list_desc": "Choose two from Animal Handling, Athletics, Intimidation, Nature, Perception, and Survival",
       "selects": [
         {
