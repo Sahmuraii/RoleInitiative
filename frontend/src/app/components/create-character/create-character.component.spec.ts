@@ -60,6 +60,162 @@ describe('CreateCharacterComponent', () => {
     "equipment": "" 
   } 
 
+  const mockRaces = [
+    {
+      "ability_bonuses": [""],
+      "age_description": "",
+      "alignment_description": "",
+      "description": "",
+      "is_official": true,
+      "language_description": "",
+      "languages": [""],
+      "name": "Dragonborn",
+      "race_id": 1,
+      "size": "",
+      "size_description": "",
+      "speed": 0,
+      "starting_proficiencies": [""],
+      "subraces": [""],
+      "traits": [""]
+    },
+    {
+      "ability_bonuses": [""],
+      "age_description": "",
+      "alignment_description": "",
+      "description": "",
+      "is_official": true,
+      "language_description": "",
+      "languages": [""],
+      "name": "Dwarf",
+      "race_id": 2,
+      "size": "",
+      "size_description": "",
+      "speed": 0,
+      "starting_proficiencies": [""],
+      "subraces": [""],
+      "traits": [""]
+    },
+    {
+      "ability_bonuses": [""],
+      "age_description": "",
+      "alignment_description": "",
+      "description": "",
+      "is_official": true,
+      "language_description": "",
+      "languages": [""],
+      "name": "Elf",
+      "race_id": 3,
+      "size": "",
+      "size_description": "",
+      "speed": 0,
+      "starting_proficiencies": [""],
+      "subraces": [""],
+      "traits": [""]
+    },
+    {
+      "ability_bonuses": [""],
+      "age_description": "",
+      "alignment_description": "",
+      "description": "",
+      "is_official": true,
+      "language_description": "",
+      "languages": [""],
+      "name": "Gnome",
+      "race_id": 4,
+      "size": "",
+      "size_description": "",
+      "speed": 0,
+      "starting_proficiencies": [""],
+      "subraces": [""],
+      "traits": [""]
+    },
+    {
+      "ability_bonuses": [""],
+      "age_description": "",
+      "alignment_description": "",
+      "description": "",
+      "is_official": true,
+      "language_description": "",
+      "languages": [""],
+      "name": "Half-Elf",
+      "race_id": 5,
+      "size": "",
+      "size_description": "",
+      "speed": 0,
+      "starting_proficiencies": [""],
+      "subraces": [""],
+      "traits": [""]
+    },
+    {
+      "ability_bonuses": [""],
+      "age_description": "",
+      "alignment_description": "",
+      "description": "",
+      "is_official": true,
+      "language_description": "",
+      "languages": [""],
+      "name": "Half-Orc",
+      "race_id": 6,
+      "size": "",
+      "size_description": "",
+      "speed": 0,
+      "starting_proficiencies": [""],
+      "subraces": [""],
+      "traits": [""]
+    },
+    {
+      "ability_bonuses": [""],
+      "age_description": "",
+      "alignment_description": "",
+      "description": "",
+      "is_official": true,
+      "language_description": "",
+      "languages": [""],
+      "name": "Halfling",
+      "race_id": 7,
+      "size": "",
+      "size_description": "",
+      "speed": 0,
+      "starting_proficiencies": [""],
+      "subraces": [""],
+      "traits": [""]
+    },
+    {
+      "ability_bonuses": [""],
+      "age_description": "",
+      "alignment_description": "",
+      "description": "",
+      "is_official": true,
+      "language_description": "",
+      "languages": [""],
+      "name": "Human",
+      "race_id": 8,
+      "size": "",
+      "size_description": "",
+      "speed": 0,
+      "starting_proficiencies": [""],
+      "subraces": [""],
+      "traits": [""]
+    },
+    {
+      "ability_bonuses": [""],
+      "age_description": "",
+      "alignment_description": "",
+      "description": "",
+      "is_official": true,
+      "language_description": "",
+      "languages": [""],
+      "name": "Tiefling",
+      "race_id": 9,
+      "size": "",
+      "size_description": "",
+      "speed": 0,
+      "starting_proficiencies": [""],
+      "subraces": [""],
+      "traits": [""]
+    }
+  ]
+
   beforeEach(async () => {
     mockCreateCharacterService = jasmine.createSpyObj('CreateCharacterService', ['createCharacter', 'getRaceData', 'getClassData', 'getClassProficiencyData', 'getSpellData', 'getUserSpellData']);
     mockAuthService = jasmine.createSpyObj('AuthService', ['getCurrentUser']);
@@ -90,6 +246,7 @@ describe('CreateCharacterComponent', () => {
 
     mockAuthService.getCurrentUser.and.returnValue(mockUser);
     mockCreateCharacterService.createCharacter.and.returnValue(of({}));
+    mockCreateCharacterService.getRaceData.and.returnValue(of(mockRaces));
 
     fixture = TestBed.createComponent(CreateCharacterComponent);
     component = fixture.componentInstance;
