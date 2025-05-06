@@ -10,6 +10,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { PLATFORM_ID } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { QuillModule } from 'ngx-quill';
+import { DND_Spell } from '../../models/dnd_spell.type';
 
 describe('CreateCharacterComponent', () => {
   let component: CreateCharacterComponent;
@@ -19,6 +20,7 @@ describe('CreateCharacterComponent', () => {
   let mockRouter: jasmine.SpyObj<Router>;
   let mockActivatedRoute: any;
   let formBuilder: FormBuilder;
+  let defaultJson: object = {};
 
 
   const mockUser = { id: 8295, name: 'Test_User' };
@@ -216,6 +218,177 @@ describe('CreateCharacterComponent', () => {
     }
   ]
 
+  const mockClasses = [
+    { 
+      "class_id": 1, 
+      "description": "Barbarian", 
+      "hit_die": 12, 
+      "is_official": true, 
+      "name": "Barbarian" 
+    }, 
+    { 
+      "class_id": 2, 
+      "description": "Bard", 
+      "hit_die": 8, 
+      "is_official": true, 
+      "name": "Bard" 
+    }, 
+    { "class_id": 3, 
+      "description": "Cleric", 
+      "hit_die": 8, 
+      "is_official": true, 
+      "name": "Cleric" 
+    }, 
+    { 
+      "class_id": 4, 
+      "description": "Druid", 
+      "hit_die": 8, 
+      "is_official": true, 
+      "name": "Druid" 
+    }, 
+    { 
+      "class_id": 5, 
+      "description": "Fighter", 
+      "hit_die": 10, 
+      "is_official": true, 
+      "name": "Fighter" 
+    }, 
+    { 
+      "class_id": 6, 
+      "description": "Monk", 
+      "hit_die": 8, 
+      "is_official": true, 
+      "name": "Monk" 
+    }, 
+    { 
+      "class_id": 7, 
+      "description": "Paladin", 
+      "hit_die": 10, 
+      "is_official": true, 
+      "name": "Paladin" 
+    }, 
+    { 
+      "class_id": 8, 
+      "description": "Ranger", 
+      "hit_die": 10, 
+      "is_official": true, 
+      "name": "Ranger" 
+    }, 
+    { 
+      "class_id": 9, 
+      "description": "Rogue", 
+      "hit_die": 8, 
+      "is_official": true, 
+      "name": "Rogue" 
+    }, 
+    { 
+      "class_id": 10, 
+      "description": "Sorcerer", 
+      "hit_die": 6, 
+      "is_official": true, 
+      "name": "Sorcerer" 
+    }, 
+    { 
+      "class_id": 11, 
+      "description": "Warlock", 
+      "hit_die": 8, 
+      "is_official": true, 
+      "name": "Warlock" 
+    }, 
+    { 
+      "class_id": 12, 
+      "description": "Wizard", 
+      "hit_die": 6, 
+      "is_official": true, 
+      "name": "Wizard" 
+    }
+  ]
+
+  const mockClassProficiencies = [
+    {
+      "class_id": 1,
+      "description": "A fierce warrior of primitive background who can enter a battle rage",
+      "given_by_class": 1,
+      "given_when_multiclass": false,
+      "hit_die": 12,
+      "is_official": true,
+      "list_description": "Choose two from Animal Handling, Athletics, Intimidation, Nature, Perception, and Survival",
+      "max_choices": 2,
+      "name": "Barbarian",
+      "proficiency_list_id": 1,
+      "proficiency_options": [
+        { "id": 86, "name": "Skill: Animal Handling", "type": 1 },
+        { "id": 88, "name": "Skill: Athletics", "type": 1 },
+        { "id": 92, "name": "Skill: Intimidation", "type": 1 },
+        { "id": 95, "name": "Skill: Nature", "type": 1 },
+        { "id": 96, "name": "Skill: Perception", "type": 1 },
+        { "id": 102, "name": "Skill: Survival", "type": 1 },
+      ],
+    },
+  ]
+
+  const mockSpells = [{
+    "spell_id": 1,
+    "spell_name": "Acid Arrow",
+    "spell_level": 2,
+    "spell_school": "Evocation",
+    "casting_time": "1 Action",
+    "attack_type": "ranged",
+    "damage_slot_level": [],
+    "damage_char_level": null,
+    "damage_type": "Acid",
+    "heal_slot_level": null,
+    "dc_type": null,
+    "dc_success": null,
+    "reaction_condition": "",
+    "is_ritual": false,
+    "is_concentration": false,
+    "area_type": null,
+    "area_size": null,
+    "range": "90 feet",
+    "components": ["V", "S", "M"],
+    "material": "When you cast this spell using a spell slot of 3rd level or higher, the damage (both initial and later) increases by 1d4 for each slot level above 2nd.",
+    "duration": "Instantaneous",
+    "description": [""],
+    "higher_level": null,
+    "classes": ["Wizard"],
+    "subclasses": ["Lore", "Land"],
+  }]
+
+  const mockUserSpells = [{
+    "user_spell_id": 1,
+    "user_id": 8295,
+    "spell_name": "Luminous Verdict",
+    "version": "",
+    "spell_level": "3rd-Level",
+    "spell_school": "Evocation",
+    "casting_time": "Bonus Action",
+    "reaction_condition": "",
+    "components": ["V", "S"],
+    "material": "",
+    "spell_range_type": "Distance",
+    "range": "Distance (30 feet Cylinder)",
+    "area_length": "30 feet",
+    "area_type": "Cylinder",
+    "duration_type": "Concentration",
+    "duration": "",
+    "duration_time": "",
+    "description": "You call down a radiant judgment upon a foe, empowering your strikes with divine energy. Choose one creature within range. For the duration, your weapon strikes against that creature deal an additional 1d8 radiant damage. The target must make a Constitution saving throw at the start of each of its turns. On a failed save, it is blinded until the start of its next turn. Additionally, once while the spell is active, you may expend the spell as a reaction when the target hits a creature with an attack: the attacker takes radiant damage equal to your Paladin level + your Charisma modifier, and must make a Dexterity saving throw or be knocked prone.",
+    "ritual_spell": "",
+    "higher_level_description": "",
+    "higher_level_scaling": "",
+    "classes": [""],
+    "subclasses": [""],
+    "isSaveOrAttack": "save",
+    "save_stat": "Dexterity",
+    "attack_type": "melee",
+    "damage": "+1d8",
+    "damage_type": "Radiant",
+    "effect": "",
+    "inflicts_conditions": true,
+    "conditions": []
+  }]
+
   beforeEach(async () => {
     mockCreateCharacterService = jasmine.createSpyObj('CreateCharacterService', ['createCharacter', 'getRaceData', 'getClassData', 'getClassProficiencyData', 'getSpellData', 'getUserSpellData']);
     mockAuthService = jasmine.createSpyObj('AuthService', ['getCurrentUser']);
@@ -247,6 +420,10 @@ describe('CreateCharacterComponent', () => {
     mockAuthService.getCurrentUser.and.returnValue(mockUser);
     mockCreateCharacterService.createCharacter.and.returnValue(of({}));
     mockCreateCharacterService.getRaceData.and.returnValue(of(mockRaces));
+    mockCreateCharacterService.getClassData.and.returnValue(of(mockClasses));
+    mockCreateCharacterService.getClassProficiencyData.and.returnValue(of(mockClassProficiencies));
+    mockCreateCharacterService.getSpellData.and.returnValue(of(mockSpells as unknown as DND_Spell[]));
+    mockCreateCharacterService.getUserSpellData.and.returnValue(of(mockUserSpells));
 
     fixture = TestBed.createComponent(CreateCharacterComponent);
     component = fixture.componentInstance;
