@@ -718,7 +718,7 @@ describe('CreateCharacterComponent', () => {
   })
 
   it('Should get an array of the chosen class proficiencies', () => {
-    component.characterForm.get('classProficiencies')?.setValue({
+    component.characterForm.get('classProficiencies')?.setValue([{
       "list_desc": "Choose two from Animal Handling, Athletics, Intimidation, Nature, Perception, and Survival",
       "selects": [
         {
@@ -744,7 +744,7 @@ describe('CreateCharacterComponent', () => {
           "option": "102"
         }
       ]
-    })
+    }])
     fixture.detectChanges()
     expect(component.getProfOptions()).toEqual(["88", "102"])
   })
