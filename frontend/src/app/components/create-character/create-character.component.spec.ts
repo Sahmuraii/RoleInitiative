@@ -325,6 +325,103 @@ describe('CreateCharacterComponent', () => {
         { "id": 102, "name": "Skill: Survival", "type": 1 },
       ],
     },
+    { 
+      "class_id": 2, 
+      "description": "Bard", 
+      "given_by_class": 2, 
+      "given_when_multiclass": false, 
+      "hit_die": 8, 
+      "is_official": true, 
+      "list_description": "Choose any three", 
+      "max_choices": 3, 
+      "name": "Bard", 
+      "proficiency_list_id": 2, 
+      "proficiency_options": [ 
+        { "id": 85, "name": "Skill: Acrobatics", "type": 1 }, 
+        { "id": 86, "name": "Skill: Animal Handling", "type": 1 },
+        { "id": 87, "name": "Skill: Arcana", "type": 1 }, 
+        { "id": 88, "name": "Skill: Athletics", "type": 1 }, 
+        { "id": 89, "name": "Skill: Deception", "type": 1 }, 
+        { "id": 90, "name": "Skill: History", "type": 1 }, 
+        { "id": 91, "name": "Skill: Insight", "type": 1 }, 
+        { "id": 92, "name": "Skill: Intimidation", "type": 1 }, 
+        { "id": 93, "name": "Skill: Investigation", "type": 1 }, 
+        { "id": 94, "name": "Skill: Medicine", "type": 1 }, 
+        { "id": 95, "name": "Skill: Nature", "type": 1 }, 
+        { "id": 96, "name": "Skill: Perception", "type": 1 }, 
+        { "id": 97, "name": "Skill: Performance", "type": 1 }, 
+        { "id": 98, "name": "Skill: Persuasion", "type": 1 }, 
+        { "id": 99, "name": "Skill: Religion", "type": 1 }, 
+        { "id": 100, "name": "Skill: Sleight of Hand", "type": 1 }, 
+        { "id": 101, "name": "Skill: Stealth", "type": 1 }, 
+        { "id": 102, "name": "Skill: Survival", "type": 1 } 
+      ] 
+    }, 
+    { 
+      "class_id": 2, 
+      "description": "Bard", 
+      "given_by_class": 2, 
+      "given_when_multiclass": false, 
+      "hit_die": 8, 
+      "is_official": true, 
+      "list_description": "Three musical instruments of your choice", 
+      "max_choices": 3, 
+      "name": "Bard", 
+      "proficiency_list_id": 3, 
+      "proficiency_options": [ 
+        { "id": 3, "name": "Bagpipes", "type": 7 }, 
+        { "id": 22, "name": "Drum", "type": 7 }, 
+        { "id": 23, "name": "Dulcimer", "type": 7 }, 
+        { "id": 25, "name": "Flute", "type": 7 }, 
+        { "id": 39, "name": "Horn", "type": 7 }, 
+        { "id": 50, "name": "Lute", "type": 7 }, 
+        { "id": 51, "name": "Lyre", "type": 7 }, 
+        { "id": 62, "name": "Pan flute", "type": 7 }, 
+        { "id": 79, "name": "Shawm", "type": 7 }, 
+        { "id": 111, "name": "Viol", "type": 7 } 
+      ] 
+    }, 
+    { 
+      "class_id": 3, 
+      "description": "Cleric", 
+      "given_by_class": 3, 
+      "given_when_multiclass": false, 
+      "hit_die": 8, 
+      "is_official": true, 
+      "list_description": "Choose two from History, Insight, Medicine, Persuasion, and Religion", 
+      "max_choices": 2, 
+      "name": "Cleric", 
+      "proficiency_list_id": 4, 
+      "proficiency_options": [ 
+        { "id": 90, "name": "Skill: History", "type": 1 }, 
+        { "id": 91, "name": "Skill: Insight", "type": 1 }, 
+        { "id": 94, "name": "Skill: Medicine", "type": 1 }, 
+        { "id": 98, "name": "Skill: Persuasion", "type": 1 }, 
+        { "id": 99, "name": "Skill: Religion", "type": 1 } 
+      ] 
+    }, 
+    { 
+      "class_id": 4, 
+      "description": "Druid", 
+      "given_by_class": 4, 
+      "given_when_multiclass": false, 
+      "hit_die": 8, 
+      "is_official": true, 
+      "list_description": "Choose two from Arcana, Animal Handling, Insight, Medicine, Nature, Perception, Religion, and Survival", 
+      "max_choices": 2, 
+      "name": "Druid", 
+      "proficiency_list_id": 5, 
+      "proficiency_options": [ 
+        { "id": 86, "name": "Skill: Animal Handling", "type": 1 }, 
+        { "id": 87, "name": "Skill: Arcana", "type": 1 }, 
+        { "id": 91, "name": "Skill: Insight", "type": 1 }, 
+        { "id": 94, "name": "Skill: Medicine", "type": 1 }, 
+        { "id": 95, "name": "Skill: Nature", "type": 1 }, 
+        { "id": 96, "name": "Skill: Perception", "type": 1 }, 
+        { "id": 99, "name": "Skill: Religion", "type": 1 }, 
+        { "id": 102, "name": "Skill: Survival", "type": 1 } 
+      ] 
+    }
   ]
 
   const mockSpells = [{
@@ -527,5 +624,14 @@ describe('CreateCharacterComponent', () => {
     component.primaryClass = "6"
     fixture.detectChanges()
     expect(component.getClassString()).toBe("Monk Lvl. 5, Barbarian Lvl. 1, Druid Lvl. 1")
+  })
+
+  it('Should grab the correct Class Proficiency object for Druid (class_id = 4)', () => {
+    component.classProficiencyOptions.set(mockClassProficiencies)
+    fixture.detectChanges()
+    const result = component.getArrayOfProfTypes("4");
+    expect(result.length).toBe(1);
+    expect(result[0].class_id).toBe(4);
+    expect(result[0].name).toBe("Druid");
   })
 });
