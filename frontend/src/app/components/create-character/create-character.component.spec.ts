@@ -674,5 +674,13 @@ describe('CreateCharacterComponent', () => {
     fixture.detectChanges()
     const result = component.initializeProfOptions(component.classProficiencyOptions()[0])
     expect(result.at(0).get("option")?.value).toBe("None")
+    expect(result.at(0).get("prof_list")?.value).toEqual([
+      { "id": 86, "name": "Skill: Animal Handling", "type": 1 },
+      { "id": 88, "name": "Skill: Athletics", "type": 1 },
+      { "id": 92, "name": "Skill: Intimidation", "type": 1 },
+      { "id": 95, "name": "Skill: Nature", "type": 1 },
+      { "id": 96, "name": "Skill: Perception", "type": 1 },
+      { "id": 102, "name": "Skill: Survival", "type": 1 },
+    ])
   })
 });
