@@ -587,14 +587,6 @@ describe('CreateCharacterComponent', () => {
     expect(component.characterForm.get('cha')?.value).toBe(8);
   });
 
-  it('Should return the right class proficiency sets for Barbarian (class_id = 1)', () => {
-    const result = component.getArrayOfProfTypes("1");
-    console.log("Result:", result); // Inspect the result
-    expect(result.length).toBe(1); // Expect 1 object for Barbarian
-    expect(result[0].class_id).toBe(1); // Verify the class_id
-    expect(result[0].name).toBe("Barbarian"); // Verify the name
-  });
-
   it('Should return an array of all classes of the format { class_id: number, level: number }[]', () => {
     component.classLevels.setValue([ 1, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0 ])
     fixture.detectChanges()
@@ -626,6 +618,14 @@ describe('CreateCharacterComponent', () => {
     expect(component.getClassString()).toBe("Monk Lvl. 5, Barbarian Lvl. 1, Druid Lvl. 1")
   })
 
+  it('Should return the right class proficiency sets for Barbarian (class_id = 1)', () => {
+    const result = component.getArrayOfProfTypes("1");
+    console.log("Result:", result); // Inspect the result
+    expect(result.length).toBe(1); // Expect 1 object for Barbarian
+    expect(result[0].class_id).toBe(1); // Verify the class_id
+    expect(result[0].name).toBe("Barbarian"); // Verify the name
+  });
+
   it('Should grab the correct Class Proficiency object for Druid (class_id = 4)', () => {
     component.classProficiencyOptions.set(mockClassProficiencies)
     fixture.detectChanges()
@@ -633,5 +633,33 @@ describe('CreateCharacterComponent', () => {
     expect(result.length).toBe(1);
     expect(result[0].class_id).toBe(4);
     expect(result[0].name).toBe("Druid");
+  })
+
+  it('Should grab correct proficiency options for barbarian (class_id = 1)', () => {
+    component.classProficiencyOptions.set(mockClassProficiencies)
+    fixture.detectChanges()
+    const result = component.getArrayofProfOptions("1")
+    expect(result.length).toBe(6)
+    expect(result[0][0].name).toBe("Skill: Animal Handling")
+    expect(result[0][1].name).toBe("Skill: Athletics")
+    expect(result[0][2].name).toBe("Skill: Intimidation")
+    expect(result[0][3].name).toBe("Skill: Nature")
+    expect(result[0][4].name).toBe("Skill: Perception")
+    expect(result[0][5].name).toBe("Skill: Survival")
+  })
+
+  it('Should grab correct proficiency options for Druid (class_id = 4)', () => {
+    component.classProficiencyOptions.set(mockClassProficiencies)
+    fixture.detectChanges()
+    const result = component.getArrayofProfOptions("4")
+    expect(result.length).toBe(8)
+    expect(result[0][0].name).toBe("Skill: Animal Handling")
+    expect(result[0][1].name).toBe("Skill: Arcana")
+    expect(result[0][2].name).toBe("Skill: Insight")
+    expect(result[0][3].name).toBe("Skill: Medicine")
+    expect(result[0][4].name).toBe("Skill: Nature")
+    expect(result[0][5].name).toBe("Skill: Perception")
+    expect(result[0][6].name).toBe("Skill: Religion")
+    expect(result[0][7].name).toBe("Skill: Survival")
   })
 });
