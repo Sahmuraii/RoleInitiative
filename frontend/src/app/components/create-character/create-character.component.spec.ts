@@ -499,7 +499,7 @@ describe('CreateCharacterComponent', () => {
   });
 
   it('Should return an array of all classes of the format { class_id: number, level: number }[]', () => {
-    component.classLevels.setValue([1, 0])
+    component.classLevels.setValue([ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ])
     fixture.detectChanges()
     const result = component.getClassLevels();
     expect(result.length).toBe(12)
