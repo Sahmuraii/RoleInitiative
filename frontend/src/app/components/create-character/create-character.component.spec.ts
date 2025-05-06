@@ -639,7 +639,7 @@ describe('CreateCharacterComponent', () => {
     component.classProficiencyOptions.set(mockClassProficiencies)
     fixture.detectChanges()
     const result = component.getArrayofProfOptions("1")
-    expect(result.length).toBe(6)
+    expect(result[0].length).toBe(6)
     expect(result[0][0].name).toBe("Skill: Animal Handling")
     expect(result[0][1].name).toBe("Skill: Athletics")
     expect(result[0][2].name).toBe("Skill: Intimidation")
@@ -652,7 +652,7 @@ describe('CreateCharacterComponent', () => {
     component.classProficiencyOptions.set(mockClassProficiencies)
     fixture.detectChanges()
     const result = component.getArrayofProfOptions("4")
-    expect(result.length).toBe(8)
+    expect(result[0].length).toBe(8)
     expect(result[0][0].name).toBe("Skill: Animal Handling")
     expect(result[0][1].name).toBe("Skill: Arcana")
     expect(result[0][2].name).toBe("Skill: Insight")
@@ -661,5 +661,18 @@ describe('CreateCharacterComponent', () => {
     expect(result[0][5].name).toBe("Skill: Perception")
     expect(result[0][6].name).toBe("Skill: Religion")
     expect(result[0][7].name).toBe("Skill: Survival")
+  })
+
+  it('Should grab the first proficiency from a list of Barbarian\'s proficiency options', () => {
+    component.classProficiencyOptions.set(mockClassProficiencies)
+    fixture.detectChanges()
+    expect(component.getProfFirstOption("1", 0)).toBe(86)
+  })
+
+  it('Should initialize proficiencies correctly', () => {
+    component.classProficiencyOptions.set(mockClassProficiencies)
+    fixture.detectChanges()
+    const result = component.initializeProfOptions(component.classProficiencyOptions()[0])
+    expect(result.at(0).get("option")?.value).toBe("None")
   })
 });
