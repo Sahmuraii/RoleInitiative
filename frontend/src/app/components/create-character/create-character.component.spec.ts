@@ -4,10 +4,12 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CreateCharacterService } from '../../services/create-character.service';
 import { Class_Proficiency_Option } from '../../models/class_proficiency_option.type';
 import { AuthService } from '../../services/auth.service';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { of } from 'rxjs';
 import { Router, ActivatedRoute } from '@angular/router';
 import { PLATFORM_ID } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { QuillModule } from 'ngx-quill';
 
 describe('CreateCharacterComponent', () => {
   let component: CreateCharacterComponent;
@@ -71,6 +73,9 @@ describe('CreateCharacterComponent', () => {
       imports: [
         CreateCharacterComponent,
         HttpClientTestingModule,
+        ReactiveFormsModule,
+        CommonModule,
+        QuillModule.forRoot()
       ],
       declarations: [],
       providers: [
