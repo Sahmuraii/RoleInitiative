@@ -469,14 +469,14 @@ describe('CreateCharacterComponent', () => {
   it('should initialize form with default values', () => {
     fixture.detectChanges();
     expect(component.characterForm).toBeTruthy();
-    expect(component.characterForm.get('name')?.value).toBe('');
+    expect(component.characterForm.get('name')?.value).toBe(null);
     expect(component.characterForm.get('ruleset')?.value).toBe('2014');
     expect(component.characterForm.get('levelMethod')?.value).toBe('experience');
     expect(component.characterForm.get('encumberance')?.value).toBe('false');
     expect(component.characterForm.get('race')?.value).toBe(null);
-    expect(component.characterForm.get('classLevels')?.value).toBe([ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ]);
+    expect(component.characterForm.get('classLevels')?.value).toEqual([ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ]);
     expect(component.characterForm.get('primaryClass')?.value).toBe('None');
-    expect(component.characterForm.get('classProficiencies')?.value).toBe([]);
+    expect(component.characterForm.get('classProficiencies')?.value).toEqual([]);
     expect(component.characterForm.get('str')?.value).toBe(8);
     expect(component.characterForm.get('dex')?.value).toBe(8);
     expect(component.characterForm.get('con')?.value).toBe(8);
