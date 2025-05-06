@@ -499,10 +499,20 @@ describe('CreateCharacterComponent', () => {
   });
 
   it('Should return an array of all classes of the format { class_id: number, level: number }[]', () => {
-    component.classLevels.setValue([ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ])
+    component.classLevels.setValue([ 1, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0 ])
     fixture.detectChanges()
     const result = component.getClassLevels();
     expect(result.length).toBe(12)
     expect(result[0]).toEqual({"class_id": 1, "level": 1})
+    expect(result[5]).toEqual({"class_id": 6, "level": 5})
+    expect(result[11]).toEqual({"class_id": 12, "level": 0})
+  })
+
+  it('Should update the max level display accordingly', () => {
+    component.classLevels.setValue([ 1, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0 ])
+    component.updateMaxLevels()
+    fixture.detectChanges()
+    expect(component.totalLevelsDisplay).toBe(6)
+    expect(component.chosenClasses).toEqual([1, 6])
   })
 });
