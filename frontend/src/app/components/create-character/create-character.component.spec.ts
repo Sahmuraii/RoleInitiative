@@ -515,4 +515,17 @@ describe('CreateCharacterComponent', () => {
     expect(component.totalLevelsDisplay).toBe(6)
     expect(component.chosenClasses).toEqual([1, 6])
   })
+
+  it('Should display the correct classes on the summary without primary class', () => {
+    component.classLevels.setValue([ 1, 0, 0, 1, 0, 5, 0, 0, 0, 0, 0, 0 ])
+    fixture.detectChanges()
+    expect(component.getClassString()).toBe("Barbarian Lvl. 1, Druid Lvl. 1, Monk Lvl. 5")
+  })
+
+  it('Should display the correct classes on the summary and primary class', () => {
+    component.classLevels.setValue([ 1, 0, 0, 1, 0, 5, 0, 0, 0, 0, 0, 0 ])
+    component.primaryClass = "6"
+    fixture.detectChanges()
+    expect(component.getClassString()).toBe("Monk Lvl. 5, Barbarian Lvl. 1, Druid Lvl. 1")
+  })
 });
