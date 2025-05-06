@@ -688,7 +688,7 @@ describe('CreateCharacterComponent', () => {
     component.classProficiencyOptions.set(mockClassProficiencies)
     fixture.detectChanges()
     component.initializeClassProficiencies("1")
-    expect(component.characterForm.get('classProficiencies')).toContain({
+    expect(component.characterForm.get('classProficiencies')?.value).toContain({
       "list_desc": "Choose two from Animal Handling, Athletics, Intimidation, Nature, Perception, and Survival",
       "selects": [
         {
