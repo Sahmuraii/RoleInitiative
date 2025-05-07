@@ -1288,7 +1288,7 @@ describe('CreateCharacterComponent', () => {
     fixture.detectChanges()
     expect(component.validateStats()).toBe(0)
   })
-
+  //test
   it('Should validate stats correctly on point buy incorrect', () => {
     component.characterForm.get('statRuleset')?.setValue("point_buy")
     component.spentPoints = 20
