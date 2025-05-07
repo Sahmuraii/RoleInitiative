@@ -15,7 +15,6 @@ import { SpellDisplayComponent } from "../spell-display/spell-display.component"
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { API_URL } from '../../constants';
 
-
 @Component({
   selector: 'app-create-character',
   standalone: true,
@@ -43,10 +42,8 @@ export class CreateCharacterComponent implements OnInit {
   totalLevelsDisplay = 0
   chosenClasses: number[] = []
 
-
   //Class Proficiency Variables
   selectionValue: number = 0
-
 
   //Attribute variables
   attrRulesHiddenArray = [false, true, true, true]
@@ -65,11 +62,9 @@ export class CreateCharacterComponent implements OnInit {
   spentPoints = 0
   maxBuyStatArray = [15, 15, 15, 15, 15, 15]
 
-
   spellsKnownArray: Array<number> = []
   homebrewSpellsKnownArray: Array<number> = []
   
-
   hiddenArray = [false, true, true, true, true, true, true, true]
   // Cosntructor changed to initalized formGroup
   constructor(private fb: FormBuilder, private snackbar: MatSnackBar, private router: Router, private http: HttpClient) {
@@ -207,10 +202,6 @@ export class CreateCharacterComponent implements OnInit {
     return this.characterForm.get('cha')?.value
   }
 
-  // set classProficiencies(arr: FormArray) {
-  //   this.characterForm.get('classProficiencies')?.setValue(arr)
-  // }
-
   set primaryClass(str: string) {
     this.characterForm.get('primaryClass')?.setValue(str)
   }
@@ -250,7 +241,6 @@ export class CreateCharacterComponent implements OnInit {
   set cha(num: number) {
     this.characterForm.get('cha')?.setValue(num)
   }
-
 
   //Class Selection Methods
   initializeClassLevels(classes: DND_Class[]): void {
@@ -381,8 +371,6 @@ export class CreateCharacterComponent implements OnInit {
     return result
   }
 
-
-
   //Attribute methods
   showAttributeRuleset(rulesID: string) {
     this.str = 8;
@@ -473,7 +461,6 @@ export class CreateCharacterComponent implements OnInit {
   //Spell methods
 
   addToSpellList(inputArray: Array<number>, inputID: number) {
-    console.log(inputID)
     if(!inputArray.includes(inputID)) {
       inputArray.push(inputID)
     }
@@ -508,23 +495,15 @@ export class CreateCharacterComponent implements OnInit {
       console.warn('User not loaded yet');
       return;
     }
-
     const params = new HttpParams().set('userID', user.id);
-
     this.http.get(`${API_URL}saved-homebrew-ids`, { params }).subscribe((res: any) => {
       const savedList = res.saved as { content_type: string, content_id: number }[];
-
       const savedIds = savedList
         .filter(item => item.content_type === "spell")
         .map(item => item.content_id);
-      
-      
       this.userSavedSpellSignal.set(savedIds)
     });
   }
-
-
-
 
   //Miscellaneous Methods
 
@@ -593,7 +572,6 @@ export class CreateCharacterComponent implements OnInit {
     return 0
   }
 
-
   calculateStatModifier(stat: number): string {
     let modifier = Math.floor((stat - 10) / 2)
     if(modifier >= 0) {
@@ -630,12 +608,6 @@ export class CreateCharacterComponent implements OnInit {
     this.createCharacterService.getSpellData().subscribe((spells) => {
       this.dndSpellsSignal.set(spells)
     })
-
-    // this.authService.isLoggedIn$.subscribe((isLoggedIn) => {
-    //   if (isLoggedIn && this.authService.getCurrentUser()) {
-        
-    //   }
-    // });
     this.createCharacterService.getUserSpellData().subscribe((userSpells) => {
       this.userSpellsSignal.set(userSpells)
     })

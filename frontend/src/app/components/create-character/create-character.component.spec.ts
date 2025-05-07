@@ -11,6 +11,8 @@ import { PLATFORM_ID } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { QuillModule } from 'ngx-quill';
 import { DND_Spell } from '../../models/dnd_spell.type';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 describe('CreateCharacterComponent', () => {
   let component: CreateCharacterComponent;
@@ -431,7 +433,7 @@ describe('CreateCharacterComponent', () => {
     "spell_school": "Evocation",
     "casting_time": "1 Action",
     "attack_type": "ranged",
-    "damage_slot_level": [],
+    "damage_slot_level": null,
     "damage_char_level": null,
     "damage_type": "Acid",
     "heal_slot_level": null,
@@ -446,7 +448,85 @@ describe('CreateCharacterComponent', () => {
     "components": ["V", "S", "M"],
     "material": "When you cast this spell using a spell slot of 3rd level or higher, the damage (both initial and later) increases by 1d4 for each slot level above 2nd.",
     "duration": "Instantaneous",
-    "description": [""],
+    "description": "",
+    "higher_level": null,
+    "classes": ["Wizard"],
+    "subclasses": ["Lore", "Land"],
+  },{
+    "spell_id": 2,
+    "spell_name": "Acid Arrow2",
+    "spell_level": 2,
+    "spell_school": "Evocation",
+    "casting_time": "1 Action",
+    "attack_type": "ranged",
+    "damage_slot_level": null,
+    "damage_char_level": null,
+    "damage_type": "Acid",
+    "heal_slot_level": null,
+    "dc_type": null,
+    "dc_success": null,
+    "reaction_condition": "",
+    "is_ritual": false,
+    "is_concentration": false,
+    "area_type": null,
+    "area_size": null,
+    "range": "90 feet",
+    "components": ["V", "S", "M"],
+    "material": "When you cast this spell using a spell slot of 3rd level or higher, the damage (both initial and later) increases by 1d4 for each slot level above 2nd.",
+    "duration": "Instantaneous",
+    "description": "",
+    "higher_level": null,
+    "classes": ["Wizard"],
+    "subclasses": ["Lore", "Land"],
+  },{
+    "spell_id": 3,
+    "spell_name": "Acid Arrow3",
+    "spell_level": 2,
+    "spell_school": "Evocation",
+    "casting_time": "1 Action",
+    "attack_type": "ranged",
+    "damage_slot_level": null,
+    "damage_char_level": null,
+    "damage_type": "Acid",
+    "heal_slot_level": null,
+    "dc_type": null,
+    "dc_success": null,
+    "reaction_condition": "",
+    "is_ritual": false,
+    "is_concentration": false,
+    "area_type": null,
+    "area_size": null,
+    "range": "90 feet",
+    "components": ["V", "S", "M"],
+    "material": "When you cast this spell using a spell slot of 3rd level or higher, the damage (both initial and later) increases by 1d4 for each slot level above 2nd.",
+    "duration": "Instantaneous",
+    "description": "",
+    "higher_level": null,
+    "classes": ["Wizard"],
+    "subclasses": ["Lore", "Land"],
+  },{
+    "spell_id": 4,
+    "spell_name": "Acid Arrow4",
+    "spell_level": 2,
+    "spell_school": "Evocation",
+    "casting_time": "1 Action",
+    "attack_type": "ranged",
+    "damage_slot_level": null,
+    "damage_char_level": null,
+    "damage_type": "Acid",
+    "heal_slot_level": null,
+    "dc_type": null,
+    "dc_success": null,
+    "reaction_condition": "",
+    "is_ritual": false,
+    "is_concentration": false,
+    "area_type": null,
+    "area_size": null,
+    "range": "90 feet",
+    "components": ["V", "S", "M"],
+    "material": "When you cast this spell using a spell slot of 3rd level or higher, the damage (both initial and later) increases by 1d4 for each slot level above 2nd.",
+    "duration": "Instantaneous",
+    "description": "",
     "higher_level": null,
     "classes": ["Wizard"],
     "subclasses": ["Lore", "Land"],
@@ -484,12 +564,80 @@ describe('CreateCharacterComponent', () => {
     "effect": "",
     "inflicts_conditions": true,
     "conditions": []
+  },{
+    "user_spell_id": 2,
+    "user_id": 8295,
+    "spell_name": "Luminous Verdict2",
+    "version": "",
+    "spell_level": "3rd-Level",
+    "spell_school": "Evocation",
+    "casting_time": "Bonus Action",
+    "reaction_condition": "",
+    "components": ["V", "S"],
+    "material": "",
+    "spell_range_type": "Distance",
+    "range": "Distance (30 feet Cylinder)",
+    "area_length": "30 feet",
+    "area_type": "Cylinder",
+    "duration_type": "Concentration",
+    "duration": "",
+    "duration_time": "",
+    "description": "You call down a radiant judgment upon a foe, empowering your strikes with divine energy. Choose one creature within range. For the duration, your weapon strikes against that creature deal an additional 1d8 radiant damage. The target must make a Constitution saving throw at the start of each of its turns. On a failed save, it is blinded until the start of its next turn. Additionally, once while the spell is active, you may expend the spell as a reaction when the target hits a creature with an attack: the attacker takes radiant damage equal to your Paladin level + your Charisma modifier, and must make a Dexterity saving throw or be knocked prone.",
+    "ritual_spell": "",
+    "higher_level_description": "",
+    "higher_level_scaling": "",
+    "classes": [""],
+    "subclasses": [""],
+    "isSaveOrAttack": "save",
+    "save_stat": "Dexterity",
+    "attack_type": "melee",
+    "damage": "+1d8",
+    "damage_type": "Radiant",
+    "effect": "",
+    "inflicts_conditions": true,
+    "conditions": []
+  },{
+    "user_spell_id": 3,
+    "user_id": 8295,
+    "spell_name": "Luminous Verdict3",
+    "version": "",
+    "spell_level": "3rd-Level",
+    "spell_school": "Evocation",
+    "casting_time": "Bonus Action",
+    "reaction_condition": "",
+    "components": ["V", "S"],
+    "material": "",
+    "spell_range_type": "Distance",
+    "range": "Distance (30 feet Cylinder)",
+    "area_length": "30 feet",
+    "area_type": "Cylinder",
+    "duration_type": "Concentration",
+    "duration": "",
+    "duration_time": "",
+    "description": "You call down a radiant judgment upon a foe, empowering your strikes with divine energy. Choose one creature within range. For the duration, your weapon strikes against that creature deal an additional 1d8 radiant damage. The target must make a Constitution saving throw at the start of each of its turns. On a failed save, it is blinded until the start of its next turn. Additionally, once while the spell is active, you may expend the spell as a reaction when the target hits a creature with an attack: the attacker takes radiant damage equal to your Paladin level + your Charisma modifier, and must make a Dexterity saving throw or be knocked prone.",
+    "ritual_spell": "",
+    "higher_level_description": "",
+    "higher_level_scaling": "",
+    "classes": [""],
+    "subclasses": [""],
+    "isSaveOrAttack": "save",
+    "save_stat": "Dexterity",
+    "attack_type": "melee",
+    "damage": "+1d8",
+    "damage_type": "Radiant",
+    "effect": "",
+    "inflicts_conditions": true,
+    "conditions": []
   }]
 
   const mockClassLevels = new FormArray([
     new FormControl(1),
     new FormControl(2),
   ])
+
+  const MockSnackBar = {
+    open: jasmine.createSpy('open')
+  }
 
   beforeEach(async () => {
     mockCreateCharacterService = jasmine.createSpyObj('CreateCharacterService', ['createCharacter', 'getRaceData', 'getClassData', 'getClassProficiencyData', 'getSpellData', 'getUserSpellData']);
@@ -506,7 +654,8 @@ describe('CreateCharacterComponent', () => {
         HttpClientTestingModule,
         ReactiveFormsModule,
         CommonModule,
-        QuillModule.forRoot()
+        QuillModule.forRoot(),
+        NoopAnimationsModule
       ],
       declarations: [],
       providers: [
@@ -515,7 +664,8 @@ describe('CreateCharacterComponent', () => {
         { provide: Router, useValue: mockRouter },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
         { provide: PLATFORM_ID, useValue: 'browser' },
-        { provide: FormBuilder, useValue: formBuilder }
+        { provide: FormBuilder, useValue: formBuilder },
+        { provide: MatSnackBar, useValue: MockSnackBar }
       ]
     }).compileComponents();
 
@@ -526,6 +676,7 @@ describe('CreateCharacterComponent', () => {
     mockCreateCharacterService.getClassProficiencyData.and.returnValue(of(mockClassProficiencies));
     mockCreateCharacterService.getSpellData.and.returnValue(of(mockSpells as unknown as DND_Spell[]));
     mockCreateCharacterService.getUserSpellData.and.returnValue(of(mockUserSpells));
+
 
     fixture = TestBed.createComponent(CreateCharacterComponent);
     component = fixture.componentInstance;
@@ -778,5 +929,453 @@ describe('CreateCharacterComponent', () => {
     expect(component.rolledStats[2]).toBeGreaterThanOrEqual(component.rolledStats[3])
     expect(component.rolledStats[3]).toBeGreaterThanOrEqual(component.rolledStats[4])
     expect(component.rolledStats[4]).toBeGreaterThanOrEqual(component.rolledStats[5])
+  })
+
+  it('Should reset dice roll amounts when pressing the button', () => {
+    component.rollDiceAmt = 10
+    component.rollDiceType = 10
+    component.rollDropAmt = 5
+    fixture.detectChanges()
+    component.rollDiceReset()
+    expect(component.rollDiceAmt).toBe(4)
+    expect(component.rollDiceType).toBe(6)
+    expect(component.rollDropAmt).toBe(1)
+  })
+
+  it('Should give correct max stat for point buy', () => {
+    expect(component.getNewMaxBuyStat(10, 5)).toBe(14)
+    expect(component.getNewMaxBuyStat(13, 2)).toBe(14)
+    expect(component.getNewMaxBuyStat(8, 20)).toBe(15)
+    expect(component.getNewMaxBuyStat(8, 0)).toBe(8)
+  })
+
+  it('Should create the correct max stat array', () => {
+    component.str = 14
+    component.dex = 15
+    component.con = 11
+    component.int = 11
+    component.wis = 8
+    component.cha = 11
+    fixture.detectChanges()
+    component.updateMaxStats([component.str, component.dex, component.con, component.int, component.wis, component.cha])
+    expect(component.maxBuyStatArray).toEqual([15, 15, 13, 13, 10, 13])
+  })
+
+  it('Should retrieve correct stat array', () => {
+    component.str = 14
+    component.dex = 15
+    component.con = 11
+    component.int = 11
+    component.wis = 8
+    component.cha = 11
+    fixture.detectChanges()
+    expect(component.getStatArray()).toEqual([14, 15, 11, 11, 8, 11])
+  })
+
+  it('Should add spells to the list without duplicates', () => {
+    let testArray = [14, 3]
+    component.addToSpellList(testArray, 5)
+    component.addToSpellList(testArray, 6)
+    component.addToSpellList(testArray, 7)
+    expect(testArray.length).toBe(5)
+    component.addToSpellList(testArray, 14)
+    expect(testArray.length).toBe(5)
+  })
+
+  it('Should remove spells from the spell list', () => {
+    let testArray = [14, 3, 5, 6, 7]
+    component.removeFromSpellList(testArray, 3)
+    expect(testArray).toEqual([14, 5, 6, 7])
+  })
+
+  it('Should return the correct spell array', () => {
+    component.spellsKnownArray = [1, 3]
+    fixture.detectChanges()
+    let result = component.getSpellList()
+    expect(result).toEqual([{
+      "spell_id": 1,
+      "spell_name": "Acid Arrow",
+      "spell_level": 2,
+      "spell_school": "Evocation",
+      "casting_time": "1 Action",
+      "attack_type": "ranged",
+      "damage_slot_level": null,
+      "damage_char_level": null,
+      "damage_type": "Acid",
+      "heal_slot_level": null,
+      "dc_type": null,
+      "dc_success": null,
+      "reaction_condition": "",
+      "is_ritual": false,
+      "is_concentration": false,
+      "area_type": null,
+      "area_size": null,
+      "range": "90 feet",
+      "components": ["V", "S", "M"],
+      "material": "When you cast this spell using a spell slot of 3rd level or higher, the damage (both initial and later) increases by 1d4 for each slot level above 2nd.",
+      "duration": "Instantaneous",
+      "description": "",
+      "higher_level": null,
+      "classes": ["Wizard"],
+      "subclasses": ["Lore", "Land"],
+    },{
+      "spell_id": 3,
+      "spell_name": "Acid Arrow3",
+      "spell_level": 2,
+      "spell_school": "Evocation",
+      "casting_time": "1 Action",
+      "attack_type": "ranged",
+      "damage_slot_level": null,
+      "damage_char_level": null,
+      "damage_type": "Acid",
+      "heal_slot_level": null,
+      "dc_type": null,
+      "dc_success": null,
+      "reaction_condition": "",
+      "is_ritual": false,
+      "is_concentration": false,
+      "area_type": null,
+      "area_size": null,
+      "range": "90 feet",
+      "components": ["V", "S", "M"],
+      "material": "When you cast this spell using a spell slot of 3rd level or higher, the damage (both initial and later) increases by 1d4 for each slot level above 2nd.",
+      "duration": "Instantaneous",
+      "description": "",
+      "higher_level": null,
+      "classes": ["Wizard"],
+      "subclasses": ["Lore", "Land"],
+    }])
+  })
+
+  it('Should return the correct homebrew spell array', () => {
+    component.homebrewSpellsKnownArray = [2, 3]
+    fixture.detectChanges()
+    let result = component.getHomebrewSpellList()
+    expect(result).toEqual([{
+      "user_spell_id": 2,
+      "user_id": 8295,
+      "spell_name": "Luminous Verdict2",
+      "version": "",
+      "spell_level": "3rd-Level",
+      "spell_school": "Evocation",
+      "casting_time": "Bonus Action",
+      "reaction_condition": "",
+      "components": ["V", "S"],
+      "material": "",
+      "spell_range_type": "Distance",
+      "range": "Distance (30 feet Cylinder)",
+      "area_length": "30 feet",
+      "area_type": "Cylinder",
+      "duration_type": "Concentration",
+      "duration": "",
+      "duration_time": "",
+      "description": "You call down a radiant judgment upon a foe, empowering your strikes with divine energy. Choose one creature within range. For the duration, your weapon strikes against that creature deal an additional 1d8 radiant damage. The target must make a Constitution saving throw at the start of each of its turns. On a failed save, it is blinded until the start of its next turn. Additionally, once while the spell is active, you may expend the spell as a reaction when the target hits a creature with an attack: the attacker takes radiant damage equal to your Paladin level + your Charisma modifier, and must make a Dexterity saving throw or be knocked prone.",
+      "ritual_spell": "",
+      "higher_level_description": "",
+      "higher_level_scaling": "",
+      "classes": [""],
+      "subclasses": [""],
+      "isSaveOrAttack": "save",
+      "save_stat": "Dexterity",
+      "attack_type": "melee",
+      "damage": "+1d8",
+      "damage_type": "Radiant",
+      "effect": "",
+      "inflicts_conditions": true,
+      "conditions": []
+    },{
+      "user_spell_id": 3,
+      "user_id": 8295,
+      "spell_name": "Luminous Verdict3",
+      "version": "",
+      "spell_level": "3rd-Level",
+      "spell_school": "Evocation",
+      "casting_time": "Bonus Action",
+      "reaction_condition": "",
+      "components": ["V", "S"],
+      "material": "",
+      "spell_range_type": "Distance",
+      "range": "Distance (30 feet Cylinder)",
+      "area_length": "30 feet",
+      "area_type": "Cylinder",
+      "duration_type": "Concentration",
+      "duration": "",
+      "duration_time": "",
+      "description": "You call down a radiant judgment upon a foe, empowering your strikes with divine energy. Choose one creature within range. For the duration, your weapon strikes against that creature deal an additional 1d8 radiant damage. The target must make a Constitution saving throw at the start of each of its turns. On a failed save, it is blinded until the start of its next turn. Additionally, once while the spell is active, you may expend the spell as a reaction when the target hits a creature with an attack: the attacker takes radiant damage equal to your Paladin level + your Charisma modifier, and must make a Dexterity saving throw or be knocked prone.",
+      "ritual_spell": "",
+      "higher_level_description": "",
+      "higher_level_scaling": "",
+      "classes": [""],
+      "subclasses": [""],
+      "isSaveOrAttack": "save",
+      "save_stat": "Dexterity",
+      "attack_type": "melee",
+      "damage": "+1d8",
+      "damage_type": "Radiant",
+      "effect": "",
+      "inflicts_conditions": true,
+      "conditions": []
+    }])
+  })
+
+  it('Should correctly test if class levels are above 20', () => {
+    component.characterForm.get('classLevels')?.setValue([5,5,5,5,5,0,0,0,0,0,0,0])
+    fixture.detectChanges()
+    expect(component.validateClassLevels()).toBe(false)
+  })
+
+  it('Should correctly test if class levels are below or equal to 0', () => {
+    component.characterForm.get('classLevels')?.setValue([-1,0,0,0,0,0,0,0,0,0,0,0])
+    fixture.detectChanges()
+    expect(component.validateClassLevels()).toBe(false)
+  })
+
+  it('Should correctly test if class levels are just right', () => {
+    component.characterForm.get('classLevels')?.setValue([0,0,0,5,0,0,0,0,0,0,0,0])
+    fixture.detectChanges()
+    expect(component.validateClassLevels()).toBe(true)
+  })
+
+  it('Should test if any class proficiencies are set to None', () => {
+    (component.characterForm.get('classProficiencies') as FormArray).push(new FormControl({
+      "list_desc": "Choose two from Animal Handling, Athletics, Intimidation, Nature, Perception, and Survival",
+      "selects": [
+        {
+          "prof_list": [
+            {"id": 86, "name": "Skill: Animal Handling", "type": 1},
+            {"id": 88, "name": "Skill: Athletics", "type": 1},
+            {"id": 92, "name": "Skill: Intimidation", "type": 1},
+            {"id": 95, "name": "Skill: Nature", "type": 1},
+            {"id": 96, "name": "Skill: Perception", "type": 1},
+            {"id": 102, "name": "Skill: Survival", "type": 1}
+          ],
+          "option": "88"
+        },
+        {
+          "prof_list": [
+            {"id": 86, "name": "Skill: Animal Handling", "type": 1},
+            {"id": 88, "name": "Skill: Athletics", "type": 1},
+            {"id": 92, "name": "Skill: Intimidation", "type": 1},
+            {"id": 95, "name": "Skill: Nature", "type": 1},
+            {"id": 96, "name": "Skill: Perception", "type": 1},
+            {"id": 102, "name": "Skill: Survival", "type": 1}
+          ],
+          "option": "None"
+        }
+      ]
+    }))
+    fixture.detectChanges()
+    expect(component.validateClassProfsNone()).toBe(false)
+  })
+
+  it('Should test if any class proficiencies repeat', () => {
+    (component.characterForm.get('classProficiencies') as FormArray).push(new FormControl({
+      "list_desc": "Choose two from Animal Handling, Athletics, Intimidation, Nature, Perception, and Survival",
+      "selects": [
+        {
+          "prof_list": [
+            {"id": 86, "name": "Skill: Animal Handling", "type": 1},
+            {"id": 88, "name": "Skill: Athletics", "type": 1},
+            {"id": 92, "name": "Skill: Intimidation", "type": 1},
+            {"id": 95, "name": "Skill: Nature", "type": 1},
+            {"id": 96, "name": "Skill: Perception", "type": 1},
+            {"id": 102, "name": "Skill: Survival", "type": 1}
+          ],
+          "option": "88"
+        },
+        {
+          "prof_list": [
+            {"id": 86, "name": "Skill: Animal Handling", "type": 1},
+            {"id": 88, "name": "Skill: Athletics", "type": 1},
+            {"id": 92, "name": "Skill: Intimidation", "type": 1},
+            {"id": 95, "name": "Skill: Nature", "type": 1},
+            {"id": 96, "name": "Skill: Perception", "type": 1},
+            {"id": 102, "name": "Skill: Survival", "type": 1}
+          ],
+          "option": "88"
+        }
+      ]
+    }))
+    fixture.detectChanges()
+    expect(component.validateClassProfsRepeat()).toBe(false)
+  })
+
+  it('Should test if any class proficiencies are set correctly', () => {
+    (component.characterForm.get('classProficiencies') as FormArray).push(new FormControl({
+      "list_desc": "Choose two from Animal Handling, Athletics, Intimidation, Nature, Perception, and Survival",
+      "selects": [
+        {
+          "prof_list": [
+            {"id": 86, "name": "Skill: Animal Handling", "type": 1},
+            {"id": 88, "name": "Skill: Athletics", "type": 1},
+            {"id": 92, "name": "Skill: Intimidation", "type": 1},
+            {"id": 95, "name": "Skill: Nature", "type": 1},
+            {"id": 96, "name": "Skill: Perception", "type": 1},
+            {"id": 102, "name": "Skill: Survival", "type": 1}
+          ],
+          "option": "88"
+        },
+        {
+          "prof_list": [
+            {"id": 86, "name": "Skill: Animal Handling", "type": 1},
+            {"id": 88, "name": "Skill: Athletics", "type": 1},
+            {"id": 92, "name": "Skill: Intimidation", "type": 1},
+            {"id": 95, "name": "Skill: Nature", "type": 1},
+            {"id": 96, "name": "Skill: Perception", "type": 1},
+            {"id": 102, "name": "Skill: Survival", "type": 1}
+          ],
+          "option": "102"
+        }
+      ]
+    }))
+    fixture.detectChanges()
+    expect(component.validateClassProfsNone()).toBe(true)
+    expect(component.validateClassProfsRepeat()).toBe(true)
+  })
+
+  it('Should validate stats correctly on roll length 0', () => {
+    component.characterForm.get('statRuleset')?.setValue("roll")
+    fixture.detectChanges()
+    expect(component.validateStats()).toBe(1)
+  })
+
+  it('Should validate stats correctly on roll incorrect', () => {
+    component.characterForm.get('statRuleset')?.setValue("roll")
+    component.rolledStats = [15, 14, 11, 11, 11, 9]
+    component.str = 14
+    component.dex = 15
+    component.con = 11
+    component.int = 11
+    component.wis = 8
+    component.cha = 11
+    fixture.detectChanges()
+    expect(component.validateStats()).toBe(2)
+  })
+
+  it('Should validate stats correctly on roll correct', () => {
+    component.characterForm.get('statRuleset')?.setValue("roll")
+    component.rolledStats = [15, 14, 11, 11, 11, 8]
+    component.str = 14
+    component.dex = 15
+    component.con = 11
+    component.int = 11
+    component.wis = 8
+    component.cha = 11
+    fixture.detectChanges()
+    expect(component.validateStats()).toBe(0)
+  })
+
+  it('Should validate stats correctly on standard array incorrect', () => {
+    component.characterForm.get('statRuleset')?.setValue("standard_array")
+    component.str = 14
+    component.dex = 15
+    component.con = 13
+    component.int = 12
+    component.wis = 8
+    component.cha = 8
+    fixture.detectChanges()
+    expect(component.validateStats()).toBe(2)
+  })
+
+  it('Should validate stats correctly on standard array correct', () => {
+    component.characterForm.get('statRuleset')?.setValue("standard_array")
+    component.str = 14
+    component.dex = 15
+    component.con = 13
+    component.int = 12
+    component.wis = 8
+    component.cha = 10
+    fixture.detectChanges()
+    expect(component.validateStats()).toBe(0)
+  })
+
+  it('Should validate stats correctly on point buy incorrect', () => {
+    component.characterForm.get('statRuleset')?.setValue("point_buy")
+    component.spentPoints = 20
+    fixture.detectChanges()
+    expect(component.validateStats()).toBe(3)
+  })
+
+  it('Should validate stats correctly on point buy correct', () => {
+    component.characterForm.get('statRuleset')?.setValue("point_buy")
+    component.spentPoints = 27
+    fixture.detectChanges()
+    expect(component.validateStats()).toBe(0)
+  })
+
+  it('Should validate stats correctly on manual incorrect', () => {
+    component.characterForm.get('statRuleset')?.setValue("manual")
+    component.str = 14
+    component.dex = 15
+    component.con = 13
+    component.int = 21
+    component.wis = 8
+    component.cha = 10
+    fixture.detectChanges()
+    expect(component.validateStats()).toBe(4)
+  })
+
+  it('Should validate stats correctly on manual correct', () => {
+    component.characterForm.get('statRuleset')?.setValue("manual")
+    component.str = 14
+    component.dex = 15
+    component.con = 13
+    component.int = 20
+    component.wis = 8
+    component.cha = 10
+    fixture.detectChanges()
+    expect(component.validateStats()).toBe(0)
+  })
+
+  it('Should calculate correct stat modifier positive', () => {
+    expect(component.calculateStatModifier(20)).toBe("+5")
+  })
+
+  it('Should calculate correct stat modifier 0', () => {
+    expect(component.calculateStatModifier(10)).toBe("+0")
+  })
+
+  it('Should calculate correct stat modifier negative', () => {
+    expect(component.calculateStatModifier(8)).toBe("-1")
+  })
+
+  it('Should show tab basicInfo', () => {
+    component.showTab('basicInfo')
+    expect(component.hiddenArray).toEqual([false, true, true, true, true, true, true, true])
+  })
+
+  it('Should show tab race', () => {
+    component.showTab('race')
+    expect(component.hiddenArray).toEqual([true, false, true, true, true, true, true, true])
+  })
+
+  it('Should show tab class', () => {
+    component.showTab('class')
+    expect(component.hiddenArray).toEqual([true, true, false, true, true, true, true, true])
+  })
+
+  it('Should show tab class_proficiencies', () => {
+    component.showTab('class_proficiencies')
+    expect(component.hiddenArray).toEqual([true, true, true, false, true, true, true, true])
+  })
+
+  it('Should show tab attributes', () => {
+    component.showTab('attributes')
+    expect(component.hiddenArray).toEqual([true, true, true, true, false, true, true, true])
+  })
+
+  it('Should show tab spells', () => {
+    component.showTab('spells')
+    expect(component.hiddenArray).toEqual([true, true, true, true, true, false, true, true])
+  })
+
+  it('Should show tab details', () => {
+    component.showTab('details')
+    expect(component.hiddenArray).toEqual([true, true, true, true, true, true, false, true])
+  })
+
+  it('Should show tab equipment', () => {
+    component.showTab('equipment')
+    expect(component.hiddenArray).toEqual([true, true, true, true, true, true, true, false])
   })
 });
