@@ -819,7 +819,7 @@ describe('CreateCharacterComponent', () => {
     fixture.detectChanges()
     expect(component.getProfFirstOption("1", 0)).toBe(86)
   })
-
+  //test
   it('Should initialize proficiency options correctly', () => {
     component.classProficiencyOptions.set(mockClassProficiencies)
     fixture.detectChanges()
