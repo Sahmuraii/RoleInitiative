@@ -1378,4 +1378,5 @@ describe('CreateCharacterComponent', () => {
     component.showTab('equipment')
     expect(component.hiddenArray).toEqual([true, true, true, true, true, true, true, false])
   })
+  //test
 });
