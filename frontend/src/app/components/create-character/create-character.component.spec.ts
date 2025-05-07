@@ -748,4 +748,35 @@ describe('CreateCharacterComponent', () => {
     fixture.detectChanges()
     expect(component.getProfOptions()).toEqual(["88", "102"])
   })
+
+  it('Should reset stats when changing stat allocation methods', () => {
+    component.str = 20
+    component.dex = 20
+    component.con = 20
+    component.int = 20
+    component.wis = 20
+    component.cha = 20
+    fixture.detectChanges()
+    component.showAttributeRuleset("roll")
+    expect(component.str).toBe(8)
+    expect(component.dex).toBe(8)
+    expect(component.con).toBe(8)
+    expect(component.int).toBe(8)
+    expect(component.wis).toBe(8)
+    expect(component.cha).toBe(8)
+  })
+
+  it('Should fill the rolledStats array', () => {
+    component.rollStats()
+    expect(component.rolledStats.length).toBe(6)
+  })
+
+  it('Should sort rolledStats from greatest to least', () => {
+    component.rollStats()
+    expect(component.rolledStats[0]).toBeGreaterThanOrEqual(component.rolledStats[1])
+    expect(component.rolledStats[1]).toBeGreaterThanOrEqual(component.rolledStats[2])
+    expect(component.rolledStats[2]).toBeGreaterThanOrEqual(component.rolledStats[3])
+    expect(component.rolledStats[3]).toBeGreaterThanOrEqual(component.rolledStats[4])
+    expect(component.rolledStats[4]).toBeGreaterThanOrEqual(component.rolledStats[5])
+  })
 });
